@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { getBrowserClient } from "@/lib/supabase-browser";
 import { createTrustBadge } from "@/lib/trustbadge";
+import { BADGE_FEATURE_NAME, BRAND_NAME } from "@/lib/brand";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -55,10 +56,10 @@ export default function RegisterPage() {
   return (
     <div className="mx-auto max-w-md px-6 py-16">
       <h1 className="text-2xl font-bold text-slate-900">
-        Create your TrustBadge
+        Create your {BADGE_FEATURE_NAME}
       </h1>
       <p className="mt-2 text-slate-600">
-        Start by registering your business.
+        Start by registering your business on {BRAND_NAME}.
       </p>
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-4">
@@ -126,7 +127,7 @@ export default function RegisterPage() {
           disabled={loading}
           className="w-full rounded-lg bg-brand-600 px-4 py-2.5 font-semibold text-white hover:bg-brand-700 disabled:opacity-60"
         >
-          {loading ? "Creating…" : "Create badge"}
+          {loading ? "Creating…" : `Create ${BADGE_FEATURE_NAME}`}
         </button>
       </form>
     </div>

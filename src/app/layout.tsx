@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { TopBar } from "@/components/TopBar";
+import { BRAND_NAME, BADGE_FEATURE_LABEL } from "@/lib/brand";
 
 export const metadata: Metadata = {
-  title: "TrustBadge — Verified tradie credentials",
-  description: "Upload, verify, and share your trade credentials with customers.",
+  title: `${BRAND_NAME} — Verified tradie credentials`,
+  description: `Upload, verify, and share your trade credentials with customers using ${BADGE_FEATURE_LABEL}.`,
 };
 
 export default function RootLayout({

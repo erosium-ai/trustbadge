@@ -1,5 +1,6 @@
 import type { TrustBadge, Credential, CredentialType } from "./types";
 import { CREDENTIAL_LABELS } from "./types";
+import { BADGE_FEATURE_NAME, BRAND_NAME, getSiteUrl } from "./brand";
 
 export function buildTrustBadgeSchema(
   trustbadge: TrustBadge,
@@ -13,7 +14,7 @@ export function buildTrustBadgeSchema(
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     name: trustbadge.business_name,
-    url: `https://trustbadge.io/badge/${trustbadge.slug}`,
+    url: `${getSiteUrl()}/badge/${trustbadge.slug}`,
     identifier: trustbadge.abn
       ? { "@type": "PropertyValue", name: "ABN", value: trustbadge.abn }
       : undefined,
@@ -27,7 +28,7 @@ export function buildTrustBadgeSchema(
       credentialCategory: CREDENTIAL_LABELS[type],
       recognizedBy: {
         "@type": "Organization",
-        name: "TrustBadge",
+        name: `${BRAND_NAME} (${BADGE_FEATURE_NAME})`,
       },
     })),
   };

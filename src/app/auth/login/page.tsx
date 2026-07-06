@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { getBrowserClient } from "@/lib/supabase-browser";
 import Link from "next/link";
+import { BADGE_FEATURE_NAME } from "@/lib/brand";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -65,7 +66,7 @@ export default function LoginPage() {
     <div className="mx-auto max-w-md px-6 py-16">
       <h1 className="text-2xl font-bold text-slate-900">Log in</h1>
       <p className="mt-2 text-slate-600">
-        Access your TrustBadge dashboard.
+        Access your {BADGE_FEATURE_NAME} dashboard.
       </p>
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-4">

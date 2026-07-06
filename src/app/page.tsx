@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BADGE_FEATURE_NAME, BRAND_NAME } from "@/lib/brand";
 
 export default function HomePage() {
   return (
@@ -7,16 +8,16 @@ export default function HomePage() {
         Show customers they can trust you.
       </h1>
       <p className="mt-6 text-lg text-slate-600">
-        TrustBadge helps tradies and small businesses collect, verify, and
+        {BRAND_NAME} helps tradies and small businesses collect, verify, and
         display their licenses, insurance, ABN, police checks, and first aid
-        certificates in one public, shareable badge.
+        certificates in one public, shareable {BADGE_FEATURE_NAME}.
       </p>
       <div className="mt-10 flex items-center justify-center gap-4">
         <Link
           href="/auth/register"
           className="rounded-lg bg-brand-600 px-6 py-3 font-semibold text-white hover:bg-brand-700"
         >
-          Create your badge
+          Create your {BADGE_FEATURE_NAME}
         </Link>
         <Link
           href="/auth/login"

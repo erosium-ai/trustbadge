@@ -3,6 +3,7 @@ import { getPublicBadgeData } from "@/lib/trustbadge";
 import { buildTrustBadgeSchema } from "@/lib/schema";
 import { TrustSeal } from "@/components/TrustSeal";
 import { CREDENTIAL_LABELS, type Credential } from "@/lib/types";
+import { BADGE_FEATURE_NAME, BRAND_NAME } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 
@@ -100,7 +101,7 @@ export default async function BadgePage({ params }: BadgePageProps) {
 
         <div className="mt-8 text-center">
           <p className="text-xs text-slate-400">
-            Verified by TrustBadge · trustbadge.io
+            Verified by {BRAND_NAME} · {BADGE_FEATURE_NAME}
           </p>
         </div>
       </div>

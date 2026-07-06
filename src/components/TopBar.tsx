@@ -4,6 +4,7 @@ import Link from "next/link";
 import { getBrowserClient } from "@/lib/supabase-browser";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { BADGE_FEATURE_NAME, BRAND_NAME } from "@/lib/brand";
 
 function CheckMark({ className }: { className?: string }) {
   return (
@@ -57,7 +58,7 @@ export function TopBar() {
           <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-500 text-white">
             <CheckMark className="h-4 w-4" />
           </span>
-          TrustBadge
+          {BRAND_NAME}
         </Link>
 
         <nav className="flex items-center gap-4">
@@ -85,7 +86,7 @@ export function TopBar() {
                 href="/auth/register"
                 className="rounded-md bg-brand-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-700"
               >
-                Get started
+                Create your {BADGE_FEATURE_NAME}
               </Link>
             </>
           )}

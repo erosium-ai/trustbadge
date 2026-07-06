@@ -8,6 +8,7 @@ import {
 } from "@/lib/trustbadge";
 import { CREDENTIAL_LABELS } from "@/lib/types";
 import { getCurrentAuthUser, isAdminUser } from "@/lib/admin-auth";
+import { BADGE_FEATURE_NAME } from "@/lib/brand";
 
 interface ReviewPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -82,7 +83,7 @@ export default async function AdminReviewPage({ searchParams }: ReviewPageProps)
     <div className="mx-auto max-w-5xl px-6 py-10">
       <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">TrustBadge Review Queue</h1>
+          <h1 className="text-2xl font-bold text-slate-900">{BADGE_FEATURE_NAME} Review Queue</h1>
           <p className="mt-1 text-sm text-slate-600">
             Pending credentials awaiting approve/reject action. Each action is locked to credential ID, badge ID, type, submitted time, and current pending state.
           </p>
