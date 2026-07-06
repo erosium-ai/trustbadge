@@ -1,7 +1,7 @@
 "use server";
 
 import { sanitizeSlug } from "./slug";
-import { getPublicClient, getServiceClient } from "./supabase";
+import { getServiceClient } from "./supabase";
 import type { Credential, CredentialType, TrustBadge } from "./types";
 
 // ---------------------------------------------------------------------------
@@ -11,7 +11,7 @@ import type { Credential, CredentialType, TrustBadge } from "./types";
 export async function getTrustBadgeBySlug(
   slug: string
 ): Promise<TrustBadge | null> {
-  const supabase = getPublicClient();
+  const supabase = getServiceClient();
   const { data, error } = await supabase
     .from("trustbadges")
     .select("*")
@@ -25,7 +25,7 @@ export async function getTrustBadgeBySlug(
 export async function getCredentialsByTrustBadgeId(
   trustbadgeId: string
 ): Promise<Credential[]> {
-  const supabase = getPublicClient();
+  const supabase = getServiceClient();
   const { data, error } = await supabase
     .from("credentials")
     .select("*")
@@ -45,7 +45,7 @@ export async function getPublicBadgeData(slug: string): Promise<{
     return { trustbadge: null, credentials: [] };
   }
 
-  const supabase = getPublicClient();
+  const supabase = getServiceClient();
   const { data, error } = await supabase
     .from("credentials")
     .select("*")
