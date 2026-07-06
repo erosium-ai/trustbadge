@@ -23,6 +23,35 @@ CREATE INDEX IF NOT EXISTS idx_review_events_trustbadge_id
 CREATE INDEX IF NOT EXISTS idx_review_events_credential_id
   ON public.review_events (credential_id);
 
+CREATE TABLE IF NOT EXISTS public.conversion_events (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  event_name text NOT NULL,
+  trustbadge_id uuid REFERENCES public.trustbadges(id) ON DELETE SET NULL,
+  user_id uuid,
+  source text,
+  source_slug text,
+  campaign text,
+  utm_source text,
+  utm_medium text,
+  utm_campaign text,
+  utm_content text,
+  metadata jsonb NOT NULL DEFAULT '{}'::jsonb,
+  occurred_at timestamptz NOT NULL DEFAULT now(),
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_conversion_events_occurred_at_desc
+  ON public.conversion_events (occurred_at DESC);
+
+CREATE INDEX IF NOT EXISTS idx_conversion_events_event_name
+  ON public.conversion_events (event_name);
+
+CREATE INDEX IF NOT EXISTS idx_conversion_events_source_campaign
+  ON public.conversion_events (source, campaign);
+
+CREATE INDEX IF NOT EXISTS idx_conversion_events_trustbadge_id
+  ON public.conversion_events (trustbadge_id);
+
 CREATE TABLE IF NOT EXISTS public.admin_roles (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   email text NOT NULL UNIQUE,
@@ -41,5 +70,6 @@ CREATE INDEX IF NOT EXISTS idx_admin_roles_email_active
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.trustbadges TO authenticated, service_role;
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.credentials TO authenticated, service_role;
 GRANT SELECT, INSERT ON public.review_events TO authenticated, service_role;
+GRANT SELECT, INSERT ON public.conversion_events TO service_role;
 GRANT SELECT ON public.admin_roles TO service_role;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO authenticated, service_role;

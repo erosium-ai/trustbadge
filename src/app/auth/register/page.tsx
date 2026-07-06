@@ -60,44 +60,27 @@ export default function RegisterPage() {
         return;
       }
 
+      const tracking = getTrackingParamsFromLocation();
+
       const result = await createTrustBadge(
         authData.user.id,
         businessName,
-        abn || undefined
+        abn || undefined,
+        {
+          source: tracking.source,
+          sourceSlug: tracking.slug,
+          campaign: tracking.campaign,
+          utmSource: tracking.utmSource,
+          utmMedium: tracking.utmMedium,
+          utmCampaign: tracking.utmCampaign,
+          utmContent: tracking.utmContent,
+        }
       );
 
       if (!result.success || !result.trustbadge) {
         setError(result.error ?? "Could not create badge");
         setLoading(false);
         return;
-      }
-
-      const tracking = getTrackingParamsFromLocation();
-      const hasTracking =
-        Boolean(tracking.source) ||
-        Boolean(tracking.slug) ||
-        Boolean(tracking.campaign) ||
-        Boolean(tracking.utmSource) ||
-        Boolean(tracking.utmMedium) ||
-        Boolean(tracking.utmCampaign) ||
-        Boolean(tracking.utmContent);
-
-      if (hasTracking) {
-        const payload = {
-          event: "credentials_ai_register_success",
-          trustbadge_slug: result.trustbadge.slug,
-          source: tracking.source,
-          source_slug: tracking.slug,
-          campaign: tracking.campaign,
-          utm_source: tracking.utmSource,
-          utm_medium: tracking.utmMedium,
-          utm_campaign: tracking.utmCampaign,
-          utm_content: tracking.utmContent,
-        };
-
-        // MVP analytics lane: lightweight console event for immediate observability.
-        // Can later be swapped to a DB/event sink without changing param contract.
-        console.info("[tracking]", payload);
       }
 
       router.push(`/dashboard/${result.trustbadge.slug}`);

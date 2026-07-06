@@ -40,6 +40,16 @@ interface ReviewDecisionInput {
   expectedCreatedAt?: string;
 }
 
+export interface ConversionTrackingInput {
+  source?: string | null;
+  sourceSlug?: string | null;
+  campaign?: string | null;
+  utmSource?: string | null;
+  utmMedium?: string | null;
+  utmCampaign?: string | null;
+  utmContent?: string | null;
+}
+
 const REVIEW_META_PREFIX = "[review-meta]";
 
 function buildReviewNotes(
@@ -94,6 +104,12 @@ function isMissingRelationError(message?: string): boolean {
   if (!message) return false;
   const lowered = message.toLowerCase();
   return lowered.includes("relation") && lowered.includes("review_events") && lowered.includes("does not exist");
+}
+
+function isMissingConversionEventsRelationError(message?: string): boolean {
+  if (!message) return false;
+  const lowered = message.toLowerCase();
+  return lowered.includes("relation") && lowered.includes("conversion_events") && lowered.includes("does not exist");
 }
 
 async function recomputeTrustBadgeStatus(trustbadgeId: string): Promise<void> {
@@ -186,7 +202,8 @@ export async function getPublicBadgeData(slug: string): Promise<{
 export async function createTrustBadge(
   userId: string,
   businessName: string,
-  abn?: string
+  abn?: string,
+  tracking?: ConversionTrackingInput
 ): Promise<{ success: boolean; trustbadge?: TrustBadge; error?: string }> {
   const slug = sanitizeSlug(businessName);
   if (!slug) {
@@ -205,6 +222,47 @@ export async function createTrustBadge(
       return { success: false, error: "Business name / slug already exists" };
     }
     return { success: false, error: error.message };
+  }
+
+  const hasTracking =
+    Boolean(tracking?.source) ||
+    Boolean(tracking?.sourceSlug) ||
+    Boolean(tracking?.campaign) ||
+    Boolean(tracking?.utmSource) ||
+    Boolean(tracking?.utmMedium) ||
+    Boolean(tracking?.utmCampaign) ||
+    Boolean(tracking?.utmContent);
+
+  if (hasTracking) {
+    const now = new Date().toISOString();
+
+    const { error: conversionError } = await serviceClient
+      .from("conversion_events")
+      .insert({
+        event_name: "credentials_ai_register_success",
+        trustbadge_id: (data as TrustBadge).id,
+        user_id: userId,
+        source: tracking?.source?.trim() || null,
+        source_slug: tracking?.sourceSlug?.trim() || null,
+        campaign: tracking?.campaign?.trim() || null,
+        utm_source: tracking?.utmSource?.trim() || null,
+        utm_medium: tracking?.utmMedium?.trim() || null,
+        utm_campaign: tracking?.utmCampaign?.trim() || null,
+        utm_content: tracking?.utmContent?.trim() || null,
+        metadata: {
+          trustbadge_slug: (data as TrustBadge).slug,
+          business_name: (data as TrustBadge).business_name,
+        },
+        occurred_at: now,
+      });
+
+    if (conversionError && !isMissingConversionEventsRelationError(conversionError.message)) {
+      console.error("[conversion_events] insert failed", {
+        message: conversionError.message,
+        code: conversionError.code,
+        details: conversionError.details,
+      });
+    }
   }
 
   return { success: true, trustbadge: data as TrustBadge };
