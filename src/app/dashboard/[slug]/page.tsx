@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getPublicClient } from "@/lib/supabase";
+import { getServerClient } from "@/lib/supabase-server";
 import { getOwnerTrustBadgeBySlug, getCredentialsForOwner } from "@/lib/trustbadge";
 import { CredentialUpload } from "@/components/CredentialUpload";
 import { TrustSeal } from "@/components/TrustSeal";
@@ -29,7 +29,7 @@ function statusLabel(status: string): string {
 export default async function DashboardPage({ params }: DashboardPageProps) {
   const { slug } = await params;
 
-  const supabase = getPublicClient();
+  const supabase = await getServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
