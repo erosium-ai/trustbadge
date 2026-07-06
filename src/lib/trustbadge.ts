@@ -19,6 +19,17 @@ export interface ReviewActivity {
   note: string | null;
 }
 
+interface ReviewEventRow {
+  id: string;
+  credential_id: string;
+  trustbadge_id: string;
+  decision: "verified" | "rejected";
+  reviewer_email: string | null;
+  note: string | null;
+  reviewed_at: string;
+  created_at?: string;
+}
+
 const REVIEW_META_PREFIX = "[review-meta]";
 
 function buildReviewNotes(
@@ -67,6 +78,12 @@ function parseReviewNotes(
     note,
     decision: parsedDecision === "rejected" ? "rejected" : "verified",
   };
+}
+
+function isMissingRelationError(message?: string): boolean {
+  if (!message) return false;
+  const lowered = message.toLowerCase();
+  return lowered.includes("relation") && lowered.includes("review_events") && lowered.includes("does not exist");
 }
 
 async function recomputeTrustBadgeStatus(trustbadgeId: string): Promise<void> {
@@ -275,6 +292,7 @@ export async function setCredentialReviewStatus(
 ): Promise<{ success: boolean; error?: string; trustbadgeId?: string }> {
   const serviceClient = getServiceClient();
   const reviewedAt = new Date().toISOString();
+  const cleanAdminNote = adminNotes?.trim() || null;
 
   const updatePayload: {
     status: "verified" | "rejected";
@@ -282,7 +300,7 @@ export async function setCredentialReviewStatus(
     verified_at: string | null;
   } = {
     status,
-    admin_notes: buildReviewNotes(status, reviewedAt, reviewerEmail, adminNotes),
+    admin_notes: cleanAdminNote,
     verified_at: status === "verified" ? reviewedAt : null,
   };
 
@@ -298,12 +316,42 @@ export async function setCredentialReviewStatus(
   }
 
   const trustbadgeId = (data as { trustbadge_id: string }).trustbadge_id;
+
+  const { error: reviewEventError } = await serviceClient
+    .from("review_events")
+    .insert({
+      credential_id: credentialId,
+      trustbadge_id: trustbadgeId,
+      decision: status,
+      reviewer_email: reviewerEmail?.trim() || null,
+      note: cleanAdminNote,
+      reviewed_at: reviewedAt,
+    });
+
+  if (reviewEventError && isMissingRelationError(reviewEventError.message)) {
+    // Transitional fallback: keep machine-readable metadata in admin_notes
+    // until the review_events migration is applied in production.
+    const fallbackNotes = buildReviewNotes(
+      status,
+      reviewedAt,
+      reviewerEmail,
+      cleanAdminNote ?? undefined
+    );
+
+    await serviceClient
+      .from("credentials")
+      .update({ admin_notes: fallbackNotes })
+      .eq("id", credentialId);
+  } else if (reviewEventError) {
+    return { success: false, error: reviewEventError.message };
+  }
+
   await recomputeTrustBadgeStatus(trustbadgeId);
 
   return { success: true, trustbadgeId };
 }
 
-export async function getReviewHistory(limit = 50): Promise<ReviewActivity[]> {
+async function getReviewHistoryFromCredentialNotes(limit: number): Promise<ReviewActivity[]> {
   const serviceClient = getServiceClient();
   const fetchLimit = Math.max(limit * 3, 100);
 
@@ -344,6 +392,75 @@ export async function getReviewHistory(limit = 50): Promise<ReviewActivity[]> {
       } satisfies ReviewActivity;
     })
     .filter((item): item is ReviewActivity => Boolean(item))
+    .sort((a, b) => new Date(b.reviewedAt).getTime() - new Date(a.reviewedAt).getTime())
+    .slice(0, limit);
+}
+
+export async function getReviewHistory(limit = 50): Promise<ReviewActivity[]> {
+  const serviceClient = getServiceClient();
+
+  const { data: events, error: eventsError } = await serviceClient
+    .from("review_events")
+    .select("id, credential_id, trustbadge_id, decision, reviewer_email, note, reviewed_at, created_at")
+    .order("reviewed_at", { ascending: false })
+    .limit(limit);
+
+  if (eventsError) {
+    return getReviewHistoryFromCredentialNotes(limit);
+  }
+
+  const reviewEvents = (events ?? []) as ReviewEventRow[];
+
+  if (reviewEvents.length === 0) {
+    return getReviewHistoryFromCredentialNotes(limit);
+  }
+
+  const credentialIds = [...new Set(reviewEvents.map((event) => event.credential_id))];
+  const trustbadgeIds = [...new Set(reviewEvents.map((event) => event.trustbadge_id))];
+
+  const [{ data: credentials }, { data: badges }] = await Promise.all([
+    serviceClient
+      .from("credentials")
+      .select("id, trustbadge_id, type, file_url, status, verified_at, admin_notes, created_at, updated_at")
+      .in("id", credentialIds),
+    serviceClient
+      .from("trustbadges")
+      .select("id, slug, business_name, status")
+      .in("id", trustbadgeIds),
+  ]);
+
+  const credentialMap = new Map<string, Credential>(
+    (credentials ?? []).map((credential: Credential) => [credential.id, credential])
+  );
+  const badgeMap = new Map<string, ReviewBadge>(
+    (badges ?? []).map((badge: ReviewBadge) => [badge.id, badge])
+  );
+
+  const eventActivities = reviewEvents
+    .map((event) => {
+      const credential = credentialMap.get(event.credential_id);
+      if (!credential) return null;
+
+      return {
+        credential,
+        trustbadge: badgeMap.get(event.trustbadge_id) ?? null,
+        decision: event.decision,
+        reviewedAt: event.reviewed_at,
+        reviewerEmail: event.reviewer_email,
+        note: event.note,
+      } satisfies ReviewActivity;
+    })
+    .filter((item): item is ReviewActivity => Boolean(item));
+
+  // Include legacy history items (saved in credential notes) that predate review_events.
+  const legacyHistory = await getReviewHistoryFromCredentialNotes(limit);
+  const seenCredentialIds = new Set(eventActivities.map((item) => item.credential.id));
+  const merged = [
+    ...eventActivities,
+    ...legacyHistory.filter((item) => !seenCredentialIds.has(item.credential.id)),
+  ];
+
+  return merged
     .sort((a, b) => new Date(b.reviewedAt).getTime() - new Date(a.reviewedAt).getTime())
     .slice(0, limit);
 }
