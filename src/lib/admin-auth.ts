@@ -48,7 +48,10 @@ function userHasClaimAdminRole(user: User): boolean {
 function isMissingAdminRolesTableError(message?: string): boolean {
   if (!message) return false;
   const lowered = message.toLowerCase();
-  return lowered.includes("relation") && lowered.includes("admin_roles") && lowered.includes("does not exist");
+  return (
+    (lowered.includes("relation") && lowered.includes("admin_roles") && lowered.includes("does not exist")) ||
+    (lowered.includes("schema cache") && lowered.includes("admin_roles"))
+  );
 }
 
 async function userHasDbAdminRole(email: string): Promise<boolean | null> {
