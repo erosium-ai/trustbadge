@@ -52,6 +52,17 @@ CREATE INDEX IF NOT EXISTS idx_conversion_events_source_campaign
 CREATE INDEX IF NOT EXISTS idx_conversion_events_trustbadge_id
   ON public.conversion_events (trustbadge_id);
 
+ALTER TABLE public.conversion_events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.conversion_events FORCE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS conversion_events_service_role_all ON public.conversion_events;
+CREATE POLICY conversion_events_service_role_all
+  ON public.conversion_events
+  FOR ALL
+  TO service_role
+  USING (true)
+  WITH CHECK (true);
+
 CREATE TABLE IF NOT EXISTS public.admin_roles (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   email text NOT NULL UNIQUE,
@@ -70,6 +81,7 @@ CREATE INDEX IF NOT EXISTS idx_admin_roles_email_active
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.trustbadges TO authenticated, service_role;
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.credentials TO authenticated, service_role;
 GRANT SELECT, INSERT ON public.review_events TO authenticated, service_role;
+REVOKE ALL ON public.conversion_events FROM anon, authenticated;
 GRANT SELECT, INSERT ON public.conversion_events TO service_role;
 GRANT SELECT ON public.admin_roles TO service_role;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO authenticated, service_role;
