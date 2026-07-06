@@ -10,6 +10,65 @@ export interface ReviewCredential extends Credential {
   trustbadge: ReviewBadge | null;
 }
 
+export interface ReviewActivity {
+  credential: Credential;
+  trustbadge: ReviewBadge | null;
+  decision: "verified" | "rejected";
+  reviewedAt: string;
+  reviewerEmail: string | null;
+  note: string | null;
+}
+
+const REVIEW_META_PREFIX = "[review-meta]";
+
+function buildReviewNotes(
+  decision: "verified" | "rejected",
+  reviewedAt: string,
+  reviewerEmail?: string,
+  freeformNote?: string
+): string {
+  const meta = `${REVIEW_META_PREFIX} reviewer=${reviewerEmail?.trim() || "unknown"}; decision=${decision}; at=${reviewedAt}`;
+  const note = freeformNote?.trim();
+  return note ? `${meta}\n${note}` : meta;
+}
+
+function parseReviewNotes(
+  raw: string | null | undefined,
+  fallbackAt: string,
+  fallbackDecision: "verified" | "rejected"
+): { reviewerEmail: string | null; reviewedAt: string; note: string | null; decision: "verified" | "rejected" } {
+  if (!raw || !raw.startsWith(REVIEW_META_PREFIX)) {
+    return {
+      reviewerEmail: null,
+      reviewedAt: fallbackAt,
+      note: raw?.trim() || null,
+      decision: fallbackDecision,
+    };
+  }
+
+  const [metaLine, ...rest] = raw.split("\n");
+  const meta = metaLine.replace(REVIEW_META_PREFIX, "").trim();
+  const chunks = meta.split(";").map((part) => part.trim());
+
+  const valueOf = (key: string) => {
+    const entry = chunks.find((part) => part.startsWith(`${key}=`));
+    if (!entry) return null;
+    return entry.slice(key.length + 1).trim() || null;
+  };
+
+  const reviewer = valueOf("reviewer");
+  const at = valueOf("at");
+  const parsedDecision = valueOf("decision");
+  const note = rest.join("\n").trim() || null;
+
+  return {
+    reviewerEmail: reviewer && reviewer !== "unknown" ? reviewer : null,
+    reviewedAt: at || fallbackAt,
+    note,
+    decision: parsedDecision === "rejected" ? "rejected" : "verified",
+  };
+}
+
 async function recomputeTrustBadgeStatus(trustbadgeId: string): Promise<void> {
   const serviceClient = getServiceClient();
 
@@ -211,9 +270,11 @@ export async function getPendingCredentialsForReview(): Promise<ReviewCredential
 export async function setCredentialReviewStatus(
   credentialId: string,
   status: "verified" | "rejected",
-  adminNotes?: string
+  adminNotes?: string,
+  reviewerEmail?: string
 ): Promise<{ success: boolean; error?: string; trustbadgeId?: string }> {
   const serviceClient = getServiceClient();
+  const reviewedAt = new Date().toISOString();
 
   const updatePayload: {
     status: "verified" | "rejected";
@@ -221,8 +282,8 @@ export async function setCredentialReviewStatus(
     verified_at: string | null;
   } = {
     status,
-    admin_notes: adminNotes?.trim() || null,
-    verified_at: status === "verified" ? new Date().toISOString() : null,
+    admin_notes: buildReviewNotes(status, reviewedAt, reviewerEmail, adminNotes),
+    verified_at: status === "verified" ? reviewedAt : null,
   };
 
   const { data, error } = await serviceClient
@@ -240,6 +301,48 @@ export async function setCredentialReviewStatus(
   await recomputeTrustBadgeStatus(trustbadgeId);
 
   return { success: true, trustbadgeId };
+}
+
+export async function getReviewHistory(limit = 50): Promise<ReviewActivity[]> {
+  const serviceClient = getServiceClient();
+
+  const { data: credentials, error } = await serviceClient
+    .from("credentials")
+    .select("id, trustbadge_id, type, file_url, status, verified_at, admin_notes, created_at, updated_at")
+    .in("status", ["verified", "rejected"])
+    .order("updated_at", { ascending: false })
+    .limit(limit);
+
+  if (error || !credentials || credentials.length === 0) return [];
+
+  const trustbadgeIds = [...new Set(credentials.map((c: { trustbadge_id: string }) => c.trustbadge_id))];
+
+  const { data: badges } = await serviceClient
+    .from("trustbadges")
+    .select("id, slug, business_name, status")
+    .in("id", trustbadgeIds);
+
+  const badgeMap = new Map<string, ReviewBadge>(
+    (badges ?? []).map((badge: ReviewBadge) => [badge.id, badge])
+  );
+
+  return credentials
+    .map((row: Credential) => {
+      if (row.status !== "verified" && row.status !== "rejected") return null;
+
+      const fallbackAt = row.verified_at || row.updated_at || row.created_at || new Date().toISOString();
+      const parsed = parseReviewNotes(row.admin_notes, fallbackAt, row.status);
+
+      return {
+        credential: row,
+        trustbadge: badgeMap.get(row.trustbadge_id) ?? null,
+        decision: parsed.decision,
+        reviewedAt: parsed.reviewedAt,
+        reviewerEmail: parsed.reviewerEmail,
+        note: parsed.note,
+      } satisfies ReviewActivity;
+    })
+    .filter((item): item is ReviewActivity => Boolean(item));
 }
 
 export async function getOwnerTrustBadgeBySlug(

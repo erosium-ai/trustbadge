@@ -45,7 +45,8 @@ export default async function AdminReviewPage({ searchParams }: ReviewPageProps)
     const result = await setCredentialReviewStatus(
       credentialId,
       status,
-      adminNotes
+      adminNotes,
+      actionUser.email
     );
 
     if (!result.success) {
@@ -53,6 +54,7 @@ export default async function AdminReviewPage({ searchParams }: ReviewPageProps)
     }
 
     revalidatePath("/admin/review");
+    revalidatePath("/admin/review/history");
     revalidatePath("/badge/[slug]", "page");
     revalidatePath("/dashboard/[slug]", "page");
   }
@@ -67,6 +69,12 @@ export default async function AdminReviewPage({ searchParams }: ReviewPageProps)
           <p className="mt-1 text-sm text-slate-600">
             Pending credentials awaiting approve/reject action.
           </p>
+          <Link
+            href="/admin/review/history"
+            className="mt-2 inline-block text-sm font-medium text-brand-600 hover:underline"
+          >
+            View review history
+          </Link>
         </div>
         <span className="rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-700">
           {pending.length} pending
