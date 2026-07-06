@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BADGE_FEATURE_NAME, BRAND_NAME } from "@/lib/brand";
+import { BADGE_FEATURE_NAME, BRAND_NAME, getSchemaPageUrl } from "@/lib/brand";
 
 const TRUST_POINTS = [
   "Licences and registrations",
@@ -7,7 +7,36 @@ const TRUST_POINTS = [
   "First aid and safety credentials",
 ];
 
+const FUNNEL_PRODUCTS = [
+  {
+    title: "Free AI Profile",
+    description:
+      "Get your own AI-readable business website. Add your business details once and we publish the structured page for you.",
+    cta: "Create free AI profile",
+    href: getSchemaPageUrl(),
+    accent: "border-teal-200 bg-teal-50/40",
+  },
+  {
+    title: "Pro AI Presence — $19/month",
+    description:
+      "Unlock stronger profile presentation, premium positioning, and ongoing visibility features for your business.",
+    cta: "Upgrade to Pro AI Presence",
+    href: "/auth/register",
+    accent: "border-slate-200 bg-white",
+  },
+  {
+    title: "TrustBadge Verification",
+    description:
+      "Add verified trust signals for licences, insurance, and compliance so customers can book with confidence.",
+    cta: `Create your ${BADGE_FEATURE_NAME}`,
+    href: "/auth/register",
+    accent: "border-slate-200 bg-white",
+  },
+];
+
 export default function HomePage() {
+  const schemaPageUrl = getSchemaPageUrl();
+
   return (
     <div className="relative overflow-hidden bg-gradient-to-b from-white via-slate-50/60 to-white">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(ellipse_at_top,rgba(20,184,166,0.15),transparent_70%)]" />
@@ -21,21 +50,24 @@ export default function HomePage() {
           </p>
 
           <h1 className="mt-5 text-balance text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl md:text-6xl">
-            Show customers they can trust you.
+            Get your own AI-readable business website.
           </h1>
 
           <p className="mt-5 text-pretty text-lg leading-relaxed text-slate-600 sm:text-xl">
-            {BRAND_NAME} helps tradies and small businesses collect, verify, and
-            publish licences, insurance, ABN, and safety credentials in one
-            public, shareable {BADGE_FEATURE_NAME}.
+            Click create, answer a few details, and {BRAND_NAME} handles the
+            rest. Your page is structured so AI tools can understand your
+            business, and you can add {BADGE_FEATURE_NAME} verification when
+            you're ready.
           </p>
 
           <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
             <Link
-              href="/auth/register"
+              href={schemaPageUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               className="rounded-xl bg-teal-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-teal-700"
             >
-              Create your {BADGE_FEATURE_NAME}
+              Create your free AI-readable page
             </Link>
             <Link
               href="/auth/login"
@@ -44,6 +76,30 @@ export default function HomePage() {
               Log in
             </Link>
           </div>
+        </div>
+
+        <div className="mx-auto mt-10 grid w-full max-w-6xl gap-4 md:grid-cols-3">
+          {FUNNEL_PRODUCTS.map((product) => (
+            <div
+              key={product.title}
+              className={`rounded-2xl border p-5 shadow-sm ${product.accent}`}
+            >
+              <h3 className="text-base font-semibold text-slate-900">
+                {product.title}
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-slate-700">
+                {product.description}
+              </p>
+              <Link
+                href={product.href}
+                target={product.href.startsWith("http") ? "_blank" : undefined}
+                rel={product.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                className="mt-4 inline-flex rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50"
+              >
+                {product.cta}
+              </Link>
+            </div>
+          ))}
         </div>
 
         <div className="mx-auto mt-10 grid w-full max-w-5xl gap-4 sm:grid-cols-3">
