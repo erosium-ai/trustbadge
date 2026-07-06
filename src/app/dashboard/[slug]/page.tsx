@@ -35,12 +35,12 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/login");
+    redirect("/auth/login");
   }
 
   const trustbadge = await getOwnerTrustBadgeBySlug(slug, user.id);
   if (!trustbadge) {
-    redirect("/register");
+    redirect("/auth/register");
   }
 
   const credentials = await getCredentialsForOwner(trustbadge.id);

@@ -13,13 +13,13 @@ export default function HomePage() {
       </p>
       <div className="mt-10 flex items-center justify-center gap-4">
         <Link
-          href="/register"
+          href="/auth/register"
           className="rounded-lg bg-brand-600 px-6 py-3 font-semibold text-white hover:bg-brand-700"
         >
           Create your badge
         </Link>
         <Link
-          href="/login"
+          href="/auth/login"
           className="rounded-lg bg-white px-6 py-3 font-semibold text-slate-700 ring-1 ring-slate-300 hover:bg-slate-50"
         >
           Log in

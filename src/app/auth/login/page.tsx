@@ -40,7 +40,7 @@ export default function LoginPage() {
     if (badgeData?.slug) {
       router.push(`/dashboard/${badgeData.slug}`);
     } else {
-      router.push("/register");
+      router.push("/auth/register");
     }
   }
 
@@ -94,7 +94,7 @@ export default function LoginPage() {
 
         <p className="text-center text-sm text-slate-600">
           No account?{" "}
-          <Link href="/register" className="font-medium text-brand-600 hover:underline">
+          <Link href="/auth/register" className="font-medium text-brand-600 hover:underline">
             Create one
           </Link>
         </p>
