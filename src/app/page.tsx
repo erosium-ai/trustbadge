@@ -7,35 +7,63 @@ const TRUST_POINTS = [
   "First aid and safety credentials",
 ];
 
-const FUNNEL_PRODUCTS = [
-  {
-    title: "Free AI Profile",
-    description:
-      "Get your own AI-readable business website. Add your business details once and we publish the structured page for you.",
-    cta: "Create free AI profile",
-    href: getSchemaPageUrl(),
-    accent: "border-teal-200 bg-teal-50/40",
-  },
-  {
-    title: "Pro AI Presence — $19/month",
-    description:
-      "Unlock stronger profile presentation, premium positioning, and ongoing visibility features for your business.",
-    cta: "Upgrade to Pro AI Presence",
-    href: "/auth/register",
-    accent: "border-slate-200 bg-white",
-  },
-  {
-    title: "TrustBadge Verification",
-    description:
-      "Add verified trust signals for licences, insurance, and compliance so customers can book with confidence.",
-    cta: `Create your ${BADGE_FEATURE_NAME}`,
-    href: "/auth/register",
-    accent: "border-slate-200 bg-white",
-  },
-];
+function withTracking(baseUrl: string, params: Record<string, string>): string {
+  try {
+    const url = new URL(baseUrl);
+    for (const [key, value] of Object.entries(params)) {
+      url.searchParams.set(key, value);
+    }
+    return url.toString();
+  } catch {
+    return baseUrl;
+  }
+}
 
 export default function HomePage() {
   const schemaPageUrl = getSchemaPageUrl();
+  const freeProfileUrl = withTracking(schemaPageUrl, {
+    source: "credentialsai",
+    campaign: "free_ai_profile_card",
+    utm_source: "credentialsai",
+    utm_medium: "website_card",
+    utm_campaign: "free_ai_profile_card",
+    utm_content: "landing_funnel",
+  });
+  const proSignupUrl = withTracking(schemaPageUrl, {
+    source: "credentialsai",
+    campaign: "pro_ai_presence_card",
+    utm_source: "credentialsai",
+    utm_medium: "website_card",
+    utm_campaign: "pro_ai_presence_card",
+    utm_content: "landing_funnel",
+  });
+
+  const funnelProducts = [
+    {
+      title: "Free AI Profile",
+      description:
+        "Get your own AI-readable business website. Add your business details once and we publish the structured page for you.",
+      cta: "Create free AI profile",
+      href: freeProfileUrl,
+      accent: "border-teal-200 bg-teal-50/40",
+    },
+    {
+      title: "Pro AI Presence — $19/month",
+      description:
+        "Start by creating your AI profile, then unlock stronger presentation, premium positioning, and ongoing visibility features.",
+      cta: "Start Pro AI Presence",
+      href: proSignupUrl,
+      accent: "border-slate-200 bg-white",
+    },
+    {
+      title: "TrustBadge Verification",
+      description:
+        "Add verified trust signals for licences, insurance, and compliance so customers can book with confidence.",
+      cta: `Create your ${BADGE_FEATURE_NAME}`,
+      href: "/auth/register",
+      accent: "border-slate-200 bg-white",
+    },
+  ];
 
   return (
     <div className="relative overflow-hidden bg-gradient-to-b from-white via-slate-50/60 to-white">
@@ -87,7 +115,7 @@ export default function HomePage() {
         </div>
 
         <div className="mx-auto mt-10 grid w-full max-w-6xl gap-4 md:grid-cols-3">
-          {FUNNEL_PRODUCTS.map((product) => (
+          {funnelProducts.map((product) => (
             <div
               key={product.title}
               className={`rounded-2xl border p-5 shadow-sm ${product.accent}`}
