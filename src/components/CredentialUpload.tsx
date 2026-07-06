@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { getPublicClient } from "@/lib/supabase";
+import { getBrowserClient } from "@/lib/supabase-browser";
 import { CREDENTIAL_LABELS, type CredentialType, type Credential } from "@/lib/types";
 
 type Props = {
@@ -30,7 +30,7 @@ export function CredentialUpload({ trustbadgeId, initialCredentials }: Props) {
     setLoading(true);
 
     try {
-      const supabase = getPublicClient();
+      const supabase = getBrowserClient();
       const ext = file.name.split(".").pop() ?? "pdf";
       const path = `${trustbadgeId}/${crypto.randomUUID()}.${ext}`;
 

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { getPublicClient } from "@/lib/supabase";
+import { getBrowserClient } from "@/lib/supabase-browser";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -27,7 +27,7 @@ export function TopBar() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const supabase = getPublicClient();
+    const supabase = getBrowserClient();
     supabase.auth.getSession().then(({ data }) => {
       setUser(data.session?.user ?? null);
       setLoading(false);
@@ -45,7 +45,7 @@ export function TopBar() {
   }, []);
 
   async function handleLogout() {
-    const supabase = getPublicClient();
+    const supabase = getBrowserClient();
     await supabase.auth.signOut();
     router.push("/");
   }

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { getPublicClient } from "@/lib/supabase";
+import { getBrowserClient } from "@/lib/supabase-browser";
 import { createTrustBadge } from "@/lib/trustbadge";
 
 export default function RegisterPage() {
@@ -19,7 +19,7 @@ export default function RegisterPage() {
     setError(null);
     setLoading(true);
 
-    const supabase = getPublicClient();
+    const supabase = getBrowserClient();
 
     try {
       const { data: authData, error: authError } = await supabase.auth.signUp({
