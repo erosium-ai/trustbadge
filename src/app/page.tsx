@@ -30,6 +30,7 @@ export default function HomePage() {
     utm_content: "landing_funnel",
   });
   const proSignupUrl = withTracking(schemaPageUrl, {
+    intent: "pro",
     source: "credentialsai",
     campaign: "pro_ai_presence_card",
     utm_source: "credentialsai",
