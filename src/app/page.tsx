@@ -50,21 +50,21 @@ export default function HomePage() {
           {TRUST_POINTS.map((point) => (
             <div
               key={point}
-              className="rounded-2xl border border-slate-200 bg-white/95 p-4 text-sm text-slate-700 shadow-sm"
+              className="rounded-2xl border border-slate-200 bg-white p-5 text-sm text-slate-700 shadow-sm"
             >
-              <p className="font-semibold text-slate-900">{point}</p>
-              <p className="mt-1 text-xs text-slate-500">
+              <p className="text-sm font-semibold text-slate-900">{point}</p>
+              <p className="mt-2 text-sm leading-relaxed text-slate-600">
                 Publicly visible, easy to share, and ready for customer checks.
               </p>
             </div>
           ))}
         </div>
 
-        <div className="mx-auto mt-8 max-w-2xl rounded-2xl border border-brand-200/70 bg-white p-5 text-center shadow-sm">
+        <div className="mx-auto mt-8 max-w-2xl rounded-2xl border border-teal-200 bg-teal-50/40 p-6 text-center shadow-sm">
           <p className="text-sm font-semibold text-slate-900">
             Built for fast trust decisions
           </p>
-          <p className="mt-2 text-sm text-slate-600">
+          <p className="mt-2 text-sm leading-relaxed text-slate-700">
             Your {BADGE_FEATURE_NAME} page gives customers one clean place to
             verify business credentials before they book.
           </p>

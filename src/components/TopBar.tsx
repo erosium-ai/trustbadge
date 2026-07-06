@@ -84,9 +84,9 @@ export function TopBar() {
               </Link>
               <Link
                 href="/auth/register"
-                className="rounded-md bg-brand-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-700"
+                className="rounded-md bg-teal-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm transition hover:bg-teal-700"
               >
-                Create your {BADGE_FEATURE_NAME}
+                Get started
               </Link>
             </>
           )}
