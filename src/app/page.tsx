@@ -33,7 +33,7 @@ export default function HomePage() {
           <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/auth/register"
-              className="rounded-xl bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-sm shadow-brand-600/25 transition hover:-translate-y-0.5 hover:bg-brand-700"
+              className="rounded-xl bg-teal-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-teal-700"
             >
               Create your {BADGE_FEATURE_NAME}
             </Link>
