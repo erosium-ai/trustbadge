@@ -6,6 +6,32 @@ import { getBrowserClient } from "@/lib/supabase-browser";
 import { createTrustBadge } from "@/lib/trustbadge";
 import { BADGE_FEATURE_NAME, BRAND_NAME } from "@/lib/brand";
 
+function getTrackingParamsFromLocation() {
+  if (typeof window === "undefined") {
+    return {
+      source: null,
+      slug: null,
+      campaign: null,
+      utmSource: null,
+      utmMedium: null,
+      utmCampaign: null,
+      utmContent: null,
+    };
+  }
+
+  const params = new URLSearchParams(window.location.search);
+
+  return {
+    source: params.get("source"),
+    slug: params.get("slug"),
+    campaign: params.get("campaign"),
+    utmSource: params.get("utm_source"),
+    utmMedium: params.get("utm_medium"),
+    utmCampaign: params.get("utm_campaign"),
+    utmContent: params.get("utm_content"),
+  };
+}
+
 export default function RegisterPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -44,6 +70,34 @@ export default function RegisterPage() {
         setError(result.error ?? "Could not create badge");
         setLoading(false);
         return;
+      }
+
+      const tracking = getTrackingParamsFromLocation();
+      const hasTracking =
+        Boolean(tracking.source) ||
+        Boolean(tracking.slug) ||
+        Boolean(tracking.campaign) ||
+        Boolean(tracking.utmSource) ||
+        Boolean(tracking.utmMedium) ||
+        Boolean(tracking.utmCampaign) ||
+        Boolean(tracking.utmContent);
+
+      if (hasTracking) {
+        const payload = {
+          event: "credentials_ai_register_success",
+          trustbadge_slug: result.trustbadge.slug,
+          source: tracking.source,
+          source_slug: tracking.slug,
+          campaign: tracking.campaign,
+          utm_source: tracking.utmSource,
+          utm_medium: tracking.utmMedium,
+          utm_campaign: tracking.utmCampaign,
+          utm_content: tracking.utmContent,
+        };
+
+        // MVP analytics lane: lightweight console event for immediate observability.
+        // Can later be swapped to a DB/event sink without changing param contract.
+        console.info("[tracking]", payload);
       }
 
       router.push(`/dashboard/${result.trustbadge.slug}`);
