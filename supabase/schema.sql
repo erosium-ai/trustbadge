@@ -41,5 +41,5 @@ CREATE INDEX IF NOT EXISTS idx_admin_roles_email_active
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.trustbadges TO authenticated, service_role;
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.credentials TO authenticated, service_role;
 GRANT SELECT, INSERT ON public.review_events TO authenticated, service_role;
-GRANT SELECT ON public.admin_roles TO authenticated, service_role;
+GRANT SELECT ON public.admin_roles TO service_role;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO authenticated, service_role;
