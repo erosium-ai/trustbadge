@@ -1,0 +1,81 @@
+import { redirect } from "next/navigation";
+import { getPublicClient } from "@/lib/supabase";
+import { getOwnerTrustBadgeBySlug, getCredentialsForOwner } from "@/lib/trustbadge";
+import { CredentialUpload } from "@/components/CredentialUpload";
+import { TrustSeal } from "@/components/TrustSeal";
+import Link from "next/link";
+
+interface DashboardPageProps {
+  params: Promise<{ slug: string }>;
+}
+
+function statusLabel(status: string): string {
+  switch (status) {
+    case "verified":
+      return "Verified";
+    case "pending_review":
+      return "Pending review";
+    case "rejected":
+      return "Rejected";
+    case "suspended":
+      return "Suspended";
+    default:
+      return "Draft";
+  }
+}
+
+export default async function DashboardPage({ params }: DashboardPageProps) {
+  const { slug } = await params;
+
+  const supabase = getPublicClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const trustbadge = await getOwnerTrustBadgeBySlug(slug, user.id);
+  if (!trustbadge) {
+    redirect("/register");
+  }
+
+  const credentials = await getCredentialsForOwner(trustbadge.id);
+
+  return (
+    <div className="mx-auto max-w-3xl px-6 py-10">
+      <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">
+            {trustbadge.business_name}
+          </h1>
+          <p className="mt-1 text-slate-600">ABN: {trustbadge.abn || "—"}</p>
+          <p className="mt-2 inline-flex items-center gap-2 text-sm">
+            <span className="text-slate-500">Status:</span>
+            <span className="rounded-full bg-slate-100 px-2.5 py-0.5 font-medium text-slate-800">
+              {statusLabel(trustbadge.status)}
+            </span>
+          </p>
+        </div>
+
+        <div className="flex flex-col items-center gap-2">
+          <TrustSeal status={trustbadge.status} size="md" />
+          <Link
+            href={`/badge/${trustbadge.slug}`}
+            className="text-sm font-medium text-brand-600 hover:underline"
+          >
+            Public badge
+          </Link>
+        </div>
+      </div>
+
+      <div className="mt-10">
+        <CredentialUpload
+          trustbadgeId={trustbadge.id}
+          initialCredentials={credentials}
+        />
+      </div>
+    </div>
+  );
+}
