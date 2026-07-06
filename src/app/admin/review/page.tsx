@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import {
   getPendingCredentialsForReview,
@@ -7,30 +7,30 @@ import {
   type ReviewCredential,
 } from "@/lib/trustbadge";
 import { CREDENTIAL_LABELS } from "@/lib/types";
+import { getCurrentAuthUser, isAdminEmail } from "@/lib/admin-auth";
 
 interface ReviewPageProps {
-  searchParams: Promise<{ token?: string }>;
-}
-
-function reviewTokenValid(token?: string): boolean {
-  const configuredToken = process.env.TRUSTBADGE_ADMIN_REVIEW_TOKEN;
-  if (!configuredToken) return false;
-  if (!token) return false;
-  return token === configuredToken;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 export default async function AdminReviewPage({ searchParams }: ReviewPageProps) {
-  const { token } = await searchParams;
+  await searchParams;
 
-  if (!reviewTokenValid(token)) {
+  const user = await getCurrentAuthUser();
+
+  if (!user) {
+    redirect("/auth/login");
+  }
+
+  if (!isAdminEmail(user.email)) {
     notFound();
   }
 
   async function reviewAction(formData: FormData) {
     "use server";
 
-    const submittedToken = String(formData.get("token") ?? "");
-    if (!reviewTokenValid(submittedToken)) {
+    const actionUser = await getCurrentAuthUser();
+    if (!actionUser || !isAdminEmail(actionUser.email)) {
       throw new Error("Unauthorized review action");
     }
 
@@ -83,7 +83,6 @@ export default async function AdminReviewPage({ searchParams }: ReviewPageProps)
             <ReviewCard
               key={credential.id}
               credential={credential}
-              token={token!}
               action={reviewAction}
             />
           ))}
@@ -95,11 +94,9 @@ export default async function AdminReviewPage({ searchParams }: ReviewPageProps)
 
 function ReviewCard({
   credential,
-  token,
   action,
 }: {
   credential: ReviewCredential;
-  token: string;
   action: (formData: FormData) => Promise<void>;
 }) {
   const badge = credential.trustbadge;
@@ -147,7 +144,6 @@ function ReviewCard({
       </div>
 
       <form action={action} className="mt-4 space-y-3">
-        <input type="hidden" name="token" value={token} />
         <input type="hidden" name="credentialId" value={credential.id} />
 
         <textarea

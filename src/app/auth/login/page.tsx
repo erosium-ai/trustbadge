@@ -12,6 +12,16 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  function safeNextPath(): string | null {
+    if (typeof window === "undefined") return null;
+
+    const next = new URLSearchParams(window.location.search).get("next");
+    if (!next) return null;
+    if (!next.startsWith("/")) return null;
+    if (next.startsWith("//")) return null;
+    return next;
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -37,11 +47,18 @@ export default function LoginPage() {
       .eq("user_id", data.user.id)
       .single<BadgeSlugRow>();
 
+    const nextPath = safeNextPath();
+    if (nextPath) {
+      router.push(nextPath);
+      return;
+    }
+
     if (badgeData?.slug) {
       router.push(`/dashboard/${badgeData.slug}`);
-    } else {
-      router.push("/auth/register");
+      return;
     }
+
+    router.push("/auth/register");
   }
 
   return (
