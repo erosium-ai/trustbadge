@@ -5,6 +5,8 @@ import { CredentialUpload } from "@/components/CredentialUpload";
 import { TrustSeal } from "@/components/TrustSeal";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 interface DashboardPageProps {
   params: Promise<{ slug: string }>;
 }

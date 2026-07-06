@@ -4,6 +4,8 @@ import { buildTrustBadgeSchema } from "@/lib/schema";
 import { TrustSeal } from "@/components/TrustSeal";
 import { CREDENTIAL_LABELS, type Credential } from "@/lib/types";
 
+export const dynamic = "force-dynamic";
+
 interface BadgePageProps {
   params: Promise<{ slug: string }>;
 }
