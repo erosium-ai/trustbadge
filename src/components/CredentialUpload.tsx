@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { getBrowserClient } from "@/lib/supabase-browser";
+import { uploadCredential } from "@/lib/trustbadge";
 import { CREDENTIAL_LABELS, type CredentialType, type Credential } from "@/lib/types";
 
 type Props = {
@@ -30,42 +30,15 @@ export function CredentialUpload({ trustbadgeId, initialCredentials }: Props) {
     setLoading(true);
 
     try {
-      const supabase = getBrowserClient();
-      const ext = file.name.split(".").pop() ?? "pdf";
-      const path = `${trustbadgeId}/${crypto.randomUUID()}.${ext}`;
+      const result = await uploadCredential(trustbadgeId, type, file);
 
-      const { error: uploadError } = await supabase.storage
-        .from("trustbadge-creds")
-        .upload(path, file, { upsert: false, contentType: file.type });
-
-      if (uploadError) {
-        setError(uploadError.message);
+      if (!result.success || !result.credential) {
+        setError(result.error ?? "Upload failed");
         setLoading(false);
         return;
       }
 
-      const { data: urlData } = supabase.storage
-        .from("trustbadge-creds")
-        .getPublicUrl(path);
-
-      const { data, error: insertError } = await supabase
-        .from("credentials")
-        .insert({
-          trustbadge_id: trustbadgeId,
-          type,
-          file_url: urlData.publicUrl,
-          status: "pending",
-        } as any)
-        .select()
-        .single();
-
-      if (insertError) {
-        setError(insertError.message);
-        setLoading(false);
-        return;
-      }
-
-      setCredentials((prev) => [data as Credential, ...prev]);
+      setCredentials((prev) => [result.credential as Credential, ...prev]);
       setFile(null);
       setMessage("Credential uploaded and is pending verification");
     } catch (err) {
