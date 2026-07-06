@@ -305,13 +305,14 @@ export async function setCredentialReviewStatus(
 
 export async function getReviewHistory(limit = 50): Promise<ReviewActivity[]> {
   const serviceClient = getServiceClient();
+  const fetchLimit = Math.max(limit * 3, 100);
 
   const { data: credentials, error } = await serviceClient
     .from("credentials")
     .select("id, trustbadge_id, type, file_url, status, verified_at, admin_notes, created_at, updated_at")
     .in("status", ["verified", "rejected"])
-    .order("updated_at", { ascending: false })
-    .limit(limit);
+    .order("created_at", { ascending: false })
+    .limit(fetchLimit);
 
   if (error || !credentials || credentials.length === 0) return [];
 
@@ -342,7 +343,9 @@ export async function getReviewHistory(limit = 50): Promise<ReviewActivity[]> {
         note: parsed.note,
       } satisfies ReviewActivity;
     })
-    .filter((item): item is ReviewActivity => Boolean(item));
+    .filter((item): item is ReviewActivity => Boolean(item))
+    .sort((a, b) => new Date(b.reviewedAt).getTime() - new Date(a.reviewedAt).getTime())
+    .slice(0, limit);
 }
 
 export async function getOwnerTrustBadgeBySlug(
