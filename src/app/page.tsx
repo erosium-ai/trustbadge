@@ -53,6 +53,14 @@ export default function HomePage() {
             Get your own AI-readable business website.
           </h1>
 
+          <p className="mt-5 rounded-xl border border-brand-200 bg-brand-50 px-4 py-3 text-sm font-semibold text-brand-900 sm:text-base">
+            Help get your business to the top of AI searches like ChatGPT,
+            Gemini, Grok, and Claude.
+            <span className="block mt-1 text-slate-800">
+              So customers find you first — not your competitors.
+            </span>
+          </p>
+
           <p className="mt-5 text-pretty text-lg leading-relaxed text-slate-600 sm:text-xl">
             Click create, answer a few details, and {BRAND_NAME} handles the
             rest. Your page is structured so AI tools can understand your
