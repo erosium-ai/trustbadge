@@ -30,6 +30,16 @@ interface ReviewEventRow {
   created_at?: string;
 }
 
+interface ReviewDecisionInput {
+  credentialId: string;
+  status: "verified" | "rejected";
+  adminNotes?: string;
+  reviewerEmail?: string;
+  expectedTrustbadgeId?: string;
+  expectedCredentialType?: CredentialType | string;
+  expectedCreatedAt?: string;
+}
+
 const REVIEW_META_PREFIX = "[review-meta]";
 
 function buildReviewNotes(
@@ -284,12 +294,15 @@ export async function getPendingCredentialsForReview(): Promise<ReviewCredential
   }));
 }
 
-export async function setCredentialReviewStatus(
-  credentialId: string,
-  status: "verified" | "rejected",
-  adminNotes?: string,
-  reviewerEmail?: string
-): Promise<{ success: boolean; error?: string; trustbadgeId?: string }> {
+export async function setCredentialReviewStatus({
+  credentialId,
+  status,
+  adminNotes,
+  reviewerEmail,
+  expectedTrustbadgeId,
+  expectedCredentialType,
+  expectedCreatedAt,
+}: ReviewDecisionInput): Promise<{ success: boolean; error?: string; trustbadgeId?: string }> {
   const serviceClient = getServiceClient();
   const reviewedAt = new Date().toISOString();
   const cleanAdminNote = adminNotes?.trim() || null;
@@ -304,15 +317,33 @@ export async function setCredentialReviewStatus(
     verified_at: status === "verified" ? reviewedAt : null,
   };
 
-  const { data, error } = await serviceClient
+  let updateQuery = serviceClient
     .from("credentials")
     .update(updatePayload)
     .eq("id", credentialId)
+    .eq("status", "pending");
+
+  if (expectedTrustbadgeId) {
+    updateQuery = updateQuery.eq("trustbadge_id", expectedTrustbadgeId);
+  }
+
+  if (expectedCredentialType) {
+    updateQuery = updateQuery.eq("type", expectedCredentialType);
+  }
+
+  if (expectedCreatedAt) {
+    updateQuery = updateQuery.eq("created_at", expectedCreatedAt);
+  }
+
+  const { data, error } = await updateQuery
     .select("id, trustbadge_id")
-    .single();
+    .maybeSingle();
 
   if (error || !data) {
-    return { success: false, error: error?.message ?? "Credential update failed" };
+    return {
+      success: false,
+      error: error?.message ?? "Credential already reviewed or no longer matches the expected queue item",
+    };
   }
 
   const trustbadgeId = (data as { trustbadge_id: string }).trustbadge_id;

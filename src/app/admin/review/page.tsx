@@ -13,6 +13,17 @@ interface ReviewPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
+function shortId(id: string): string {
+  return id.slice(0, 8);
+}
+
+function formatSubmittedAt(value: string | undefined): string {
+  if (!value) return "Unknown time";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleString();
+}
+
 export default async function AdminReviewPage({ searchParams }: ReviewPageProps) {
   await searchParams;
 
@@ -35,6 +46,9 @@ export default async function AdminReviewPage({ searchParams }: ReviewPageProps)
     }
 
     const credentialId = String(formData.get("credentialId") ?? "");
+    const expectedTrustbadgeId = String(formData.get("expectedTrustbadgeId") ?? "");
+    const expectedCredentialType = String(formData.get("expectedCredentialType") ?? "");
+    const expectedCreatedAt = String(formData.get("expectedCreatedAt") ?? "");
     const status = String(formData.get("status") ?? "");
     const adminNotes = String(formData.get("adminNotes") ?? "");
 
@@ -42,12 +56,15 @@ export default async function AdminReviewPage({ searchParams }: ReviewPageProps)
       throw new Error("Invalid review payload");
     }
 
-    const result = await setCredentialReviewStatus(
+    const result = await setCredentialReviewStatus({
       credentialId,
       status,
       adminNotes,
-      actionUser.email
-    );
+      reviewerEmail: actionUser.email,
+      expectedTrustbadgeId,
+      expectedCredentialType,
+      expectedCreatedAt,
+    });
 
     if (!result.success) {
       throw new Error(result.error ?? "Review update failed");
@@ -67,7 +84,7 @@ export default async function AdminReviewPage({ searchParams }: ReviewPageProps)
         <div>
           <h1 className="text-2xl font-bold text-slate-900">TrustBadge Review Queue</h1>
           <p className="mt-1 text-sm text-slate-600">
-            Pending credentials awaiting approve/reject action.
+            Pending credentials awaiting approve/reject action. Each action is locked to credential ID, badge ID, type, submitted time, and current pending state.
           </p>
           <Link
             href="/admin/review/history"
@@ -108,18 +125,29 @@ function ReviewCard({
   action: (formData: FormData) => Promise<void>;
 }) {
   const badge = credential.trustbadge;
+  const badgeSlug = badge?.slug ?? "unknown-slug";
+  const businessName = badge?.business_name ?? "Unknown business";
+  const credentialLabel = CREDENTIAL_LABELS[credential.type];
+  const submittedAt = formatSubmittedAt(credential.created_at);
+  const credentialShortId = shortId(credential.id);
+  const badgeShortId = badge?.id ? shortId(badge.id) : "unknown";
 
   return (
     <li className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h2 className="text-lg font-semibold text-slate-900">
-            {badge?.business_name ?? "Unknown business"}
+            {businessName}
           </h2>
           <p className="mt-1 text-sm text-slate-600">
-            {CREDENTIAL_LABELS[credential.type]} · Submitted {new Date(credential.created_at ?? "").toLocaleString()}
+            {credentialLabel} · Submitted {submittedAt}
           </p>
-          <p className="mt-1 text-xs text-slate-500">Credential ID: {credential.id}</p>
+          <div className="mt-3 grid gap-1 rounded-lg bg-slate-50 p-3 text-xs text-slate-600 sm:grid-cols-2">
+            <p><span className="font-semibold text-slate-700">Credential:</span> {credentialShortId} ({credential.id})</p>
+            <p><span className="font-semibold text-slate-700">Badge:</span> {badgeShortId} ({badgeSlug})</p>
+            <p><span className="font-semibold text-slate-700">Type:</span> {credential.type}</p>
+            <p><span className="font-semibold text-slate-700">Current status:</span> {credential.status}</p>
+          </div>
           {badge?.slug && (
             <div className="mt-2 flex flex-wrap gap-3 text-sm">
               <Link
@@ -153,13 +181,25 @@ function ReviewCard({
 
       <form action={action} className="mt-4 space-y-3">
         <input type="hidden" name="credentialId" value={credential.id} />
+        <input type="hidden" name="expectedTrustbadgeId" value={credential.trustbadge_id} />
+        <input type="hidden" name="expectedCredentialType" value={credential.type} />
+        <input type="hidden" name="expectedCreatedAt" value={credential.created_at ?? ""} />
+
+        <label className="block text-sm font-medium text-slate-700" htmlFor={`notes-${credential.id}`}>
+          Decision note for {businessName} / {credentialLabel}
+        </label>
 
         <textarea
+          id={`notes-${credential.id}`}
           name="adminNotes"
-          placeholder="Optional admin notes"
+          placeholder={`Optional admin notes for credential ${credentialShortId}`}
           className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
           rows={2}
         />
+
+        <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+          Action lock: this form can only update credential <span className="font-semibold">{credentialShortId}</span> while it is still pending and still attached to this badge/type. If another reviewer already acted, submit will fail safely.
+        </p>
 
         <div className="flex flex-wrap gap-2">
           <button
@@ -168,7 +208,7 @@ function ReviewCard({
             value="verified"
             className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700"
           >
-            Approve
+            Approve this credential
           </button>
           <button
             type="submit"
@@ -176,7 +216,7 @@ function ReviewCard({
             value="rejected"
             className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700"
           >
-            Reject
+            Reject this credential
           </button>
         </div>
       </form>
