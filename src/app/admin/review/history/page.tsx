@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { getCurrentAuthUser, isAdminEmail } from "@/lib/admin-auth";
+import { getCurrentAuthUser, isAdminUser } from "@/lib/admin-auth";
 import { CREDENTIAL_LABELS } from "@/lib/types";
 import { getReviewHistory } from "@/lib/trustbadge";
 
@@ -13,7 +13,7 @@ export default async function ReviewHistoryPage() {
     redirect("/auth/login?next=/admin/review/history");
   }
 
-  if (!isAdminEmail(user.email)) {
+  if (!(await isAdminUser(user))) {
     notFound();
   }
 

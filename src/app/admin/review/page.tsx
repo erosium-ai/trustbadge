@@ -7,7 +7,7 @@ import {
   type ReviewCredential,
 } from "@/lib/trustbadge";
 import { CREDENTIAL_LABELS } from "@/lib/types";
-import { getCurrentAuthUser, isAdminEmail } from "@/lib/admin-auth";
+import { getCurrentAuthUser, isAdminUser } from "@/lib/admin-auth";
 
 interface ReviewPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -22,7 +22,7 @@ export default async function AdminReviewPage({ searchParams }: ReviewPageProps)
     redirect("/auth/login");
   }
 
-  if (!isAdminEmail(user.email)) {
+  if (!(await isAdminUser(user))) {
     notFound();
   }
 
@@ -30,7 +30,7 @@ export default async function AdminReviewPage({ searchParams }: ReviewPageProps)
     "use server";
 
     const actionUser = await getCurrentAuthUser();
-    if (!actionUser || !isAdminEmail(actionUser.email)) {
+    if (!actionUser || !(await isAdminUser(actionUser))) {
       throw new Error("Unauthorized review action");
     }
 
