@@ -83,8 +83,8 @@ export default function HomePage() {
           </h1>
 
           <p className="mt-5 rounded-xl border border-brand-200 bg-brand-50 px-4 py-3 text-sm font-semibold text-brand-900 sm:text-base">
-            Help get your business to the top of AI searches like ChatGPT,
-            Gemini, Grok, and Claude.
+            Don&apos;t get left behind. Get your business to the top of AI searches
+            like ChatGPT, Gemini, Grok, and Claude.
             <span className="block mt-1 text-slate-800">
               So customers find you first — not your competitors.
             </span>
@@ -110,13 +110,12 @@ export default function HomePage() {
 
             <div className="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 p-5 shadow-sm">
               <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
-                {BADGE_FEATURE_NAME}
+                Verified by real data sources
               </p>
               <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-900 sm:text-base">
-                Your {BADGE_FEATURE_NAME} uses trusted proof like business
-                registration details (ABN) plus uploaded licences, insurance,
-                and compliance documents so AI can confirm your qualifications
-                and recommend your services.
+                We verify business details against the Australian Business
+                Register (ABR), company licensing databases, and official
+                credential documents — so your customers see proof, not promises.
               </p>
             </div>
           </div>
