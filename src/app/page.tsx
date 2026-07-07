@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BADGE_FEATURE_NAME, BRAND_NAME, getSchemaPageUrl } from "@/lib/brand";
+import { TrackedLink } from "@/components/TrackedLink";
 
 const TRUST_POINTS = [
   "Licences and registrations",
@@ -92,14 +93,18 @@ export default function HomePage() {
             </p>
 
             <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-              <Link
+              <TrackedLink
                 href={freeProfileUrl}
+                eventName="credentials_ai_click_free_profile"
+                source="credentialsai"
+                campaign="free_ai_profile_card"
+                label="Create free AI profile"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="rounded-xl bg-teal-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-teal-700"
               >
                 Create free AI profile
-              </Link>
+              </TrackedLink>
               <Link
                 href="#trust-lane"
                 className="rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-800 transition hover:-translate-y-0.5 hover:bg-slate-50"
@@ -159,14 +164,18 @@ export default function HomePage() {
                 <p className="mt-2 text-sm leading-relaxed text-slate-700">
                   Get your own AI-readable business website. Add your business details once and we publish the structured page for you.
                 </p>
-                <Link
+                <TrackedLink
                   href={freeProfileUrl}
+                  eventName="credentials_ai_click_free_profile"
+                  source="credentialsai"
+                  campaign="free_ai_profile_card"
+                  label="Create free AI profile (card)"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-4 inline-flex rounded-lg border border-cyan-300 bg-white px-4 py-2 text-xs font-semibold text-cyan-800 transition hover:bg-cyan-50"
                 >
                   Create free AI profile
-                </Link>
+                </TrackedLink>
               </div>
 
               <div className="rounded-2xl border border-teal-200 bg-teal-100/70 p-5">
@@ -176,14 +185,18 @@ export default function HomePage() {
                 <p className="mt-2 text-sm leading-relaxed text-slate-700">
                   Enhanced AI-readable business page with structured data built for ChatGPT, Gemini, Grok, Claude, and Google, plus service area optimisation and conversion tracking.
                 </p>
-                <Link
+                <TrackedLink
                   href={proSignupUrl}
+                  eventName="credentials_ai_click_pro_ai_presence"
+                  source="credentialsai"
+                  campaign="pro_ai_presence_card"
+                  label="Start Pro AI Presence"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-4 inline-flex rounded-lg border border-teal-300 bg-white px-4 py-2 text-xs font-semibold text-teal-800 transition hover:bg-teal-50"
                 >
                   Start Pro AI Presence
-                </Link>
+                </TrackedLink>
               </div>
             </div>
           </div>
@@ -221,12 +234,16 @@ export default function HomePage() {
                 <p className="mt-2 text-sm leading-relaxed text-slate-700">
                   Verify your business and credentials. Show customers proof before they call. Help AI recommend you as a trusted provider.
                 </p>
-                <Link
+                <TrackedLink
                   href={trustBadgeStarterUrl}
+                  eventName="credentials_ai_click_trustbadge_starter"
+                  source="credentialsai"
+                  campaign="trustbadge_starter_card"
+                  label="Start TrustBadge verification"
                   className="mt-4 inline-flex rounded-lg border border-violet-300 bg-white px-4 py-2 text-xs font-semibold text-violet-800 transition hover:bg-violet-50"
                 >
                   Start {BADGE_FEATURE_NAME} verification
-                </Link>
+                </TrackedLink>
               </div>
             </div>
 
@@ -246,14 +263,18 @@ export default function HomePage() {
                 <li>• Up to 3 verified credentials</li>
                 <li>• Extra credentials +$5/month each</li>
               </ul>
-              <Link
+              <TrackedLink
                 href={founderOfferUrl}
+                eventName="credentials_ai_click_founder_offer"
+                source="credentialsai"
+                campaign="founder_offer_first_100"
+                label="Claim founder offer"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-5 inline-flex rounded-lg border border-indigo-300 bg-white px-4 py-2 text-xs font-semibold text-indigo-900 transition hover:bg-indigo-50"
               >
                 Claim founder offer
-              </Link>
+              </TrackedLink>
             </div>
           </div>
         </div>

@@ -5,6 +5,7 @@ import { getBrowserClient } from "@/lib/supabase-browser";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BADGE_FEATURE_NAME, BRAND_NAME } from "@/lib/brand";
+import { trackCtaClick } from "@/lib/tracking";
 
 function CheckMark({ className }: { className?: string }) {
   return (
@@ -78,24 +79,60 @@ export function TopBar() {
             <>
               <Link
                 href="/terms"
+                onClick={() =>
+                  trackCtaClick({
+                    eventName: "credentials_ai_click_terms",
+                    source: "credentialsai",
+                    campaign: "topbar_legal",
+                    targetUrl: "/terms",
+                    label: "Terms",
+                  })
+                }
                 className="hidden text-sm font-medium text-slate-500 hover:text-slate-900 sm:inline"
               >
                 Terms
               </Link>
               <Link
                 href="/refunds"
+                onClick={() =>
+                  trackCtaClick({
+                    eventName: "credentials_ai_click_refunds",
+                    source: "credentialsai",
+                    campaign: "topbar_legal",
+                    targetUrl: "/refunds",
+                    label: "Refunds",
+                  })
+                }
                 className="hidden text-sm font-medium text-slate-500 hover:text-slate-900 sm:inline"
               >
                 Refunds
               </Link>
               <Link
                 href="/auth/login"
+                onClick={() =>
+                  trackCtaClick({
+                    eventName: "credentials_ai_click_login",
+                    source: "credentialsai",
+                    campaign: "topbar_auth",
+                    targetUrl: "/auth/login",
+                    label: "Log in",
+                  })
+                }
                 className="text-sm font-medium text-slate-600 hover:text-slate-900"
               >
                 Log in
               </Link>
               <Link
                 href="/auth/register"
+                onClick={() =>
+                  trackCtaClick({
+                    eventName: "credentials_ai_click_get_started",
+                    source: "credentialsai",
+                    campaign: "topbar_auth",
+                    targetUrl: "/auth/register",
+                    label: "Get started",
+                  })
+                }
                 className="rounded-md bg-teal-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm transition hover:bg-teal-700"
               >
                 Get started

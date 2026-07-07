@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { getBrowserClient } from "@/lib/supabase-browser";
 import { createTrustBadge } from "@/lib/trustbadge";
 import { BADGE_FEATURE_NAME, BRAND_NAME } from "@/lib/brand";
+import { trackCtaClick } from "@/lib/tracking";
 
 function getTrackingParamsFromLocation() {
   if (typeof window === "undefined") {
@@ -82,6 +83,22 @@ export default function RegisterPage() {
         setLoading(false);
         return;
       }
+
+      trackCtaClick({
+        eventName: "credentials_ai_register_form_success",
+        source: tracking.source ?? "credentialsai",
+        campaign: tracking.campaign ?? "register_form",
+        targetUrl: `/dashboard/${result.trustbadge.slug}`,
+        label: "Create TrustBadge",
+        utmSource: tracking.utmSource ?? undefined,
+        utmMedium: tracking.utmMedium ?? undefined,
+        utmCampaign: tracking.utmCampaign ?? undefined,
+        utmContent: tracking.utmContent ?? undefined,
+        metadata: {
+          trustbadge_slug: result.trustbadge.slug,
+          business_name: businessName,
+        },
+      });
 
       router.push(`/dashboard/${result.trustbadge.slug}`);
     } catch (err) {
