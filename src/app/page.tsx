@@ -38,6 +38,24 @@ export default function HomePage() {
     utm_campaign: "pro_ai_presence_card",
     utm_content: "landing_funnel",
   });
+  const founderOfferUrl = withTracking(schemaPageUrl, {
+    intent: "founder_bundle",
+    source: "credentialsai",
+    campaign: "founder_offer_first_100",
+    utm_source: "credentialsai",
+    utm_medium: "website_card",
+    utm_campaign: "founder_offer_first_100",
+    utm_content: "landing_funnel",
+  });
+  const trustBadgeStarterUrl = `/auth/register?${new URLSearchParams({
+    intent: "trustbadge",
+    source: "credentialsai",
+    campaign: "trustbadge_starter_card",
+    utm_source: "credentialsai",
+    utm_medium: "website_card",
+    utm_campaign: "trustbadge_starter_card",
+    utm_content: "landing_funnel",
+  }).toString()}`;
 
   const funnelProducts = [
     {
@@ -51,17 +69,17 @@ export default function HomePage() {
     {
       title: "Pro AI Presence — $19/month",
       description:
-        "Start by creating your AI profile, then unlock stronger presentation, premium positioning, and ongoing visibility features.",
+        "Enhanced AI-readable business page with structured data built for ChatGPT, Gemini, Grok, Claude, and Google, plus service area optimisation, FAQ support, click-to-call links, and conversion tracking.",
       cta: "Start Pro AI Presence",
       href: proSignupUrl,
       accent: "border-slate-200 bg-white",
     },
     {
-      title: "TrustBadge Verification",
+      title: "TrustBadge Verification — From $29/month",
       description:
-        "Add verified trust signals for licences, insurance, and compliance so customers can book with confidence.",
-      cta: `Create your ${BADGE_FEATURE_NAME}`,
-      href: "/auth/register",
+        "Verify your business and credentials. Show customers proof before they call. Help AI recommend you as a trusted provider.",
+      cta: `Start ${BADGE_FEATURE_NAME} verification`,
+      href: trustBadgeStarterUrl,
       accent: "border-slate-200 bg-white",
     },
   ];
@@ -123,7 +141,7 @@ export default function HomePage() {
 
           <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
             <Link
-              href={schemaPageUrl}
+              href={freeProfileUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="rounded-xl bg-teal-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-teal-700"
@@ -161,6 +179,32 @@ export default function HomePage() {
               </Link>
             </div>
           ))}
+        </div>
+
+        <div className="mx-auto mt-8 w-full max-w-4xl rounded-2xl border border-amber-200 bg-amber-50/70 p-6 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-wide text-amber-800">
+            Founder Offer: first 100 businesses
+          </p>
+          <h3 className="mt-2 text-xl font-extrabold text-slate-900">
+            Pro AI Presence + TrustBadge Verification — $39/month
+          </h3>
+          <p className="mt-2 text-sm leading-relaxed text-slate-700">
+            Get both products together while we launch Credentials AI across the Gold Coast.
+          </p>
+          <ul className="mt-4 space-y-1.5 text-sm text-slate-700">
+            <li>• Pro AI Presence</li>
+            <li>• 1 TrustBadge</li>
+            <li>• Up to 3 verified credentials</li>
+            <li>• Extra credentials +$5/month each</li>
+          </ul>
+          <Link
+            href={founderOfferUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-5 inline-flex rounded-lg border border-amber-300 bg-white px-4 py-2 text-xs font-semibold text-amber-900 transition hover:bg-amber-100"
+          >
+            Claim founder offer
+          </Link>
         </div>
 
         <div className="mx-auto mt-10 grid w-full max-w-5xl gap-4 sm:grid-cols-3">
