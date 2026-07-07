@@ -29,6 +29,7 @@ export default function HomePage() {
     utm_campaign: "free_ai_profile_card",
     utm_content: "landing_funnel",
   });
+
   const proSignupUrl = withTracking(schemaPageUrl, {
     intent: "pro",
     source: "credentialsai",
@@ -38,6 +39,7 @@ export default function HomePage() {
     utm_campaign: "pro_ai_presence_card",
     utm_content: "landing_funnel",
   });
+
   const founderOfferUrl = withTracking(schemaPageUrl, {
     intent: "founder_bundle",
     source: "credentialsai",
@@ -47,6 +49,7 @@ export default function HomePage() {
     utm_campaign: "founder_offer_first_100",
     utm_content: "landing_funnel",
   });
+
   const trustBadgeStarterUrl = `/auth/register?${new URLSearchParams({
     intent: "trustbadge",
     source: "credentialsai",
@@ -56,36 +59,6 @@ export default function HomePage() {
     utm_campaign: "trustbadge_starter_card",
     utm_content: "landing_funnel",
   }).toString()}`;
-
-  const funnelProducts = [
-    {
-      title: "Free AI Profile — $0",
-      description:
-        "Get your own AI-readable business website. Add your business details once and we publish the structured page for you.",
-      cta: "Create free AI profile",
-      href: freeProfileUrl,
-      accent: "border-sky-200 bg-sky-50/90",
-      button: "border-sky-300 bg-white text-sky-800 hover:bg-sky-100",
-    },
-    {
-      title: "Pro AI Presence — $19/month",
-      description:
-        "Enhanced AI-readable business page with structured data built for ChatGPT, Gemini, Grok, Claude, and Google, plus service area optimisation, FAQ support, click-to-call links, and conversion tracking.",
-      cta: "Start Pro AI Presence",
-      href: proSignupUrl,
-      accent: "border-emerald-200 bg-emerald-50/90",
-      button: "border-emerald-300 bg-white text-emerald-800 hover:bg-emerald-100",
-    },
-    {
-      title: "TrustBadge Verification — From $29/month",
-      description:
-        "Verify your business and credentials. Show customers proof before they call. Help AI recommend you as a trusted provider.",
-      cta: `Start ${BADGE_FEATURE_NAME} verification`,
-      href: trustBadgeStarterUrl,
-      accent: "border-indigo-200 bg-indigo-50/90",
-      button: "border-indigo-300 bg-white text-indigo-800 hover:bg-indigo-100",
-    },
-  ];
 
   return (
     <div className="relative overflow-hidden bg-gradient-to-br from-sky-100 via-cyan-50 to-teal-100">
@@ -128,7 +101,7 @@ export default function HomePage() {
                 Create free AI profile
               </Link>
               <Link
-                href="#pricing"
+                href="#trust-lane"
                 className="rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-800 transition hover:-translate-y-0.5 hover:bg-slate-50"
               >
                 View TrustBadge pricing
@@ -155,85 +128,141 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="mx-auto mt-8 grid gap-4 text-left sm:grid-cols-2">
-          <div className="rounded-2xl border border-sky-200 bg-sky-50/90 p-5 shadow-sm">
-            <p className="text-xs font-semibold uppercase tracking-wide text-sky-700">
-              SchemaPage
-            </p>
-            <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-900 sm:text-base">
-              AI can&apos;t read most websites. Our AI-readable pages format your
-              website so AI can find it, read it, and recommend it.
-            </p>
+        <div className="mt-10 space-y-6">
+          <div className="rounded-3xl border border-sky-200 bg-gradient-to-br from-sky-50 via-cyan-50 to-teal-50 p-6 shadow-sm">
+            <div className="mb-4">
+              <p className="text-xs font-bold uppercase tracking-wide text-sky-700">
+                Package lane 1
+              </p>
+              <h2 className="mt-1 text-2xl font-extrabold text-slate-950">
+                SchemaPage package
+              </h2>
+              <p className="mt-1 text-sm text-slate-700">
+                Start free, then upgrade your visibility package when you want stronger AI discovery.
+              </p>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-3">
+              <div className="rounded-2xl border border-sky-200 bg-sky-100/70 p-5">
+                <p className="text-xs font-semibold uppercase tracking-wide text-sky-700">
+                  SchemaPage foundation
+                </p>
+                <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-900">
+                  AI can&apos;t read most websites. Our AI-readable pages format your website so AI can find it, read it, and recommend it.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-cyan-200 bg-cyan-100/70 p-5">
+                <h3 className="text-base font-extrabold text-slate-950">
+                  Free AI Profile — $0
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-700">
+                  Get your own AI-readable business website. Add your business details once and we publish the structured page for you.
+                </p>
+                <Link
+                  href={freeProfileUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 inline-flex rounded-lg border border-cyan-300 bg-white px-4 py-2 text-xs font-semibold text-cyan-800 transition hover:bg-cyan-50"
+                >
+                  Create free AI profile
+                </Link>
+              </div>
+
+              <div className="rounded-2xl border border-teal-200 bg-teal-100/70 p-5">
+                <h3 className="text-base font-extrabold text-slate-950">
+                  Pro AI Presence — $19/month
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-700">
+                  Enhanced AI-readable business page with structured data built for ChatGPT, Gemini, Grok, Claude, and Google, plus service area optimisation and conversion tracking.
+                </p>
+                <Link
+                  href={proSignupUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 inline-flex rounded-lg border border-teal-300 bg-white px-4 py-2 text-xs font-semibold text-teal-800 transition hover:bg-teal-50"
+                >
+                  Start Pro AI Presence
+                </Link>
+              </div>
+            </div>
           </div>
 
-          <div className="rounded-2xl border border-emerald-200 bg-emerald-50/90 p-5 shadow-sm">
-            <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
-              AI readable credentials
-            </p>
-            <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-900 sm:text-base">
-              Your {BADGE_FEATURE_NAME} uses trusted proof like business
-              registration details (ABN) plus uploaded licences, insurance, and
-              compliance documents so AI can confirm your qualifications and
-              recommend your services.
-            </p>
-          </div>
-        </div>
+          <div
+            id="trust-lane"
+            className="rounded-3xl border border-indigo-200 bg-gradient-to-br from-indigo-50 via-violet-50 to-purple-50 p-6 shadow-sm"
+          >
+            <div className="mb-4">
+              <p className="text-xs font-bold uppercase tracking-wide text-indigo-700">
+                Package lane 2
+              </p>
+              <h2 className="mt-1 text-2xl font-extrabold text-slate-950">
+                TrustBadge package
+              </h2>
+              <p className="mt-1 text-sm text-slate-700">
+                Add verified trust proof so both customers and AI can trust your business before contact.
+              </p>
+            </div>
 
-        <div id="pricing" className="mx-auto mt-10 grid w-full max-w-6xl gap-4 md:grid-cols-3">
-          {funnelProducts.map((product) => (
-            <div
-              key={product.title}
-              className={`rounded-2xl border p-5 shadow-sm ${product.accent}`}
-            >
-              <h3 className="text-base font-extrabold text-slate-950">
-                {product.title}
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="rounded-2xl border border-indigo-200 bg-indigo-100/70 p-5">
+                <p className="text-xs font-semibold uppercase tracking-wide text-indigo-700">
+                  AI readable credentials
+                </p>
+                <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-900">
+                  Your {BADGE_FEATURE_NAME} uses trusted proof like business registration details (ABN) plus uploaded licences, insurance, and compliance documents so AI can confirm your qualifications and recommend your services.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-violet-200 bg-violet-100/70 p-5">
+                <h3 className="text-base font-extrabold text-slate-950">
+                  TrustBadge Verification — From $29/month
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-700">
+                  Verify your business and credentials. Show customers proof before they call. Help AI recommend you as a trusted provider.
+                </p>
+                <Link
+                  href={trustBadgeStarterUrl}
+                  className="mt-4 inline-flex rounded-lg border border-violet-300 bg-white px-4 py-2 text-xs font-semibold text-violet-800 transition hover:bg-violet-50"
+                >
+                  Start {BADGE_FEATURE_NAME} verification
+                </Link>
+              </div>
+            </div>
+
+            <div className="mt-4 rounded-2xl border border-indigo-300 bg-white/80 p-6 shadow-sm">
+              <p className="text-xs font-bold uppercase tracking-wide text-indigo-700">
+                Founder offer: first 100 businesses
+              </p>
+              <h3 className="mt-2 text-2xl font-extrabold text-slate-950 sm:text-3xl">
+                Pro AI Presence + TrustBadge Verification — $39/month
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-slate-700">
-                {product.description}
+                Get both products together while we launch Credentials AI across the Gold Coast.
               </p>
+              <ul className="mt-4 space-y-1.5 text-sm text-slate-700">
+                <li>• Pro AI Presence</li>
+                <li>• 1 TrustBadge</li>
+                <li>• Up to 3 verified credentials</li>
+                <li>• Extra credentials +$5/month each</li>
+              </ul>
               <Link
-                href={product.href}
-                target={product.href.startsWith("http") ? "_blank" : undefined}
-                rel={product.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                className={`mt-4 inline-flex rounded-lg border px-4 py-2 text-xs font-semibold transition ${product.button}`}
+                href={founderOfferUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-5 inline-flex rounded-lg border border-indigo-300 bg-white px-4 py-2 text-xs font-semibold text-indigo-900 transition hover:bg-indigo-50"
               >
-                {product.cta}
+                Claim founder offer
               </Link>
             </div>
-          ))}
+          </div>
         </div>
 
-        <div className="mx-auto mt-8 w-full max-w-4xl rounded-2xl border border-amber-300 bg-amber-100/90 p-6 shadow-sm shadow-amber-900/5">
-          <p className="text-xs font-semibold uppercase tracking-wide text-amber-800">
-            Founder Offer: first 100 businesses
-          </p>
-          <h3 className="mt-2 text-xl font-extrabold text-slate-950 sm:text-2xl">
-            Pro AI Presence + TrustBadge Verification — $39/month
-          </h3>
-          <p className="mt-2 text-sm leading-relaxed text-slate-700">
-            Get both products together while we launch Credentials AI across the Gold Coast.
-          </p>
-          <ul className="mt-4 space-y-1.5 text-sm text-slate-700">
-            <li>• Pro AI Presence</li>
-            <li>• 1 TrustBadge</li>
-            <li>• Up to 3 verified credentials</li>
-            <li>• Extra credentials +$5/month each</li>
-          </ul>
-          <Link
-            href={founderOfferUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-5 inline-flex rounded-lg border border-amber-300 bg-white px-4 py-2 text-xs font-semibold text-amber-900 transition hover:bg-amber-50"
-          >
-            Claim founder offer
-          </Link>
-        </div>
-
-        <div className="mx-auto mt-10 grid w-full max-w-5xl gap-4 sm:grid-cols-3">
+        <div className="mx-auto mt-8 grid w-full max-w-5xl gap-4 sm:grid-cols-3">
           {TRUST_POINTS.map((point) => (
             <div
               key={point}
-              className="rounded-2xl border border-white/80 bg-white/80 p-5 text-sm text-slate-700 shadow-sm backdrop-blur"
+              className="rounded-2xl border border-indigo-200 bg-indigo-50/70 p-5 text-sm text-slate-700 shadow-sm"
             >
               <p className="text-sm font-semibold text-slate-900">{point}</p>
               <p className="mt-2 text-sm leading-relaxed text-slate-600">
@@ -243,7 +272,7 @@ export default function HomePage() {
           ))}
         </div>
 
-        <div className="mx-auto mt-8 max-w-2xl rounded-2xl border border-teal-200 bg-teal-50/80 p-6 text-center shadow-sm">
+        <div className="mx-auto mt-8 max-w-2xl rounded-2xl border border-indigo-200 bg-indigo-50/70 p-6 text-center shadow-sm">
           <p className="text-sm font-semibold text-slate-900">
             Built for fast trust decisions
           </p>
