@@ -494,19 +494,40 @@ export async function uploadCredential(
     .from("trustbadge-creds")
     .getPublicUrl(path);
 
+  const insertPayload: Record<string, unknown> = {
+    trustbadge_id: trustbadgeId,
+    type,
+    file_url: urlData.publicUrl,
+    status: "pending",
+  };
+  if (referenceNumber?.trim()) {
+    insertPayload.reference_number = referenceNumber.trim();
+  }
+
   const { data, error } = await serviceClient
     .from("credentials")
-    .insert({
-      trustbadge_id: trustbadgeId,
-      type,
-      file_url: urlData.publicUrl,
-      reference_number: referenceNumber?.trim() || null,
-      status: "pending",
-    })
+    .insert(insertPayload)
     .select()
     .single();
 
   if (error) {
+    const msg = error.message?.toLowerCase() || "";
+    const isMissingRefColumn = msg.includes("reference_number") || msg.includes("column") || msg.includes("does not exist");
+    if (isMissingRefColumn && referenceNumber?.trim()) {
+      const { data: retryData, error: retryError } = await serviceClient
+        .from("credentials")
+        .insert({
+          trustbadge_id: trustbadgeId,
+          type,
+          file_url: urlData.publicUrl,
+          status: "pending",
+        })
+        .select()
+        .single();
+      if (!retryError) {
+        return { success: true, credential: retryData as Credential };
+      }
+    }
     return { success: false, error: error.message };
   }
 
