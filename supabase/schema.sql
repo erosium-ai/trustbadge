@@ -81,6 +81,9 @@ ALTER TABLE public.trustbadges
   ADD COLUMN IF NOT EXISTS last_verified_at timestamptz,
   ADD COLUMN IF NOT EXISTS verification_summary text;
 
+ALTER TABLE public.credentials
+  ADD COLUMN IF NOT EXISTS reference_number text;
+
 DO $$
 BEGIN
   IF NOT EXISTS (

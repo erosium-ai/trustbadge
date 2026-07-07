@@ -148,6 +148,9 @@ function ReviewCard({
             <p><span className="font-semibold text-slate-700">Badge:</span> {badgeShortId} ({badgeSlug})</p>
             <p><span className="font-semibold text-slate-700">Type:</span> {credential.type}</p>
             <p><span className="font-semibold text-slate-700">Current status:</span> {credential.status}</p>
+            {credential.reference_number && (
+              <p className="sm:col-span-2"><span className="font-semibold text-slate-700">Reference number:</span> {credential.reference_number}</p>
+            )}
           </div>
           {badge?.slug && (
             <div className="mt-2 flex flex-wrap gap-3 text-sm">

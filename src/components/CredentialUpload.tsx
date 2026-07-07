@@ -12,6 +12,7 @@ type Props = {
 export function CredentialUpload({ trustbadgeId, initialCredentials }: Props) {
   const [credentials, setCredentials] = useState<Credential[]>(initialCredentials);
   const [type, setType] = useState<CredentialType>("trade_license");
+  const [referenceNumber, setReferenceNumber] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -30,7 +31,7 @@ export function CredentialUpload({ trustbadgeId, initialCredentials }: Props) {
     setLoading(true);
 
     try {
-      const result = await uploadCredential(trustbadgeId, type, file);
+      const result = await uploadCredential(trustbadgeId, type, file, referenceNumber.trim() || undefined);
 
       if (!result.success || !result.credential) {
         setError(result.error ?? "Upload failed");
@@ -40,6 +41,7 @@ export function CredentialUpload({ trustbadgeId, initialCredentials }: Props) {
 
       setCredentials((prev) => [result.credential as Credential, ...prev]);
       setFile(null);
+      setReferenceNumber("");
       setMessage("Credential uploaded and is pending verification");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed");
@@ -94,6 +96,19 @@ export function CredentialUpload({ trustbadgeId, initialCredentials }: Props) {
 
           <div>
             <label className="block text-sm font-medium text-slate-700">
+              Licence / registration number (optional)
+            </label>
+            <input
+              type="text"
+              value={referenceNumber}
+              onChange={(e) => setReferenceNumber(e.target.value)}
+              placeholder="e.g. 12345678"
+              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+            />
+          </div>
+
+          <div className="sm:col-span-2">
+            <label className="block text-sm font-medium text-slate-700">
               File
             </label>
             <input
@@ -138,6 +153,11 @@ export function CredentialUpload({ trustbadgeId, initialCredentials }: Props) {
                   <p className="font-medium text-slate-900">
                     {CREDENTIAL_LABELS[c.type]}
                   </p>
+                  {c.reference_number && (
+                    <p className="text-xs text-slate-500">
+                      Ref: {c.reference_number}
+                    </p>
+                  )}
                   {c.file_url && (
                     <a
                       href={c.file_url}

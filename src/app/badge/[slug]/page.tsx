@@ -107,24 +107,31 @@ export default async function BadgePage({ params }: BadgePageProps) {
               {verified.map((c: Credential) => (
                 <li
                   key={c.id}
-                  className="flex items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3"
+                  className="flex flex-col gap-1 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3"
                 >
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-white">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="h-3.5 w-3.5"
-                    >
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                  </span>
-                  <span className="font-medium text-slate-800">
-                    {CREDENTIAL_LABELS[c.type]}
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-white">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="h-3.5 w-3.5"
+                      >
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    </span>
+                    <span className="font-medium text-slate-800">
+                      {CREDENTIAL_LABELS[c.type]}
+                    </span>
+                  </div>
+                  {c.reference_number && (
+                    <p className="ml-9 text-xs text-slate-500">
+                      Ref: {c.reference_number}
+                    </p>
+                  )}
                 </li>
               ))}
             </ul>

@@ -474,7 +474,8 @@ export async function getTrustBadgeBySlugAdmin(
 export async function uploadCredential(
   trustbadgeId: string,
   type: CredentialType,
-  file: File
+  file: File,
+  referenceNumber?: string
 ): Promise<{ success: boolean; credential?: Credential; error?: string }> {
   const serviceClient = getServiceClient();
 
@@ -499,6 +500,7 @@ export async function uploadCredential(
       trustbadge_id: trustbadgeId,
       type,
       file_url: urlData.publicUrl,
+      reference_number: referenceNumber?.trim() || null,
       status: "pending",
     })
     .select()
@@ -518,7 +520,7 @@ export async function getPendingCredentialsForReview(): Promise<ReviewCredential
 
   const { data: credentials, error } = await serviceClient
     .from("credentials")
-    .select("id, trustbadge_id, type, file_url, status, verified_at, admin_notes, created_at, updated_at")
+    .select("id, trustbadge_id, type, file_url, reference_number, status, verified_at, admin_notes, created_at, updated_at")
     .eq("status", "pending")
     .order("created_at", { ascending: true });
 
@@ -670,7 +672,7 @@ async function getReviewHistoryFromCredentialNotes(limit: number): Promise<Revie
 
   const { data: credentials, error } = await serviceClient
     .from("credentials")
-    .select("id, trustbadge_id, type, file_url, status, verified_at, admin_notes, created_at, updated_at")
+    .select("id, trustbadge_id, type, file_url, reference_number, status, verified_at, admin_notes, created_at, updated_at")
     .in("status", ["verified", "rejected"])
     .order("created_at", { ascending: false })
     .limit(fetchLimit);
@@ -734,7 +736,7 @@ export async function getReviewHistory(limit = 50): Promise<ReviewActivity[]> {
   const [{ data: credentials }, { data: badges }] = await Promise.all([
     serviceClient
       .from("credentials")
-      .select("id, trustbadge_id, type, file_url, status, verified_at, admin_notes, created_at, updated_at")
+      .select("id, trustbadge_id, type, file_url, reference_number, status, verified_at, admin_notes, created_at, updated_at")
       .in("id", credentialIds),
     serviceClient
       .from("trustbadges")
