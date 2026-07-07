@@ -3,6 +3,8 @@ import { notFound, redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import {
   getPendingCredentialsForReview,
+  getConversionEventSummary,
+  getRecentConversionEvents,
   setCredentialReviewStatus,
   type ReviewCredential,
 } from "@/lib/trustbadge";
@@ -25,8 +27,22 @@ function formatSubmittedAt(value: string | undefined): string {
   return date.toLocaleString();
 }
 
+function formatEventTime(value: string): string {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleString();
+}
+
+function parseDays(input: string | string[] | undefined): number {
+  const raw = Array.isArray(input) ? input[0] : input;
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed)) return 7;
+  return Math.max(1, Math.min(30, Math.trunc(parsed)));
+}
+
 export default async function AdminReviewPage({ searchParams }: ReviewPageProps) {
-  await searchParams;
+  const params = await searchParams;
+  const windowDays = parseDays(params.days);
 
   const user = await getCurrentAuthUser();
 
@@ -78,6 +94,10 @@ export default async function AdminReviewPage({ searchParams }: ReviewPageProps)
   }
 
   const pending = await getPendingCredentialsForReview();
+  const [conversionSummary, recentConversionEvents] = await Promise.all([
+    getConversionEventSummary(windowDays),
+    getRecentConversionEvents(25),
+  ]);
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-10">
@@ -98,6 +118,86 @@ export default async function AdminReviewPage({ searchParams }: ReviewPageProps)
           {pending.length} pending
         </span>
       </div>
+
+      <section className="mb-8 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 className="text-lg font-semibold text-slate-900">Founder Conversion Readout</h2>
+            <p className="text-sm text-slate-600">
+              CTA events captured in <code className="rounded bg-slate-100 px-1 py-0.5 text-xs">conversion_events</code> over the last {windowDays} day{windowDays === 1 ? "" : "s"}.
+            </p>
+          </div>
+          <div className="flex gap-2 text-xs">
+            {[1, 7, 14, 30].map((value) => (
+              <Link
+                key={value}
+                href={`/admin/review?days=${value}`}
+                className={`rounded-full border px-3 py-1 font-medium ${
+                  windowDays === value
+                    ? "border-brand-300 bg-brand-50 text-brand-700"
+                    : "border-slate-200 text-slate-600 hover:bg-slate-50"
+                }`}
+              >
+                {value}d
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {conversionSummary.length === 0 ? (
+          <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+            No conversion events found in this window yet.
+          </p>
+        ) : (
+          <ul className="mb-5 grid gap-2 sm:grid-cols-2">
+            {conversionSummary.map((row) => (
+              <li
+                key={row.eventName}
+                className="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-2"
+              >
+                <span className="truncate pr-3 text-sm text-slate-700">{row.eventName}</span>
+                <span className="rounded-full bg-white px-2 py-0.5 text-xs font-semibold text-slate-700 shadow-sm">
+                  {row.count}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <div>
+          <h3 className="mb-2 text-sm font-semibold text-slate-800">Recent conversion events</h3>
+          {recentConversionEvents.length === 0 ? (
+            <p className="text-sm text-slate-600">No recent events yet.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-slate-200 text-sm">
+                <thead>
+                  <tr className="text-left text-xs uppercase tracking-wide text-slate-500">
+                    <th className="py-2 pr-3">When</th>
+                    <th className="py-2 pr-3">Event</th>
+                    <th className="py-2 pr-3">Source</th>
+                    <th className="py-2 pr-3">Campaign</th>
+                    <th className="py-2">Target</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 text-slate-700">
+                  {recentConversionEvents.map((event) => (
+                    <tr key={event.id}>
+                      <td className="py-2 pr-3 whitespace-nowrap">{formatEventTime(event.occurredAt)}</td>
+                      <td className="py-2 pr-3 font-medium">{event.eventName}</td>
+                      <td className="py-2 pr-3">{event.source || "—"}</td>
+                      <td className="py-2 pr-3">{event.campaign || "—"}</td>
+                      <td className="py-2 text-xs text-slate-500">
+                        {(typeof event.metadata.target_url === "string" && event.metadata.target_url) || "—"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </section>
 
       {pending.length === 0 ? (
         <div className="rounded-xl border border-slate-200 bg-white p-6 text-slate-600 shadow-sm">

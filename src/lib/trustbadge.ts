@@ -38,6 +38,29 @@ interface ReviewEventRow {
   created_at?: string;
 }
 
+interface ConversionEventRow {
+  id: string;
+  event_name: string;
+  source: string | null;
+  campaign: string | null;
+  occurred_at: string;
+  metadata: Record<string, unknown> | null;
+}
+
+export interface ConversionEventSummary {
+  eventName: string;
+  count: number;
+}
+
+export interface ConversionEventActivity {
+  id: string;
+  eventName: string;
+  source: string | null;
+  campaign: string | null;
+  occurredAt: string;
+  metadata: Record<string, unknown>;
+}
+
 interface ReviewDecisionInput {
   credentialId: string;
   status: "verified" | "rejected";
@@ -801,6 +824,78 @@ export async function getReviewHistory(limit = 50): Promise<ReviewActivity[]> {
   return merged
     .sort((a, b) => new Date(b.reviewedAt).getTime() - new Date(a.reviewedAt).getTime())
     .slice(0, limit);
+}
+
+export async function getConversionEventSummary(days = 7): Promise<ConversionEventSummary[]> {
+  const serviceClient = getServiceClient();
+  const safeDays = Math.max(1, Math.min(90, Math.trunc(days)));
+  const sinceIso = new Date(Date.now() - safeDays * 24 * 60 * 60 * 1000).toISOString();
+
+  const { data, error } = await serviceClient
+    .from("conversion_events")
+    .select("event_name, occurred_at")
+    .gte("occurred_at", sinceIso)
+    .order("occurred_at", { ascending: false })
+    .limit(5000);
+
+  if (error) {
+    if (isMissingConversionEventsRelationError(error.message)) {
+      return [];
+    }
+
+    console.error("[conversion_events] summary query failed", {
+      message: error.message,
+      code: error.code,
+      details: error.details,
+    });
+    return [];
+  }
+
+  const counts = new Map<string, number>();
+  for (const row of (data ?? []) as Array<{ event_name: string }>) {
+    const key = row.event_name?.trim() || "unknown";
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  }
+
+  return Array.from(counts.entries())
+    .map(([eventName, count]) => ({ eventName, count }))
+    .sort((a, b) => b.count - a.count || a.eventName.localeCompare(b.eventName));
+}
+
+export async function getRecentConversionEvents(limit = 30): Promise<ConversionEventActivity[]> {
+  const serviceClient = getServiceClient();
+  const safeLimit = Math.max(1, Math.min(200, Math.trunc(limit)));
+
+  const { data, error } = await serviceClient
+    .from("conversion_events")
+    .select("id, event_name, source, campaign, occurred_at, metadata")
+    .order("occurred_at", { ascending: false })
+    .limit(safeLimit);
+
+  if (error) {
+    if (isMissingConversionEventsRelationError(error.message)) {
+      return [];
+    }
+
+    console.error("[conversion_events] recent query failed", {
+      message: error.message,
+      code: error.code,
+      details: error.details,
+    });
+    return [];
+  }
+
+  return ((data ?? []) as ConversionEventRow[]).map((row) => ({
+    id: row.id,
+    eventName: row.event_name,
+    source: row.source,
+    campaign: row.campaign,
+    occurredAt: row.occurred_at,
+    metadata:
+      row.metadata && typeof row.metadata === "object"
+        ? (row.metadata as Record<string, unknown>)
+        : {},
+  }));
 }
 
 export async function getOwnerTrustBadgeBySlug(
