@@ -134,6 +134,10 @@ export default function LoginPage() {
         >
           {loading ? "Sending…" : "Send magic link"}
         </button>
+
+        <p className="text-center text-xs leading-relaxed text-slate-500">
+          Secure login powered by Supabase — check your inbox for a magic link email from Supabase.
+        </p>
       </form>
 
       <div className="mt-6 border-t border-slate-200 pt-6">
