@@ -77,6 +77,18 @@ export function TopBar() {
           ) : (
             <>
               <Link
+                href="/terms"
+                className="hidden text-sm font-medium text-slate-500 hover:text-slate-900 sm:inline"
+              >
+                Terms
+              </Link>
+              <Link
+                href="/refunds"
+                className="hidden text-sm font-medium text-slate-500 hover:text-slate-900 sm:inline"
+              >
+                Refunds
+              </Link>
+              <Link
                 href="/auth/login"
                 className="text-sm font-medium text-slate-600 hover:text-slate-900"
               >
