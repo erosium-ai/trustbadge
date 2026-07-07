@@ -11,6 +11,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   function safeNextPath(): string | null {
@@ -21,6 +22,31 @@ export default function LoginPage() {
     if (!next.startsWith("/")) return null;
     if (next.startsWith("//")) return null;
     return next;
+  }
+
+  async function handleMagicLink(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    const supabase = getBrowserClient();
+
+    const { error: linkError } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+
+    if (linkError) {
+      setError(linkError?.message ?? "Failed to send magic link");
+      setLoading(false);
+      return;
+    }
+
+    setError(null);
+    setMessage("Magic link sent! Check your inbox and click the link to log in.");
+    setLoading(false);
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -69,7 +95,7 @@ export default function LoginPage() {
         Access your {BADGE_FEATURE_NAME} dashboard.
       </p>
 
-      <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+      <form onSubmit={handleMagicLink} className="mt-8 space-y-4">
         <div>
           <label className="block text-sm font-medium text-slate-700">
             Email
@@ -83,22 +109,15 @@ export default function LoginPage() {
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-slate-700">
-            Password
-          </label>
-          <input
-            type="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
-          />
-        </div>
-
         {error && (
           <div className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-700">
             {error}
+          </div>
+        )}
+
+        {message && (
+          <div className="rounded-lg bg-emerald-50 px-4 py-2 text-sm text-emerald-700">
+            {message}
           </div>
         )}
 
@@ -107,16 +126,57 @@ export default function LoginPage() {
           disabled={loading}
           className="w-full rounded-lg bg-brand-600 px-4 py-2.5 font-semibold text-white hover:bg-brand-700 disabled:opacity-60"
         >
-          {loading ? "Logging in…" : "Log in"}
+          {loading ? "Sending…" : "Send magic link"}
         </button>
-
-        <p className="text-center text-sm text-slate-600">
-          No account?{" "}
-          <Link href="/auth/register" className="font-medium text-brand-600 hover:underline">
-            Create one
-          </Link>
-        </p>
       </form>
+
+      <div className="mt-6 border-t border-slate-200 pt-6">
+        <p className="text-center text-sm font-medium text-slate-700">
+          Or log in with password
+        </p>
+
+        <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-slate-700">
+              Email
+            </label>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-slate-700">
+              Password
+            </label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+          >
+            {loading ? "Logging in…" : "Log in"}
+          </button>
+        </form>
+      </div>
+
+      <p className="mt-6 text-center text-sm text-slate-600">
+        No account?{" "}
+        <Link href="/auth/register" className="font-medium text-brand-600 hover:underline">
+          Create one
+        </Link>
+      </p>
     </div>
   );
 }
