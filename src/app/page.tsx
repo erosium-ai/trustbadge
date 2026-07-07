@@ -110,12 +110,13 @@ export default function HomePage() {
 
             <div className="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 p-5 shadow-sm">
               <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
-                Verified by real data sources
+                AI readable credentials
               </p>
               <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-900 sm:text-base">
-                We verify business details against the Australian Business
-                Register (ABR), company licensing databases, and official
-                credential documents — so your customers see proof, not promises.
+                AI readable credentials. Your TrustBadge uses trusted proof like
+                business registration details (ABN) plus uploaded licences,
+                insurance, and compliance documents so AI can confirm your
+                qualifications and recommend your services.
               </p>
             </div>
           </div>
