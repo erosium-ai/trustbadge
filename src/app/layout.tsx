@@ -4,8 +4,8 @@ import { TopBar } from "@/components/TopBar";
 import { BRAND_NAME, BADGE_FEATURE_LABEL } from "@/lib/brand";
 
 export const metadata: Metadata = {
-  title: `${BRAND_NAME} — Verified tradie credentials`,
-  description: `Upload, verify, and share your trade credentials with customers using ${BADGE_FEATURE_LABEL}.`,
+  title: `${BRAND_NAME} — Verified business credentials`,
+  description: `Upload, verify, and share your business credentials with customers using ${BADGE_FEATURE_LABEL}.`,
 };
 
 export default function RootLayout({
