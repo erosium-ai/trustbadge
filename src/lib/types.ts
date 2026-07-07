@@ -14,12 +14,29 @@ export type CredentialType =
 
 export type CredentialStatus = "pending" | "verified" | "rejected";
 
+export type VerificationConfidence = "high" | "medium" | "low";
+
+export interface VerificationSourceEntry {
+  source_name: string;
+  source_type: "registry" | "document" | "manual" | "system";
+  status: "verified" | "mismatch" | "pending" | "failed";
+  checked_at?: string | null;
+  evidence_url?: string | null;
+  reference_id?: string | null;
+  notes?: string | null;
+  details?: Record<string, unknown> | null;
+}
+
 export interface TrustBadge {
   id: string;
   slug: string;
   business_name: string;
   abn?: string | null;
   status: TrustBadgeStatus;
+  verification_confidence?: VerificationConfidence | null;
+  verification_sources?: VerificationSourceEntry[] | null;
+  last_verified_at?: string | null;
+  verification_summary?: string | null;
   user_id?: string | null;
   created_at?: string;
   updated_at?: string;

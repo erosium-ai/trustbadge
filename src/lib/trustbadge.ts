@@ -2,7 +2,14 @@
 
 import { sanitizeSlug } from "./slug";
 import { getServiceClient } from "./supabase";
-import type { Credential, CredentialType, TrustBadge } from "./types";
+import { verifyAbn } from "./abn";
+import type {
+  Credential,
+  CredentialType,
+  TrustBadge,
+  VerificationSourceEntry,
+  VerificationConfidence,
+} from "./types";
 
 type ReviewBadge = Pick<TrustBadge, "id" | "slug" | "business_name" | "status">;
 
@@ -48,6 +55,100 @@ export interface ConversionTrackingInput {
   utmMedium?: string | null;
   utmCampaign?: string | null;
   utmContent?: string | null;
+}
+
+function confidenceRank(level: VerificationConfidence): number {
+  if (level === "high") return 3;
+  if (level === "medium") return 2;
+  return 1;
+}
+
+function deriveTrustBadgeVerificationState(
+  credentials: Array<Pick<Credential, "status">>,
+  existingSources: VerificationSourceEntry[]
+): {
+  confidence: VerificationConfidence;
+  sources: VerificationSourceEntry[];
+  summary: string;
+  lastVerifiedAt: string;
+} {
+  const now = new Date().toISOString();
+
+  const verifiedCount = credentials.filter((credential) => credential.status === "verified").length;
+  const pendingCount = credentials.filter((credential) => credential.status === "pending").length;
+  const rejectedCount = credentials.filter((credential) => credential.status === "rejected").length;
+
+  const documentStatus: VerificationSourceEntry["status"] =
+    verifiedCount > 0
+      ? "verified"
+      : pendingCount > 0
+        ? "pending"
+        : rejectedCount > 0
+          ? "failed"
+          : "pending";
+
+  const documentSource: VerificationSourceEntry = {
+    source_name: "Credential document review",
+    source_type: "manual",
+    status: documentStatus,
+    checked_at: now,
+    notes:
+      verifiedCount > 0
+        ? `${verifiedCount} verified credential(s)`
+        : pendingCount > 0
+          ? `${pendingCount} credential(s) pending admin review`
+          : rejectedCount > 0
+            ? `${rejectedCount} credential(s) rejected`
+            : "No credential documents uploaded yet",
+    details: {
+      verifiedCount,
+      pendingCount,
+      rejectedCount,
+    },
+  };
+
+  const mergedSources = [
+    ...existingSources.filter((source) => source.source_name !== documentSource.source_name),
+    documentSource,
+  ];
+
+  const hasVerifiedRegistry = mergedSources.some(
+    (source) => source.source_type === "registry" && source.status === "verified"
+  );
+  const hasVerifiedDocument = mergedSources.some(
+    (source) => source.source_name === documentSource.source_name && source.status === "verified"
+  );
+  const hasPendingSignals = mergedSources.some((source) => source.status === "pending");
+  const hasFailures = mergedSources.some((source) => source.status === "failed" || source.status === "mismatch");
+
+  let confidence: VerificationConfidence = "low";
+  if (hasVerifiedRegistry && hasVerifiedDocument) {
+    confidence = "high";
+  } else if (hasVerifiedRegistry || hasVerifiedDocument || hasPendingSignals) {
+    confidence = "medium";
+  }
+
+  const summaryParts: string[] = [];
+  if (hasVerifiedRegistry) {
+    summaryParts.push("registry checks passed");
+  }
+  if (hasVerifiedDocument) {
+    summaryParts.push("credential documents verified");
+  } else if (hasPendingSignals) {
+    summaryParts.push("credential review in progress");
+  }
+  if (hasFailures) {
+    summaryParts.push("some checks require attention");
+  }
+
+  const summary = summaryParts.length > 0 ? summaryParts.join("; ") : "Verification checks not yet completed";
+
+  return {
+    confidence,
+    sources: mergedSources,
+    summary,
+    lastVerifiedAt: now,
+  };
 }
 
 const REVIEW_META_PREFIX = "[review-meta]";
@@ -110,6 +211,17 @@ function isMissingConversionEventsRelationError(message?: string): boolean {
   if (!message) return false;
   const lowered = message.toLowerCase();
   return lowered.includes("relation") && lowered.includes("conversion_events") && lowered.includes("does not exist");
+}
+
+function isMissingTrustBadgeVerificationColumnError(message?: string): boolean {
+  if (!message) return false;
+  const lowered = message.toLowerCase();
+  return (
+    lowered.includes("verification_confidence") ||
+    lowered.includes("verification_sources") ||
+    lowered.includes("last_verified_at") ||
+    lowered.includes("verification_summary")
+  );
 }
 
 async function recomputeTrustBadgeStatus(trustbadgeId: string): Promise<void> {
@@ -211,11 +323,88 @@ export async function createTrustBadge(
   }
 
   const serviceClient = getServiceClient();
-  const { data, error } = await serviceClient
+
+  const initialSources: VerificationSourceEntry[] = [
+    {
+      source_name: "Credential document review",
+      source_type: "manual",
+      status: "pending",
+      checked_at: new Date().toISOString(),
+      notes: "No credentials uploaded yet",
+    },
+  ];
+
+  if (abn?.trim()) {
+    const abnVerification = await verifyAbn(abn, businessName);
+    initialSources.push({
+      source_name: abnVerification.source,
+      source_type: "registry",
+      status:
+        abnVerification.status === "verified"
+          ? "verified"
+          : abnVerification.status === "verified_name_mismatch"
+            ? "mismatch"
+            : abnVerification.status === "checksum_valid_unverified"
+              ? "pending"
+              : "failed",
+      checked_at: abnVerification.checkedAt,
+      notes: abnVerification.message,
+      reference_id: abnVerification.normalizedAbn || undefined,
+      details: {
+        status: abnVerification.status,
+        confidence: abnVerification.confidence,
+        matchedBusinessName: abnVerification.matchedBusinessName ?? null,
+        abrStatus: abnVerification.abrStatus ?? null,
+      },
+    });
+  }
+
+  const initialConfidence: VerificationConfidence = initialSources.reduce<VerificationConfidence>((current, source) => {
+    const candidate: VerificationConfidence =
+      source.status === "verified"
+        ? "high"
+        : source.status === "pending"
+          ? "medium"
+          : "low";
+    return confidenceRank(candidate) > confidenceRank(current) ? candidate : current;
+  }, "low");
+
+  const initialSummary = initialSources
+    .map((source) => `${source.source_name}: ${source.notes ?? source.status}`)
+    .join(" | ");
+
+  const insertPayload = {
+    user_id: userId,
+    slug,
+    business_name: businessName,
+    abn,
+    verification_confidence: initialConfidence,
+    verification_sources: initialSources,
+    last_verified_at: new Date().toISOString(),
+    verification_summary: initialSummary,
+  };
+
+  let { data, error } = await serviceClient
     .from("trustbadges")
-    .insert({ user_id: userId, slug, business_name: businessName, abn })
+    .insert(insertPayload)
     .select()
     .single();
+
+  if (error && isMissingTrustBadgeVerificationColumnError(error.message)) {
+    const fallbackInsert = await serviceClient
+      .from("trustbadges")
+      .insert({
+        user_id: userId,
+        slug,
+        business_name: businessName,
+        abn,
+      })
+      .select()
+      .single();
+
+    data = fallbackInsert.data;
+    error = fallbackInsert.error;
+  }
 
   if (error) {
     if (error.code === "23505") {
@@ -436,6 +625,41 @@ export async function setCredentialReviewStatus({
   }
 
   await recomputeTrustBadgeStatus(trustbadgeId);
+
+  const { data: trustbadgeRow } = await serviceClient
+    .from("trustbadges")
+    .select("verification_sources")
+    .eq("id", trustbadgeId)
+    .maybeSingle();
+
+  const existingSources = (trustbadgeRow?.verification_sources as VerificationSourceEntry[] | null) ?? [];
+
+  const { data: badgeCredentials } = await serviceClient
+    .from("credentials")
+    .select("status")
+    .eq("trustbadge_id", trustbadgeId);
+
+  const derived = deriveTrustBadgeVerificationState(
+    (badgeCredentials ?? []) as Array<Pick<Credential, "status">>,
+    existingSources
+  );
+
+  const { error: trustbadgeVerificationUpdateError } = await serviceClient
+    .from("trustbadges")
+    .update({
+      verification_confidence: derived.confidence,
+      verification_sources: derived.sources,
+      verification_summary: derived.summary,
+      last_verified_at: derived.lastVerifiedAt,
+    })
+    .eq("id", trustbadgeId);
+
+  if (
+    trustbadgeVerificationUpdateError &&
+    !isMissingTrustBadgeVerificationColumnError(trustbadgeVerificationUpdateError.message)
+  ) {
+    return { success: false, error: trustbadgeVerificationUpdateError.message };
+  }
 
   return { success: true, trustbadgeId };
 }

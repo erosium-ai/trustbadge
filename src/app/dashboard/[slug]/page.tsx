@@ -26,6 +26,19 @@ function statusLabel(status: string): string {
   }
 }
 
+function confidenceLabel(level?: string | null): string {
+  switch (level) {
+    case "high":
+      return "High confidence";
+    case "medium":
+      return "Medium confidence";
+    case "low":
+      return "Low confidence";
+    default:
+      return "Confidence pending";
+  }
+}
+
 export default async function DashboardPage({ params }: DashboardPageProps) {
   const { slug } = await params;
 
@@ -59,6 +72,14 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
               {statusLabel(trustbadge.status)}
             </span>
           </p>
+          {trustbadge.verification_confidence && (
+            <p className="mt-2 text-sm text-slate-600">
+              Verification confidence: <span className="font-medium text-slate-900">{confidenceLabel(trustbadge.verification_confidence)}</span>
+            </p>
+          )}
+          {trustbadge.verification_summary && (
+            <p className="mt-1 text-sm text-slate-500">{trustbadge.verification_summary}</p>
+          )}
         </div>
 
         <div className="flex flex-col items-center gap-2">

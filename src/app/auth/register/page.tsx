@@ -147,10 +147,13 @@ export default function RegisterPage() {
           <input
             type="text"
             value={abn}
-            placeholder="Optional — verify in Week 2"
+            placeholder="Optional — enables ABN registry verification"
             onChange={(e) => setAbn(e.target.value)}
             className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
           />
+          <p className="mt-1 text-xs text-slate-500">
+            If provided, we run an ABN checksum + registry verification check and include it in your trust confidence summary.
+          </p>
         </div>
 
         {error && (

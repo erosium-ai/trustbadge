@@ -50,7 +50,11 @@ Should exit with zero errors before deploy.
 
 ## Notes
 
-- ABN verification and QBCC scrape are planned for Week 2.
+- ABN verification now runs at registration when an ABN is provided:
+  - checksum validation always runs
+  - ABR registry lookup runs when `ABR_GUID` is configured
+  - result is written to `trustbadges.verification_sources` and confidence summary fields
+- QBCC and additional provider integrations remain planned follow-up lanes.
 - Registration uses service_role for the trustbadge insert because RLS inserts
   are scoped to `user_id = current_user_id()`; the auth user is created first,
   then the server helper inserts the row with service role.

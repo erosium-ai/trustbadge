@@ -75,6 +75,25 @@ CREATE TABLE IF NOT EXISTS public.admin_roles (
 CREATE INDEX IF NOT EXISTS idx_admin_roles_email_active
   ON public.admin_roles (email, is_active);
 
+ALTER TABLE public.trustbadges
+  ADD COLUMN IF NOT EXISTS verification_confidence text,
+  ADD COLUMN IF NOT EXISTS verification_sources jsonb NOT NULL DEFAULT '[]'::jsonb,
+  ADD COLUMN IF NOT EXISTS last_verified_at timestamptz,
+  ADD COLUMN IF NOT EXISTS verification_summary text;
+
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_constraint
+    WHERE conname = 'trustbadges_verification_confidence_check'
+  ) THEN
+    ALTER TABLE public.trustbadges
+      ADD CONSTRAINT trustbadges_verification_confidence_check
+      CHECK (verification_confidence IN ('high', 'medium', 'low') OR verification_confidence IS NULL);
+  END IF;
+END $$;
+
 -- ---------------------------------------------------------------------------
 -- Grants for Supabase roles
 -- ---------------------------------------------------------------------------

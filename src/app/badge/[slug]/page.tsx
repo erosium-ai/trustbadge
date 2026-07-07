@@ -26,6 +26,19 @@ function statusLabel(status: string): string {
   }
 }
 
+function confidenceLabel(level?: string | null): string {
+  switch (level) {
+    case "high":
+      return "High confidence";
+    case "medium":
+      return "Medium confidence";
+    case "low":
+      return "Low confidence";
+    default:
+      return "Confidence pending";
+  }
+}
+
 export default async function BadgePage({ params }: BadgePageProps) {
   const { slug } = await params;
   const { trustbadge, credentials } = await getPublicBadgeData(slug);
@@ -62,6 +75,25 @@ export default async function BadgePage({ params }: BadgePageProps) {
         </div>
 
         <div className="mt-8 border-t border-slate-100 pt-8">
+          {(trustbadge.verification_confidence || trustbadge.verification_summary || trustbadge.last_verified_at) && (
+            <div className="mb-6 rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-xs uppercase tracking-wide text-slate-500">Verification confidence</p>
+              {trustbadge.verification_confidence && (
+                <p className="mt-1 text-sm font-semibold text-slate-900">
+                  {confidenceLabel(trustbadge.verification_confidence)}
+                </p>
+              )}
+              {trustbadge.verification_summary && (
+                <p className="mt-1 text-sm text-slate-600">{trustbadge.verification_summary}</p>
+              )}
+              {trustbadge.last_verified_at && (
+                <p className="mt-1 text-xs text-slate-500">
+                  Last checked: {new Date(trustbadge.last_verified_at).toLocaleString()}
+                </p>
+              )}
+            </div>
+          )}
+
           <h2 className="text-lg font-semibold text-slate-900">
             Verified credentials
           </h2>
