@@ -97,6 +97,30 @@ export default function HomePage() {
             you're ready.
           </p>
 
+          <div className="mt-7 grid gap-4 text-left sm:grid-cols-2">
+            <div className="rounded-2xl border border-sky-200 bg-gradient-to-br from-sky-50 to-cyan-50 p-5 shadow-sm">
+              <p className="text-xs font-semibold uppercase tracking-wide text-sky-700">
+                SchemaPage
+              </p>
+              <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-900 sm:text-base">
+                AI can&apos;t read most websites. Our AI-readable pages format your
+                website so AI can find it, read it, and recommend it.
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 p-5 shadow-sm">
+              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                {BADGE_FEATURE_NAME}
+              </p>
+              <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-900 sm:text-base">
+                Your {BADGE_FEATURE_NAME} uses trusted proof like business
+                registration details (ABN) plus uploaded licences, insurance,
+                and compliance documents so AI can confirm your qualifications
+                and recommend your services.
+              </p>
+            </div>
+          </div>
+
           <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
             <Link
               href={schemaPageUrl}
