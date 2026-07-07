@@ -1,5 +1,5 @@
-import type { TrustBadge, Credential, CredentialType } from "./types";
-import { CREDENTIAL_LABELS } from "./types";
+import type { TrustBadge, Credential } from "./types";
+import { getCredentialLabel } from "./types";
 import { BADGE_FEATURE_NAME, BRAND_NAME, getSiteUrl } from "./brand";
 
 export function buildTrustBadgeSchema(
@@ -18,14 +18,14 @@ export function buildTrustBadgeSchema(
     identifier: trustbadge.abn
       ? { "@type": "PropertyValue", name: "ABN", value: trustbadge.abn }
       : undefined,
-    additionalProperty: verifiedTypes.map((type: CredentialType) => ({
+    additionalProperty: verifiedTypes.map((type) => ({
       "@type": "PropertyValue",
-      name: CREDENTIAL_LABELS[type],
+      name: getCredentialLabel(type),
       value: "Verified",
     })),
-    hasCredential: verifiedTypes.map((type: CredentialType) => ({
+    hasCredential: verifiedTypes.map((type) => ({
       "@type": "EducationalOccupationalCredential",
-      credentialCategory: CREDENTIAL_LABELS[type],
+      credentialCategory: getCredentialLabel(type),
       recognizedBy: {
         "@type": "Organization",
         name: `${BRAND_NAME} (${BADGE_FEATURE_NAME})`,

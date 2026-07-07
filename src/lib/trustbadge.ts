@@ -10,6 +10,7 @@ import type {
   VerificationSourceEntry,
   VerificationConfidence,
 } from "./types";
+import { normalizeCredentialType } from "./types";
 
 type ReviewBadge = Pick<TrustBadge, "id" | "slug" | "business_name" | "status">;
 
@@ -478,6 +479,7 @@ export async function uploadCredential(
   referenceNumber?: string
 ): Promise<{ success: boolean; credential?: Credential; error?: string }> {
   const serviceClient = getServiceClient();
+  const safeType = normalizeCredentialType(type);
 
   const ext = file.name.split(".").pop() ?? "pdf";
   const path = `${trustbadgeId}/${crypto.randomUUID()}.${ext}`;
@@ -496,7 +498,7 @@ export async function uploadCredential(
 
   const insertPayload: Record<string, unknown> = {
     trustbadge_id: trustbadgeId,
-    type,
+    type: safeType,
     file_url: urlData.publicUrl,
     status: "pending",
   };
@@ -518,7 +520,7 @@ export async function uploadCredential(
         .from("credentials")
         .insert({
           trustbadge_id: trustbadgeId,
-          type,
+          type: safeType,
           file_url: urlData.publicUrl,
           status: "pending",
         })

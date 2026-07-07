@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import { uploadCredential } from "@/lib/trustbadge";
-import { CREDENTIAL_LABELS, type CredentialType, type Credential } from "@/lib/types";
+import {
+  CREDENTIAL_UPLOAD_OPTIONS,
+  getCredentialLabel,
+  type CredentialType,
+  type Credential,
+} from "@/lib/types";
 
 type Props = {
   trustbadgeId: string;
@@ -86,12 +91,17 @@ export function CredentialUpload({ trustbadgeId, initialCredentials }: Props) {
               onChange={(e) => setType(e.target.value as CredentialType)}
               className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
             >
-              {Object.entries(CREDENTIAL_LABELS).map(([value, label]) => (
+              {CREDENTIAL_UPLOAD_OPTIONS.map(({ value, label }) => (
                 <option key={value} value={value}>
                   {label}
                 </option>
               ))}
             </select>
+            <p className="mt-2 text-xs text-slate-500">
+              {
+                CREDENTIAL_UPLOAD_OPTIONS.find((option) => option.value === type)?.help
+              }
+            </p>
           </div>
 
           <div>
@@ -151,7 +161,7 @@ export function CredentialUpload({ trustbadgeId, initialCredentials }: Props) {
               <li key={c.id} className="flex items-center justify-between py-3">
                 <div>
                   <p className="font-medium text-slate-900">
-                    {CREDENTIAL_LABELS[c.type]}
+                    {getCredentialLabel(c.type)}
                   </p>
                   {c.reference_number && (
                     <p className="text-xs text-slate-500">

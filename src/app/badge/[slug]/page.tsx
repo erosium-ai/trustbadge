@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { getPublicBadgeData } from "@/lib/trustbadge";
 import { buildTrustBadgeSchema } from "@/lib/schema";
 import { TrustSeal } from "@/components/TrustSeal";
-import { CREDENTIAL_LABELS, type Credential } from "@/lib/types";
+import { getCredentialLabel, type Credential } from "@/lib/types";
 import { BADGE_FEATURE_NAME, BRAND_NAME } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
@@ -124,7 +124,7 @@ export default async function BadgePage({ params }: BadgePageProps) {
                       </svg>
                     </span>
                     <span className="font-medium text-slate-800">
-                      {CREDENTIAL_LABELS[c.type]}
+                      {getCredentialLabel(c.type)}
                     </span>
                   </div>
                   {c.reference_number && (

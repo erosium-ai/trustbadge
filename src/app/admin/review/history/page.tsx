@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { getCurrentAuthUser, isAdminUser } from "@/lib/admin-auth";
-import { CREDENTIAL_LABELS } from "@/lib/types";
+import { getCredentialLabel } from "@/lib/types";
 import { getReviewHistory } from "@/lib/trustbadge";
 
 export const dynamic = "force-dynamic";
@@ -80,7 +80,7 @@ export default async function ReviewHistoryPage() {
                       )}
                     </td>
                     <td className="px-4 py-3 text-slate-700">
-                      {CREDENTIAL_LABELS[item.credential.type]}
+                      {getCredentialLabel(item.credential.type)}
                     </td>
                     <td className="px-4 py-3">
                       <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${decisionStyle}`}>

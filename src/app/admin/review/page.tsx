@@ -6,7 +6,7 @@ import {
   setCredentialReviewStatus,
   type ReviewCredential,
 } from "@/lib/trustbadge";
-import { CREDENTIAL_LABELS } from "@/lib/types";
+import { getCredentialLabel } from "@/lib/types";
 import { getCurrentAuthUser, isAdminUser } from "@/lib/admin-auth";
 import { BADGE_FEATURE_NAME } from "@/lib/brand";
 
@@ -128,7 +128,7 @@ function ReviewCard({
   const badge = credential.trustbadge;
   const badgeSlug = badge?.slug ?? "unknown-slug";
   const businessName = badge?.business_name ?? "Unknown business";
-  const credentialLabel = CREDENTIAL_LABELS[credential.type];
+  const credentialLabel = getCredentialLabel(credential.type);
   const submittedAt = formatSubmittedAt(credential.created_at);
   const credentialShortId = shortId(credential.id);
   const badgeShortId = badge?.id ? shortId(badge.id) : "unknown";
