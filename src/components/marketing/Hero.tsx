@@ -68,21 +68,21 @@ export function Hero({ freeProfileUrl }: HeroProps) {
                     </div>
                   </div>
                   <div className="mt-3 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-xs font-semibold text-emerald-800">
-                    ✓ TrustBadge checked · ABN and uploaded proof available
+                    ✓ TrustBadge checked · ABN and uploaded credentials available
                   </div>
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-white/70">
                   <p className="text-sm font-bold">Another local provider</p>
-                  <p className="mt-1 text-xs">Website found, but business proof and service details are unclear.</p>
+                  <p className="mt-1 text-xs">Website found, but business credentials and service details are unclear.</p>
                 </div>
               </div>
             </div>
             <div className="mt-4 rounded-3xl border border-slate-200 bg-[#F7F6F3] p-4">
-              <p className="text-xs font-bold uppercase tracking-wide text-[#0E9F6E]">Clickable customer proof</p>
+              <p className="text-xs font-bold uppercase tracking-wide text-[#0E9F6E]">Clickable customer trust</p>
               <div className="mt-3 rounded-2xl border border-emerald-200 bg-white p-4">
                 <p className="text-lg font-black text-[#0F1B2D]">Verified by Credentials AI</p>
                 <p className="mt-1 text-sm text-slate-600">Licence · Insurance · Business registration</p>
-                <p className="mt-3 text-xs font-semibold text-[#0E9F6E]">Customers can click to check the proof.</p>
+                <p className="mt-3 text-xs font-semibold text-[#0E9F6E]">Customers can click to check the verification details.</p>
               </div>
             </div>
           </div>

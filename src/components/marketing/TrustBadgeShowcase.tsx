@@ -13,13 +13,13 @@ export function TrustBadgeShowcase({ freeProfileUrl }: TrustBadgeShowcaseProps) 
         <div>
           <p className="text-sm font-bold uppercase tracking-wide text-[#0E9F6E]">TrustBadge</p>
           <h2 className="mt-3 text-3xl font-black tracking-tight text-[#0F1B2D] sm:text-4xl">
-            Proof beats promises.
+            Verification beats promises.
           </h2>
           <p className="mt-4 text-lg leading-relaxed text-[#5B6472]">
             The Credentials AI TrustBadge shows customers your credentials have actually been checked — and lets them verify it themselves in one click.
           </p>
           <p className="mt-4 text-base leading-relaxed text-[#5B6472]">
-            Every badge links to a verification page showing what's been verified — licence, insurance, business registration — and when. No fine print. No “trust us.” Customers see the proof.
+            Every badge links to a verification page showing what's been verified — licence, insurance, business registration — and when. No fine print. No “trust us.” Customers see the verification details.
           </p>
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
             <CtaButton
@@ -58,7 +58,7 @@ export function TrustBadgeShowcase({ freeProfileUrl }: TrustBadgeShowcaseProps) 
                   <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-3 text-center">
                     <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">Verified by</p>
                     <p className="mt-1 text-lg font-black text-emerald-800">Credentials AI</p>
-                    <p className="mt-1 text-xs font-semibold text-emerald-700">Click to verify proof →</p>
+                    <p className="mt-1 text-xs font-semibold text-emerald-700">Click to verify details →</p>
                   </div>
                 </div>
               </div>
@@ -71,7 +71,7 @@ export function TrustBadgeShowcase({ freeProfileUrl }: TrustBadgeShowcaseProps) 
                     <div key={item} className="rounded-xl bg-emerald-50 p-3 text-sm font-bold text-emerald-800">✓ {item}</div>
                   ))}
                 </div>
-                <p className="mt-4 text-xs text-slate-500">Example only. Real pages show the specific proof submitted and review status.</p>
+                <p className="mt-4 text-xs text-slate-500">Example only. Real pages show the specific credentials submitted and review status.</p>
               </div>
             </div>
           </div>

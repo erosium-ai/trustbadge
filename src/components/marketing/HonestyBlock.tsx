@@ -17,8 +17,8 @@ export function HonestyBlock() {
           <h3 className="text-xl font-black text-white">What we do</h3>
           <ul className="mt-5 space-y-3 text-sm leading-relaxed text-white/78">
             <li>✓ Structure your business info so AI tools and search engines can read it.</li>
-            <li>✓ Verify your credentials and business proof.</li>
-            <li>✓ Give you proof customers can click and check.</li>
+            <li>✓ Verify your credentials and business details.</li>
+            <li>✓ Give you trust details customers can click and check.</li>
           </ul>
         </div>
         <div className="rounded-2xl border border-white/10 bg-white/8 p-6">

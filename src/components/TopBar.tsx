@@ -41,18 +41,20 @@ export function TopBar() {
 
   return (
     <header className="border-b border-slate-200 bg-white">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-        <Link href="/" className="flex items-center" aria-label={`${BRAND_NAME} ${BRAND_BYLINE}`}>
-          <Image
-            src="/brand/credentials-ai-logo-primary.svg"
-            alt={`${BRAND_NAME} ${BRAND_BYLINE}`}
-            width={980}
-            height={320}
-            className="h-9 w-auto sm:h-10"
-          />
-        </Link>
+      <div className="mx-auto max-w-6xl px-4 py-4 sm:px-6">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <Link href="/" className="flex items-center" aria-label={`${BRAND_NAME} ${BRAND_BYLINE}`}>
+            <Image
+              src="/brand/credentials-ai-logo-primary.svg"
+              alt={`${BRAND_NAME} ${BRAND_BYLINE}`}
+              width={980}
+              height={320}
+              priority
+              className="h-20 w-auto sm:h-24 lg:h-28"
+            />
+          </Link>
 
-        <nav className="flex items-center gap-4">
+          <nav className="flex w-full items-center justify-end gap-2 sm:gap-3 md:w-auto md:gap-4">
           {loading ? null : user ? (
             <>
               <span className="hidden text-sm text-slate-500 sm:inline">
@@ -60,7 +62,7 @@ export function TopBar() {
               </span>
               <button
                 onClick={handleLogout}
-                className="rounded-md px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100"
+                className="rounded-md px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100"
               >
                 Log out
               </button>
@@ -108,7 +110,7 @@ export function TopBar() {
                     label: "Log in",
                   })
                 }
-                className="text-sm font-medium text-slate-600 hover:text-slate-900"
+                className="text-xs font-medium text-slate-600 hover:text-slate-900 sm:text-sm"
               >
                 Log in
               </Link>
@@ -125,13 +127,15 @@ export function TopBar() {
                     label: "Claim free profile",
                   })
                 }
-                className="rounded-md bg-teal-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm transition hover:bg-teal-700"
+                className="rounded-md bg-teal-600 px-2.5 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-teal-700 sm:px-3 sm:text-sm"
               >
-                Claim free profile
+                <span className="sm:hidden">Start free</span>
+                <span className="hidden sm:inline">Claim free profile</span>
               </Link>
             </>
           )}
-        </nav>
+          </nav>
+        </div>
       </div>
     </header>
   );

@@ -15,7 +15,7 @@ const problems = [
   {
     marker: "03",
     title: "Hard to compare",
-    body: "When a customer weighs you against a competitor, the one with visible proof usually wins the call.",
+    body: "When a customer weighs you against a competitor, the one with visible verification usually wins the call.",
   },
 ];
 

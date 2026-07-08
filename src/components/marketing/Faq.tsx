@@ -16,11 +16,11 @@ export const faqs = [
   },
   {
     q: "How does verification actually work?",
-    a: "You submit proof, we review it, and approved credentials appear on a public verification page your customers can click and check.",
+    a: "You submit your credentials, we review them, and approved details appear on a public verification page your customers can click and check.",
   },
   {
     q: "I'm not technical. How much work is this?",
-    a: "The free profile is built from a form. If you can fill in your services, locations, phone, website and proof, you can use it.",
+    a: "The free profile is built from a form. If you can fill in your services, locations, phone and website, you can use it.",
   },
   {
     q: "What happens if I cancel?",
@@ -59,7 +59,7 @@ export function Faq({ freeProfileUrl }: { freeProfileUrl: string }) {
       <div className="mt-14 rounded-[2rem] bg-[#0F1B2D] p-8 text-center text-white md:p-12">
         <h2 className="text-3xl font-black tracking-tight sm:text-4xl">Ten minutes now. Findable and verifiable after.</h2>
         <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-white/70">
-          Start with the free profile. Upgrade when you want richer AI presence and verified customer proof.
+          Start with the free profile. Upgrade when you want richer AI presence and verified customer trust.
         </p>
         <div className="mt-7">
           <CtaButton
