@@ -41,9 +41,9 @@ export function TopBar() {
 
   return (
     <header className="border-b border-slate-200 bg-white">
-      <div className="mx-auto max-w-6xl px-4 py-4 sm:px-6">
-        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <Link href="/" className="flex items-center pt-5 sm:pt-0" aria-label={`${BRAND_NAME} ${BRAND_BYLINE}`}>
+      <div className="mx-auto max-w-6xl px-4 pb-5 pt-2 sm:px-6 sm:py-4">
+        <div className="flex flex-col gap-7 sm:gap-3 md:flex-row md:items-center md:justify-between">
+          <Link href="/" className="flex translate-y-6 items-center sm:translate-y-0" aria-label={`${BRAND_NAME} ${BRAND_BYLINE}`}>
             <Image
               src="/brand/credentials-ai-logo-primary.svg"
               alt={`${BRAND_NAME} ${BRAND_BYLINE}`}
