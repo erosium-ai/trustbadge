@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { TopBar } from "@/components/TopBar";
-import { BRAND_NAME, BADGE_FEATURE_LABEL } from "@/lib/brand";
+import { BRAND_NAME } from "@/lib/brand";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://credentialsai.com.au"),
@@ -32,12 +32,25 @@ export const metadata: Metadata = {
     siteName: BRAND_NAME,
     locale: "en_AU",
     type: "website",
+    images: [
+      {
+        url: "/brand/credentials-ai-logo-tile.png",
+        width: 1400,
+        height: 900,
+        alt: "Credentials AI — AI visibility. Verified trust.",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: `${BRAND_NAME} — AI-Readable Websites & Online Credential Verification`,
     description:
       "AI-readable business profiles and online credential verification for local businesses.",
+    images: ["/brand/credentials-ai-logo-tile.png"],
+  },
+  icons: {
+    icon: [{ url: "/icon.png", type: "image/png" }],
+    apple: [{ url: "/apple-icon.png", type: "image/png" }],
   },
 };
 

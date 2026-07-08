@@ -1,28 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { getBrowserClient } from "@/lib/supabase-browser";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { BADGE_FEATURE_NAME, BRAND_NAME } from "@/lib/brand";
+import { BRAND_BYLINE, BRAND_NAME } from "@/lib/brand";
 import { trackCtaClick } from "@/lib/tracking";
 import { getFreeProfileUrl } from "@/components/marketing/urls";
-
-function CheckMark({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="3"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <polyline points="20 6 9 17 4 12" />
-    </svg>
-  );
-}
 
 export function TopBar() {
   const router = useRouter();
@@ -57,11 +42,14 @@ export function TopBar() {
   return (
     <header className="border-b border-slate-200 bg-white">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-        <Link href="/" className="flex items-center gap-2 text-lg font-bold text-slate-900">
-          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-500 text-white">
-            <CheckMark className="h-4 w-4" />
-          </span>
-          {BRAND_NAME}
+        <Link href="/" className="flex items-center" aria-label={`${BRAND_NAME} ${BRAND_BYLINE}`}>
+          <Image
+            src="/brand/credentials-ai-logo-primary.svg"
+            alt={`${BRAND_NAME} ${BRAND_BYLINE}`}
+            width={980}
+            height={320}
+            className="h-9 w-auto sm:h-10"
+          />
         </Link>
 
         <nav className="flex items-center gap-4">
