@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BADGE_FEATURE_NAME, BRAND_NAME } from "@/lib/brand";
 import { trackCtaClick } from "@/lib/tracking";
+import { getFreeProfileUrl } from "@/components/marketing/urls";
 
 function CheckMark({ className }: { className?: string }) {
   return (
@@ -25,6 +26,7 @@ function CheckMark({ className }: { className?: string }) {
 
 export function TopBar() {
   const router = useRouter();
+  const freeProfileUrl = getFreeProfileUrl("topbar_free_ai_profile");
   const [user, setUser] = useState<{ id: string; email?: string } | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -78,34 +80,34 @@ export function TopBar() {
           ) : (
             <>
               <Link
-                href="/terms"
+                href="/#how-it-works"
                 onClick={() =>
                   trackCtaClick({
-                    eventName: "credentials_ai_click_terms",
+                    eventName: "credentials_ai_click_how_it_works_nav",
                     source: "credentialsai",
-                    campaign: "topbar_legal",
-                    targetUrl: "/terms",
-                    label: "Terms",
+                    campaign: "topbar_nav",
+                    targetUrl: "/#how-it-works",
+                    label: "How it works",
                   })
                 }
                 className="hidden text-sm font-medium text-slate-500 hover:text-slate-900 sm:inline"
               >
-                Terms
+                How it works
               </Link>
               <Link
-                href="/refunds"
+                href="/#pricing"
                 onClick={() =>
                   trackCtaClick({
-                    eventName: "credentials_ai_click_refunds",
+                    eventName: "credentials_ai_click_pricing_nav",
                     source: "credentialsai",
-                    campaign: "topbar_legal",
-                    targetUrl: "/refunds",
-                    label: "Refunds",
+                    campaign: "topbar_nav",
+                    targetUrl: "/#pricing",
+                    label: "Pricing",
                   })
                 }
                 className="hidden text-sm font-medium text-slate-500 hover:text-slate-900 sm:inline"
               >
-                Refunds
+                Pricing
               </Link>
               <Link
                 href="/auth/login"
@@ -123,19 +125,21 @@ export function TopBar() {
                 Log in
               </Link>
               <Link
-                href="/auth/register"
+                href={freeProfileUrl}
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={() =>
                   trackCtaClick({
-                    eventName: "credentials_ai_click_get_started",
+                    eventName: "credentials_ai_click_free_profile_topbar",
                     source: "credentialsai",
-                    campaign: "topbar_auth",
-                    targetUrl: "/auth/register",
-                    label: "Get started",
+                    campaign: "topbar_free_ai_profile",
+                    targetUrl: freeProfileUrl,
+                    label: "Claim free profile",
                   })
                 }
                 className="rounded-md bg-teal-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm transition hover:bg-teal-700"
               >
-                Get started
+                Claim free profile
               </Link>
             </>
           )}

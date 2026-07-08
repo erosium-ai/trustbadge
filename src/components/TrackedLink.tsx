@@ -8,6 +8,7 @@ import { trackCtaClick } from "@/lib/tracking";
 
 interface TrackedLinkProps {
   href: string;
+  dataCta?: string;
   eventName: string;
   source?: string;
   campaign?: string;
@@ -28,6 +29,7 @@ export function TrackedLink({
   target,
   rel,
   children,
+  dataCta,
 }: TrackedLinkProps) {
   const onClick: MouseEventHandler<HTMLAnchorElement> = () => {
     trackCtaClick({
@@ -40,9 +42,15 @@ export function TrackedLink({
   };
 
   return (
-    <Link href={href} onClick={onClick} className={className} target={target} rel={rel}>
+    <Link
+      href={href}
+      onClick={onClick}
+      className={className}
+      target={target}
+      rel={rel}
+      data-cta={dataCta}
+    >
       {children}
     </Link>
   );
 }
-
