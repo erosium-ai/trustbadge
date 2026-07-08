@@ -4,8 +4,41 @@ import { TopBar } from "@/components/TopBar";
 import { BRAND_NAME, BADGE_FEATURE_LABEL } from "@/lib/brand";
 
 export const metadata: Metadata = {
-  title: `${BRAND_NAME} — Verified business credentials`,
-  description: `Upload, verify, and share your business credentials with customers using ${BADGE_FEATURE_LABEL}.`,
+  metadataBase: new URL("https://credentialsai.com.au"),
+  title: {
+    default: `${BRAND_NAME} — AI-Readable Websites & Online Credential Verification`,
+    template: `%s — ${BRAND_NAME}`,
+  },
+  description:
+    "Credentials AI helps local businesses get found by AI search and trusted by customers with AI-readable business profiles, ABN checks, TrustBadge verification, and online credential proof.",
+  keywords: [
+    "AI-readable websites",
+    "AI readable business profile",
+    "online credential verification",
+    "business credential verification",
+    "verified business credentials",
+    "TrustBadge",
+    "business trust badge",
+    "AI search visibility for local business",
+  ],
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: `${BRAND_NAME} — AI-Readable Websites & Online Credential Verification`,
+    description:
+      "Create an AI-readable business profile and verified TrustBadge so customers and AI systems can understand and trust your business.",
+    url: "https://credentialsai.com.au",
+    siteName: BRAND_NAME,
+    locale: "en_AU",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${BRAND_NAME} — AI-Readable Websites & Online Credential Verification`,
+    description:
+      "AI-readable business profiles and online credential verification for local businesses.",
+  },
 };
 
 export default function RootLayout({

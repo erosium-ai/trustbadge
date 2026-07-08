@@ -1,11 +1,39 @@
 import Link from "next/link";
-import { BADGE_FEATURE_NAME, BRAND_NAME, getSchemaPageUrl } from "@/lib/brand";
+import {
+  BADGE_FEATURE_NAME,
+  BRAND_NAME,
+  getSchemaPageUrl,
+  getSiteUrl,
+} from "@/lib/brand";
 import { TrackedLink } from "@/components/TrackedLink";
 
 const TRUST_POINTS = [
   "Licences and registrations",
   "Insurance and compliance docs",
   "First aid and safety credentials",
+];
+
+const FAQS = [
+  {
+    question: "What is an AI-readable website?",
+    answer:
+      "An AI-readable website is structured so AI search tools can clearly understand what your business does, where you operate, how customers contact you, and what proof makes you trustworthy.",
+  },
+  {
+    question: "What is online credential verification for a business?",
+    answer:
+      "Online credential verification gives customers a public way to review business proof such as ABN details, licences, insurance, compliance documents, first aid, or safety credentials before they contact or book you.",
+  },
+  {
+    question: "Does Credentials AI guarantee rankings in ChatGPT or Google?",
+    answer:
+      "No honest service can guarantee AI or Google rankings. Credentials AI gives your business a stronger foundation by making your profile, services, locations, FAQs, and verification proof easier for customers and AI systems to understand.",
+  },
+  {
+    question: "Is Credentials AI a replacement for my website or SEO agency?",
+    answer:
+      "No. Credentials AI supports your current website and SEO by adding a clean AI-readable business profile and TrustBadge verification layer that customers and AI systems can read quickly.",
+  },
 ];
 
 function withTracking(baseUrl: string, params: Record<string, string>): string {
@@ -21,6 +49,7 @@ function withTracking(baseUrl: string, params: Record<string, string>): string {
 }
 
 export default function HomePage() {
+  const siteUrl = getSiteUrl();
   const schemaPageUrl = getSchemaPageUrl();
   const freeProfileUrl = withTracking(schemaPageUrl, {
     source: "credentialsai",
@@ -61,8 +90,90 @@ export default function HomePage() {
     utm_content: "landing_funnel",
   }).toString()}`;
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${siteUrl}/#organization`,
+        name: BRAND_NAME,
+        url: siteUrl,
+        description:
+          "Credentials AI creates AI-readable business profiles and online credential verification pages for local businesses.",
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${siteUrl}/#website`,
+        url: siteUrl,
+        name: BRAND_NAME,
+        publisher: { "@id": `${siteUrl}/#organization` },
+      },
+      {
+        "@type": "Service",
+        "@id": `${siteUrl}/#service`,
+        name: "AI-readable websites and online credential verification",
+        provider: { "@id": `${siteUrl}/#organization` },
+        areaServed: "Australia",
+        serviceType: [
+          "AI-readable business profiles",
+          "online credential verification",
+          "business trust badge verification",
+          "AI search visibility for local businesses",
+        ],
+        offers: [
+          {
+            "@type": "Offer",
+            name: "Free AI Profile",
+            price: "0",
+            priceCurrency: "AUD",
+          },
+          {
+            "@type": "Offer",
+            name: "Pro AI Presence",
+            price: "19",
+            priceCurrency: "AUD",
+            priceSpecification: {
+              "@type": "UnitPriceSpecification",
+              price: "19",
+              priceCurrency: "AUD",
+              billingIncrement: "P1M",
+            },
+          },
+          {
+            "@type": "Offer",
+            name: "Founder bundle",
+            price: "39",
+            priceCurrency: "AUD",
+            priceSpecification: {
+              "@type": "UnitPriceSpecification",
+              price: "39",
+              priceCurrency: "AUD",
+              billingIncrement: "P1M",
+            },
+          },
+        ],
+      },
+      {
+        "@type": "FAQPage",
+        "@id": `${siteUrl}/#faq`,
+        mainEntity: FAQS.map((faq) => ({
+          "@type": "Question",
+          name: faq.question,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: faq.answer,
+          },
+        })),
+      },
+    ],
+  };
+
   return (
     <div className="relative overflow-hidden bg-gradient-to-br from-sky-100 via-cyan-50 to-teal-100">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="pointer-events-none absolute inset-x-0 top-0 h-96 bg-[radial-gradient(ellipse_at_top,rgba(14,165,233,0.22),transparent_70%)]" />
       <div className="pointer-events-none absolute -right-32 top-32 h-80 w-80 rounded-full bg-teal-300/20 blur-3xl" />
       <div className="pointer-events-none absolute -left-32 top-96 h-80 w-80 rounded-full bg-indigo-300/20 blur-3xl" />
@@ -92,6 +203,10 @@ export default function HomePage() {
               and verify your credentials so customers and AI know you&apos;re trustworthy.
             </p>
 
+            <p className="mx-auto mt-4 max-w-3xl text-pretty text-base font-semibold leading-relaxed text-slate-800">
+              AI-readable websites and online credential verification for local businesses.
+            </p>
+
             <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
               <TrackedLink
                 href={freeProfileUrl}
@@ -110,6 +225,12 @@ export default function HomePage() {
                 className="rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-800 transition hover:-translate-y-0.5 hover:bg-slate-50"
               >
                 View TrustBadge pricing
+              </Link>
+              <Link
+                href="/ai-readable-websites"
+                className="rounded-xl border border-sky-200 bg-white/80 px-6 py-3 text-sm font-semibold text-sky-800 transition hover:-translate-y-0.5 hover:bg-white"
+              >
+                Learn AI-readable websites
               </Link>
               <Link
                 href="/auth/login"
@@ -302,6 +423,83 @@ export default function HomePage() {
             verify business credentials before they book.
           </p>
         </div>
+
+        <section className="mx-auto mt-8 max-w-5xl rounded-3xl border border-white/70 bg-white/80 p-6 shadow-sm backdrop-blur sm:p-8">
+          <div className="max-w-3xl">
+            <p className="text-xs font-bold uppercase tracking-wide text-sky-700">
+              AI-readable websites + credential verification
+            </p>
+            <h2 className="mt-2 text-2xl font-extrabold tracking-tight text-slate-950 sm:text-3xl">
+              Built for the searches customers are starting to make now.
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-slate-700 sm:text-base">
+              Credentials AI creates AI-readable websites and online credential
+              verification pages for local businesses, helping customers and AI
+              systems understand your services, service areas, ABN, licences,
+              insurance, and trust proof before contact.
+            </p>
+          </div>
+
+          <div className="mt-6 grid gap-3 sm:grid-cols-3">
+            <Link
+              href="/ai-readable-websites"
+              className="rounded-2xl border border-sky-200 bg-sky-50 p-5 transition hover:-translate-y-0.5 hover:bg-sky-100"
+            >
+              <h3 className="text-sm font-extrabold text-slate-950">
+                AI-readable websites
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-slate-700">
+                Learn how structured business profiles help ChatGPT, Gemini,
+                Grok, Claude, and Google understand local services.
+              </p>
+            </Link>
+            <Link
+              href="/online-credential-verification"
+              className="rounded-2xl border border-violet-200 bg-violet-50 p-5 transition hover:-translate-y-0.5 hover:bg-violet-100"
+            >
+              <h3 className="text-sm font-extrabold text-slate-950">
+                Online credential verification
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-slate-700">
+                Show public proof for ABN, licences, insurance, compliance docs,
+                and other business credentials.
+              </p>
+            </Link>
+            <Link
+              href="/trust-badge-for-business"
+              className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 transition hover:-translate-y-0.5 hover:bg-emerald-100"
+            >
+              <h3 className="text-sm font-extrabold text-slate-950">
+                Trust badge for business
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-slate-700">
+                Give customers a fast, visible trust signal before they call,
+                quote, or book.
+              </p>
+            </Link>
+          </div>
+        </section>
+
+        <section className="mx-auto mt-8 max-w-5xl rounded-3xl border border-slate-200 bg-white/85 p-6 shadow-sm sm:p-8">
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+            Common questions
+          </p>
+          <h2 className="mt-2 text-2xl font-extrabold tracking-tight text-slate-950">
+            AI-readable websites and credential verification FAQ
+          </h2>
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
+            {FAQS.map((faq) => (
+              <div key={faq.question} className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                <h3 className="text-sm font-extrabold text-slate-950">
+                  {faq.question}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-700">
+                  {faq.answer}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
       </section>
     </div>
   );
