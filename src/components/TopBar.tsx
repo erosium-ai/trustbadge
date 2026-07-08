@@ -43,7 +43,7 @@ export function TopBar() {
     <header className="border-b border-slate-200 bg-white">
       <div className="mx-auto max-w-6xl px-4 py-4 sm:px-6">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <Link href="/" className="flex items-center" aria-label={`${BRAND_NAME} ${BRAND_BYLINE}`}>
+          <Link href="/" className="mt-2 flex items-center sm:mt-0" aria-label={`${BRAND_NAME} ${BRAND_BYLINE}`}>
             <Image
               src="/brand/credentials-ai-logo-primary.svg"
               alt={`${BRAND_NAME} ${BRAND_BYLINE}`}
