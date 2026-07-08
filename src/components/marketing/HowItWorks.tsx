@@ -5,7 +5,7 @@ const steps = [
   {
     step: "01",
     title: "Tell us about your business",
-    body: "Services, areas, hours, website, phone, social links and proof. About 10 minutes.",
+    body: "Services, areas, hours, website, phone and social links. About 10 minutes.",
   },
   {
     step: "02",
