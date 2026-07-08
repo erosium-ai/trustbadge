@@ -3,14 +3,17 @@ import { CtaButton } from "./CtaButton";
 
 const problems = [
   {
+    marker: "01",
     title: "Hard to find",
     body: "Most local business websites aren't written in a format AI tools can reliably read.",
   },
   {
+    marker: "02",
     title: "Hard to trust",
     body: "Anyone can claim they're licensed and insured. Almost nobody proves it before the customer calls.",
   },
   {
+    marker: "03",
     title: "Hard to compare",
     body: "When a customer weighs you against a competitor, the one with visible proof usually wins the call.",
   },
@@ -31,8 +34,8 @@ export function ProblemCards({ freeProfileUrl }: { freeProfileUrl: string }) {
       <div className="mt-10 grid gap-5 md:grid-cols-3">
         {problems.map((problem) => (
           <div key={problem.title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-lg font-black text-blue-700">
-              {problem.title.charAt(0)}
+            <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-sm font-black text-blue-700">
+              {problem.marker}
             </div>
             <h3 className="text-xl font-black text-[#0F1B2D]">{problem.title}</h3>
             <p className="mt-3 text-sm leading-relaxed text-[#5B6472]">{problem.body}</p>
