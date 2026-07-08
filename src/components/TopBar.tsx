@@ -41,20 +41,20 @@ export function TopBar() {
 
   return (
     <header className="border-b border-slate-200 bg-white">
-      <div className="mx-auto max-w-6xl px-4 pb-5 pt-2 sm:px-6 sm:py-4">
-        <div className="flex flex-col gap-7 sm:gap-3 md:flex-row md:items-center md:justify-between">
-          <Link href="/" className="flex translate-y-6 items-center sm:translate-y-0" aria-label={`${BRAND_NAME} ${BRAND_BYLINE}`}>
+      <div className="mx-auto max-w-6xl px-3 py-4 sm:px-6">
+        <div className="flex items-end justify-between gap-2 md:items-center md:gap-4">
+          <Link href="/" className="flex min-w-0 items-center" aria-label={`${BRAND_NAME} ${BRAND_BYLINE}`}>
             <Image
               src="/brand/credentials-ai-logo-primary.svg"
               alt={`${BRAND_NAME} ${BRAND_BYLINE}`}
               width={980}
               height={320}
               priority
-              className="h-20 w-auto sm:h-24 lg:h-28"
+              className="h-auto w-[60vw] max-w-[250px] sm:h-24 sm:w-auto sm:max-w-none lg:h-28"
             />
           </Link>
 
-          <nav className="flex w-full items-center justify-end gap-2 sm:gap-3 md:w-auto md:gap-4">
+          <nav className="flex shrink-0 items-center justify-end gap-2 sm:gap-3 md:gap-4">
           {loading ? null : user ? (
             <>
               <span className="hidden text-sm text-slate-500 sm:inline">
