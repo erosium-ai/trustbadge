@@ -17,3 +17,6 @@ pnpm-debug.log*
 
 # misc
 .DS_Store
+
+# TypeScript incremental build info (Railway Nixpacks mount conflict)
+*.tsbuildinfo
