@@ -81,6 +81,37 @@ export interface ConversionTrackingInput {
   utmContent?: string | null;
 }
 
+export interface BusinessProfile {
+  id: string;
+  owner_user_id?: string | null;
+  source_page_id?: string | null;
+  trustbadge_id?: string | null;
+  slug: string;
+  business_name: string;
+  abn?: string | null;
+  abn_status?: string | null;
+  category?: string | null;
+  description?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  website?: string | null;
+  suburb?: string | null;
+  state?: string | null;
+  postcode?: string | null;
+  service_areas?: unknown;
+  services?: unknown;
+  social_links?: unknown;
+  plan?: string | null;
+  verification_level?: number | null;
+  booking_url?: string | null;
+  logo_url?: string | null;
+  hero_image_url?: string | null;
+  status?: string | null;
+  metadata?: Record<string, unknown> | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
 function confidenceRank(level: VerificationConfidence): number {
   if (level === "high") return 3;
   if (level === "medium") return 2;
@@ -237,6 +268,12 @@ function isMissingConversionEventsRelationError(message?: string): boolean {
   return lowered.includes("relation") && lowered.includes("conversion_events") && lowered.includes("does not exist");
 }
 
+function isMissingBusinessProfilesRelationError(message?: string): boolean {
+  if (!message) return false;
+  const lowered = message.toLowerCase();
+  return lowered.includes("relation") && lowered.includes("business_profiles") && lowered.includes("does not exist");
+}
+
 function isMissingTrustBadgeVerificationColumnError(message?: string): boolean {
   if (!message) return false;
   const lowered = message.toLowerCase();
@@ -329,6 +366,32 @@ export async function getPublicBadgeData(slug: string): Promise<{
   }
 
   return { trustbadge, credentials: data as Credential[] };
+}
+
+export async function getBusinessProfileBySlug(slug: string): Promise<BusinessProfile | null> {
+  const normalizedSlug = sanitizeSlug(slug);
+  if (!normalizedSlug) return null;
+
+  const serviceClient = getServiceClient();
+  const { data, error } = await serviceClient
+    .from("business_profiles")
+    .select("*")
+    .eq("slug", normalizedSlug)
+    .eq("status", "active")
+    .maybeSingle();
+
+  if (error) {
+    if (!isMissingBusinessProfilesRelationError(error.message)) {
+      console.error("[business-profile] fetch failed", {
+        slug: normalizedSlug,
+        message: error.message,
+        code: error.code,
+      });
+    }
+    return null;
+  }
+
+  return (data as BusinessProfile | null) ?? null;
 }
 
 // ---------------------------------------------------------------------------
