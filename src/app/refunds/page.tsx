@@ -1,11 +1,11 @@
-/* 🔑 Keywords: refund policy, Credentials AI refunds, TrustBadge refunds, Pro AI Presence refunds */
+/* 🔑 Keywords: refund policy, Credentials AI refunds, TrustBadge refunds, Verified Lead Engine refunds, Founding Member refunds */
 
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Refund Policy — Credentials AI",
   description:
-    "Refund policy for Credentials AI, including Pro AI Presence and TrustBadge subscriptions.",
+    "Refund policy for Credentials AI, including Founding Member Verified Lead Engine and TrustBadge subscriptions.",
 };
 
 export default function RefundPolicyPage() {
@@ -23,9 +23,9 @@ export default function RefundPolicyPage() {
 
         <h2>2. Eligible services</h2>
         <ul>
-          <li>Pro AI Presence subscription (first purchase period)</li>
+          <li>Founding Member Verified Lead Engine subscription (first purchase period)</li>
           <li>TrustBadge verification subscription (first purchase period)</li>
-          <li>Founder bundle (first purchase period)</li>
+          <li>Founder-assisted setup package (first purchase period)</li>
         </ul>
 
         <h2>3. Not covered</h2>

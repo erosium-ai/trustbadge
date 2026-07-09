@@ -21,9 +21,8 @@ Credentials AI helps local businesses create structured AI-readable business pro
 ## Products
 
 - Free AI Profile: an AI-readable business profile for local businesses.
-- Pro AI Presence: enhanced AI-readable business page with structured data, service-area optimisation, FAQs, and conversion tracking.
+- Founding Member Verified Lead Engine: paid Credentials AI subscription for verified business lead profiles, TrustBadge verification, tracked calls, quote requests, source attribution, and weekly proof reporting.
 - TrustBadge Verification: customer-facing online credential verification for ABN/business registration, licences, insurance, compliance documents, first aid, and safety credentials where applicable.
-- Founder bundle: Pro AI Presence + TrustBadge Verification for early local businesses.
 
 ## Main topics
 

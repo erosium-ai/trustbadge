@@ -165,8 +165,9 @@ export default function AIReadableWebsitesPage() {
             Credentials AI gives your business an AI-readable profile with your
             services, service areas, FAQs, contact details, and trust proof in a
             format built for customers and AI systems to understand quickly.
-            Upgrade to Pro AI Presence for stronger structured data, service
-            area optimisation, and conversion tracking.
+            Upgrade to the Founding Member Verified Lead Engine for TrustBadge
+            verification, tracked calls, quote requests, source attribution, and
+            weekly proof reporting.
           </p>
           <p className="mt-3 leading-relaxed text-slate-700">
             Add TrustBadge verification when you want to show proof like ABN,
@@ -192,8 +193,8 @@ export default function AIReadableWebsitesPage() {
             Make your business easier for AI and customers to understand.
           </h2>
           <p className="mt-3 leading-relaxed text-teal-50">
-            Start with a free AI Profile, then upgrade when you want stronger AI
-            presence and verified credential proof.
+            Start with a free AI Profile, then upgrade when you want verified trust,
+            tracked enquiries, and weekly proof reporting.
           </p>
           <Link
             href={bottomCtaUrl}

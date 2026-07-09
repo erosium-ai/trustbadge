@@ -1,4 +1,4 @@
-/* 🔑 Keywords: terms of service, Credentials AI terms, TrustBadge terms, Pro AI Presence terms, founder offer terms */
+/* 🔑 Keywords: terms of service, Credentials AI terms, TrustBadge terms, Verified Lead Engine terms, Founding Member terms, founder offer terms */
 
 import { Metadata } from "next";
 
@@ -22,13 +22,15 @@ export default function TermsPage() {
 
         <h2>2. Service overview</h2>
         <p>
-          Credentials AI provides AI-readable business profiles and trust
-          verification tools for local businesses. This includes:
+          Credentials AI provides AI-readable business profiles, verified lead
+          engine tooling, and trust verification tools for local businesses. This
+          includes:
         </p>
         <ul>
-          <li>SchemaPage AI-readable business pages</li>
-          <li>Pro AI Presence upgrades</li>
+          <li>Free AI Profile / SchemaPage AI-readable business pages</li>
+          <li>Founding Member Verified Lead Engine subscriptions</li>
           <li>TrustBadge verification profiles and credential display</li>
+          <li>Tracked enquiry, source attribution, and proof-reporting features</li>
         </ul>
 
         <h2>3. Your responsibilities</h2>
