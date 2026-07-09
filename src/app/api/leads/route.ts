@@ -13,6 +13,22 @@ const ALLOWED_LEAD_STATUSES = new Set([
   "spam",
 ]);
 
+interface WeeklyProofSummary {
+  windowDays: number;
+  totalEvents: number;
+  quoteForms: number;
+  callClicks: number;
+  emailClicks: number;
+  newStatus: number;
+  contacted: number;
+  quoted: number;
+  won: number;
+  lost: number;
+  spam: number;
+  latestLeadAt: string | null;
+  topSources: Array<{ source: string; count: number }>;
+}
+
 function isMissingLeadEventsRelationError(message?: string): boolean {
   if (!message) return false;
   const lowered = message.toLowerCase();
@@ -76,6 +92,21 @@ export async function GET(req: NextRequest) {
       emailClick: 0,
       newStatus: 0,
     };
+    let weeklyProofSummary: WeeklyProofSummary = {
+      windowDays: 7,
+      totalEvents: 0,
+      quoteForms: 0,
+      callClicks: 0,
+      emailClicks: 0,
+      newStatus: 0,
+      contacted: 0,
+      quoted: 0,
+      won: 0,
+      lost: 0,
+      spam: 0,
+      latestLeadAt: null,
+      topSources: [],
+    };
 
     let trackedQuery = service
       .from("lead_events")
@@ -123,6 +154,41 @@ export async function GET(req: NextRequest) {
         emailClick: trackedLeads.filter((lead) => lead.type === "email_click").length,
         newStatus: trackedLeads.filter((lead) => lead.status === "new").length,
       };
+
+      const since7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+      const { data: weeklyData, error: weeklyError } = await service
+        .from("lead_events")
+        .select("type,status,source,created_at")
+        .gte("created_at", since7d)
+        .order("created_at", { ascending: false })
+        .limit(5000);
+
+      if (!weeklyError && weeklyData) {
+        const sourceMap = new Map<string, number>();
+        for (const lead of weeklyData) {
+          const source = (lead.source || "(unknown)").trim();
+          sourceMap.set(source, (sourceMap.get(source) || 0) + 1);
+        }
+
+        weeklyProofSummary = {
+          windowDays: 7,
+          totalEvents: weeklyData.length,
+          quoteForms: weeklyData.filter((lead) => lead.type === "quote_form").length,
+          callClicks: weeklyData.filter((lead) => lead.type === "call_click").length,
+          emailClicks: weeklyData.filter((lead) => lead.type === "email_click").length,
+          newStatus: weeklyData.filter((lead) => lead.status === "new").length,
+          contacted: weeklyData.filter((lead) => lead.status === "contacted").length,
+          quoted: weeklyData.filter((lead) => lead.status === "quoted").length,
+          won: weeklyData.filter((lead) => lead.status === "won").length,
+          lost: weeklyData.filter((lead) => lead.status === "lost").length,
+          spam: weeklyData.filter((lead) => lead.status === "spam").length,
+          latestLeadAt: weeklyData[0]?.created_at || null,
+          topSources: Array.from(sourceMap.entries())
+            .map(([source, count]) => ({ source, count }))
+            .sort((a, b) => b.count - a.count)
+            .slice(0, 5),
+        };
+      }
     }
 
     return NextResponse.json({
@@ -130,6 +196,7 @@ export async function GET(req: NextRequest) {
       leads: data ?? [],
       trackedLeads,
       trackedLeadSummary,
+      weeklyProofSummary,
     });
   } catch (err) {
     return NextResponse.json(

@@ -60,6 +60,22 @@ interface TrackedLeadSummary {
   newStatus: number;
 }
 
+interface WeeklyProofSummary {
+  windowDays: number;
+  totalEvents: number;
+  quoteForms: number;
+  callClicks: number;
+  emailClicks: number;
+  newStatus: number;
+  contacted: number;
+  quoted: number;
+  won: number;
+  lost: number;
+  spam: number;
+  latestLeadAt: string | null;
+  topSources: Array<{ source: string; count: number }>;
+}
+
 type HasEmailFilter = "all" | "yes" | "no";
 type LeadTypeFilter =
   | "all"
@@ -100,6 +116,21 @@ export default function AdminLeadsPage() {
     callClick: 0,
     emailClick: 0,
     newStatus: 0,
+  });
+  const [weeklyProof, setWeeklyProof] = useState<WeeklyProofSummary>({
+    windowDays: 7,
+    totalEvents: 0,
+    quoteForms: 0,
+    callClicks: 0,
+    emailClicks: 0,
+    newStatus: 0,
+    contacted: 0,
+    quoted: 0,
+    won: 0,
+    lost: 0,
+    spam: 0,
+    latestLeadAt: null,
+    topSources: [],
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -145,11 +176,65 @@ export default function AdminLeadsPage() {
           newStatus: 0,
         }) as TrackedLeadSummary
       );
+      setWeeklyProof(
+        (json.weeklyProofSummary ?? {
+          windowDays: 7,
+          totalEvents: 0,
+          quoteForms: 0,
+          callClicks: 0,
+          emailClicks: 0,
+          newStatus: 0,
+          contacted: 0,
+          quoted: 0,
+          won: 0,
+          lost: 0,
+          spam: 0,
+          latestLeadAt: null,
+          topSources: [],
+        }) as WeeklyProofSummary
+      );
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error");
     } finally {
       setLoading(false);
     }
+  }
+
+  function exportWeeklyProofCSV() {
+    const headers = ["metric", "value"];
+    const rows: Array<[string, string | number]> = [
+      ["window_days", weeklyProof.windowDays],
+      ["total_events", weeklyProof.totalEvents],
+      ["quote_forms", weeklyProof.quoteForms],
+      ["call_clicks", weeklyProof.callClicks],
+      ["email_clicks", weeklyProof.emailClicks],
+      ["new_status", weeklyProof.newStatus],
+      ["contacted", weeklyProof.contacted],
+      ["quoted", weeklyProof.quoted],
+      ["won", weeklyProof.won],
+      ["lost", weeklyProof.lost],
+      ["spam", weeklyProof.spam],
+      ["latest_lead_at", weeklyProof.latestLeadAt || ""],
+    ];
+
+    for (const source of weeklyProof.topSources) {
+      rows.push([`top_source:${source.source}`, source.count]);
+    }
+
+    const csv = [
+      headers.join(","),
+      ...rows.map(([metric, value]) => `"${String(metric).replace(/"/g, '""')}","${String(value).replace(/"/g, '""')}"`),
+    ].join("\n");
+
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `weekly-proof-summary-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   }
 
   async function updateLeadStatus(leadId: string, status: Exclude<LeadStatusFilter, "all">) {
@@ -338,6 +423,12 @@ export default function AdminLeadsPage() {
             Review history
           </Link>
           <button
+            onClick={exportWeeklyProofCSV}
+            className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+          >
+            Export weekly proof
+          </button>
+          <button
             onClick={exportSchemaCSV}
             disabled={filteredSchemaLeads.length === 0}
             className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50"
@@ -386,6 +477,62 @@ export default function AdminLeadsPage() {
         <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
           <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">New status</p>
           <p className="mt-1 text-2xl font-bold text-red-600">{stats.trackedNew}</p>
+        </div>
+      </div>
+
+      <div className="mb-6 rounded-xl border border-brand-100 bg-brand-50 p-4">
+        <div className="mb-3 flex items-center justify-between gap-4">
+          <div>
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-brand-800">
+              Weekly proof summary (last {weeklyProof.windowDays} days)
+            </h2>
+            <p className="text-xs text-brand-700">
+              Latest tracked lead: {formatDateTime(weeklyProof.latestLeadAt)}
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6">
+          <div className="rounded-lg bg-white p-3">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Total events</p>
+            <p className="mt-1 text-xl font-bold text-slate-900">{weeklyProof.totalEvents}</p>
+          </div>
+          <div className="rounded-lg bg-white p-3">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Quote forms</p>
+            <p className="mt-1 text-xl font-bold text-brand-700">{weeklyProof.quoteForms}</p>
+          </div>
+          <div className="rounded-lg bg-white p-3">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Call clicks</p>
+            <p className="mt-1 text-xl font-bold text-slate-900">{weeklyProof.callClicks}</p>
+          </div>
+          <div className="rounded-lg bg-white p-3">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Email clicks</p>
+            <p className="mt-1 text-xl font-bold text-slate-900">{weeklyProof.emailClicks}</p>
+          </div>
+          <div className="rounded-lg bg-white p-3">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Won</p>
+            <p className="mt-1 text-xl font-bold text-emerald-700">{weeklyProof.won}</p>
+          </div>
+          <div className="rounded-lg bg-white p-3">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">New</p>
+            <p className="mt-1 text-xl font-bold text-red-700">{weeklyProof.newStatus}</p>
+          </div>
+        </div>
+
+        <div className="mt-3 rounded-lg bg-white p-3">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">Top sources (7-day)</p>
+          {weeklyProof.topSources.length === 0 ? (
+            <p className="mt-1 text-sm text-slate-500">No source data yet.</p>
+          ) : (
+            <ul className="mt-1 space-y-1 text-sm text-slate-700">
+              {weeklyProof.topSources.map((src) => (
+                <li key={src.source} className="flex items-center justify-between">
+                  <span className="truncate pr-3">{src.source}</span>
+                  <span className="font-semibold text-slate-900">{src.count}</span>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
 
