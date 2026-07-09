@@ -20,6 +20,104 @@ function sanitizeSessionId(value: unknown): string | null {
   return text;
 }
 
+function parseRecipientList(raw: string | undefined): string[] {
+  if (!raw) return [];
+  return raw
+    .split(",")
+    .map((entry) => entry.trim())
+    .filter((entry) => entry.length > 0);
+}
+
+function buildLeadNotificationText(params: {
+  businessName: string;
+  profileSlug: string;
+  type: string;
+  source: string | null;
+  submittedAt: string;
+  name: string;
+  phone: string | null;
+  email: string | null;
+  suburb: string | null;
+  serviceNeeded: string | null;
+  message: string;
+}): string {
+  const profileUrl = `https://credentialsai.com.au/b/${params.profileSlug}`;
+  const lines = [
+    "New Credentials AI lead captured",
+    "",
+    `Business: ${params.businessName}`,
+    `Profile: ${profileUrl}`,
+    `Type: ${params.type}`,
+    `Source: ${params.source || "(unknown)"}`,
+    `Submitted: ${params.submittedAt}`,
+    "",
+    "Lead details:",
+    `Name: ${params.name}`,
+    `Phone: ${params.phone || "(not provided)"}`,
+    `Email: ${params.email || "(not provided)"}`,
+    `Suburb: ${params.suburb || "(not provided)"}`,
+    `Service needed: ${params.serviceNeeded || "(not provided)"}`,
+    "",
+    "Message:",
+    params.message,
+  ];
+
+  return lines.join("\n");
+}
+
+async function sendLeadNotification(params: {
+  businessName: string;
+  profileSlug: string;
+  type: string;
+  source: string | null;
+  submittedAt: string;
+  name: string;
+  phone: string | null;
+  email: string | null;
+  suburb: string | null;
+  serviceNeeded: string | null;
+  message: string;
+}): Promise<boolean> {
+  const apiKey = process.env.RESEND_API_KEY;
+  const recipients = parseRecipientList(
+    process.env.CREDENTIALS_AI_LEAD_NOTIFY_TO ||
+      process.env.LEAD_NOTIFICATION_TO ||
+      process.env.TRUSTBADGE_ADMIN_EMAILS
+  );
+
+  if (!apiKey || recipients.length === 0) {
+    return false;
+  }
+
+  const from = process.env.CREDENTIALS_AI_LEAD_NOTIFY_FROM || process.env.LEAD_NOTIFICATION_FROM || "eros@erosium.com.au";
+  const replyTo = params.email || undefined;
+  const subject = `[Credentials AI] New lead — ${params.businessName}`;
+  const text = buildLeadNotificationText(params);
+
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+      "User-Agent": "credentials-ai-lead-notifier/1.0",
+    },
+    body: JSON.stringify({
+      from,
+      to: recipients,
+      subject,
+      text,
+      reply_to: replyTo ? [replyTo] : undefined,
+    }),
+  });
+
+  if (!response.ok) {
+    const body = await response.text().catch(() => "");
+    throw new Error(`Resend request failed: ${response.status} ${body.slice(0, 240)}`);
+  }
+
+  return true;
+}
+
 async function upsertProfileSession(params: {
   service: ReturnType<typeof getServiceClient>;
   businessProfileId: string;
@@ -116,13 +214,20 @@ export async function POST(request: NextRequest) {
       deviceType: sanitizeText(payload?.deviceType, 40),
     });
 
+    const source = sanitizeText(payload?.source, 80);
+    const referrer = sanitizeText(payload?.referrer, 500);
+    const landingPath = sanitizeText(payload?.landingPath, 300);
+    const medium = sanitizeText(payload?.medium, 80);
+    const deviceType = sanitizeText(payload?.deviceType, 40);
+    const submittedAt = new Date().toISOString();
+
     const { error } = await service.from("lead_events").insert({
       business_profile_id: profile.id,
       session_id: sessionId,
       type: "quote_form",
       status: "new",
-      source: sanitizeText(payload?.source, 80),
-      referrer: sanitizeText(payload?.referrer, 500),
+      source,
+      referrer,
       name,
       phone,
       email,
@@ -131,10 +236,11 @@ export async function POST(request: NextRequest) {
       message,
       metadata: {
         via: "public_profile_quote_form",
-        landing_path: sanitizeText(payload?.landingPath, 300),
-        medium: sanitizeText(payload?.medium, 80),
-        device_type: sanitizeText(payload?.deviceType, 40),
+        landing_path: landingPath,
+        medium,
+        device_type: deviceType,
       },
+      created_at: submittedAt,
     });
 
     if (error) {
@@ -146,11 +252,34 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: "Failed to create lead" }, { status: 500 });
     }
 
+    let notificationSent = false;
+    try {
+      notificationSent = await sendLeadNotification({
+        businessName: profile.business_name as string,
+        profileSlug: profile.slug as string,
+        type: "quote_form",
+        source,
+        submittedAt,
+        name,
+        phone,
+        email,
+        suburb,
+        serviceNeeded,
+        message,
+      });
+    } catch (notifyError) {
+      console.error("[api/lead] notification failed", {
+        profileSlug: profile.slug,
+        message: notifyError instanceof Error ? notifyError.message : String(notifyError),
+      });
+    }
+
     return NextResponse.json({
       success: true,
       profileSlug: profile.slug,
       businessName: profile.business_name,
       sessionId,
+      notificationSent,
     });
   } catch (error) {
     console.error("[api/lead] unexpected error", error);
