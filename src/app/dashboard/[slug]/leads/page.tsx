@@ -9,6 +9,7 @@ import { redirect } from "next/navigation";
 import { getServerClient } from "@/lib/supabase-server";
 import { getServiceClient } from "@/lib/supabase";
 import { assertOwnership, prettySource } from "@/lib/dashboard-queries";
+import { formatAuDateTime } from "@/lib/date-format";
 
 export const dynamic = "force-dynamic";
 
@@ -123,7 +124,7 @@ export default async function LeadsPage({ params }: LeadsPageProps) {
                 {leads.map((lead) => (
                   <tr key={lead.id} className="hover:bg-slate-50/60">
                     <td className="px-4 py-3 text-slate-700">
-                      {new Date(lead.created_at).toLocaleString()}
+                      {formatAuDateTime(lead.created_at)}
                     </td>
                     <td className="px-4 py-3 text-slate-900">
                       {leadTypeLabel(lead.type)}

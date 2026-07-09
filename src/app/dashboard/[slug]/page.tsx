@@ -20,6 +20,7 @@ import {
   prettySource,
 } from "@/lib/dashboard-queries";
 import { CopyLinkButton } from "@/components/CopyLinkButton";
+import { formatAuDate } from "@/lib/date-format";
 
 export const dynamic = "force-dynamic";
 
@@ -107,7 +108,7 @@ function timeAgo(iso: string): string {
   if (hrs < 24) return `${hrs}h ago`;
   const days = Math.floor(hrs / 24);
   if (days < 7) return `${days}d ago`;
-  return new Date(iso).toLocaleDateString();
+  return formatAuDate(iso);
 }
 
 function leadTypeLabel(type: string): string {
@@ -510,7 +511,7 @@ export default async function DashboardOverviewPage({
                 <p className="mt-2 text-sm text-slate-600">
                   Next payment:{" "}
                   <span className="font-medium text-slate-900">
-                    {new Date(record.next_payment_at).toLocaleDateString()}
+                    {formatAuDate(record.next_payment_at)}
                   </span>
                 </p>
               ) : null}

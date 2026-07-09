@@ -4,6 +4,7 @@ import { buildTrustBadgeSchema } from "@/lib/schema";
 import { TrustSeal } from "@/components/TrustSeal";
 import { getCredentialLabel, type Credential } from "@/lib/types";
 import { BADGE_FEATURE_NAME, BRAND_NAME } from "@/lib/brand";
+import { formatAuDateTime } from "@/lib/date-format";
 
 export const dynamic = "force-dynamic";
 
@@ -88,7 +89,7 @@ export default async function BadgePage({ params }: BadgePageProps) {
               )}
               {trustbadge.last_verified_at && (
                 <p className="mt-1 text-xs text-slate-500">
-                  Last checked: {new Date(trustbadge.last_verified_at).toLocaleString()}
+                  Last checked: {formatAuDateTime(trustbadge.last_verified_at)}
                 </p>
               )}
             </div>
