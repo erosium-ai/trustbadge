@@ -4,110 +4,101 @@ import { Section } from "./Section";
 interface PricingSectionProps {
   freeProfileUrl: string;
   founderBundleUrl: string;
-  proPresenceUrl: string;
 }
 
-export function PricingSection({ freeProfileUrl, founderBundleUrl, proPresenceUrl }: PricingSectionProps) {
+export function PricingSection({ freeProfileUrl, founderBundleUrl }: PricingSectionProps) {
   return (
     <Section id="pricing">
       <div className="text-center">
         <p className="text-sm font-bold uppercase tracking-wide text-blue-700">Pricing</p>
         <h2 className="mx-auto mt-3 max-w-3xl text-3xl font-black tracking-tight text-[#0F1B2D] sm:text-4xl">
-          Simple pricing. Start free, upgrade when it's earning its keep.
+          One decision. Start free, or run the full engine.
         </h2>
-        <p className="mt-4 text-lg leading-relaxed text-[#5B6472]">No contracts. No lock-in. Cancel anytime.</p>
+        <p className="mt-4 text-lg leading-relaxed text-[#5B6472]">
+          No lock-in contracts. No setup fee for Founding Members. Cancel anytime.
+        </p>
       </div>
 
-      <div className="mt-10 grid gap-5 lg:grid-cols-3">
+      <div className="mt-10 grid gap-5 lg:grid-cols-2">
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <p className="text-sm font-bold text-blue-700">Free AI Profile</p>
           <div className="mt-3 flex items-end gap-1">
             <span className="text-4xl font-black text-[#0F1B2D]">$0</span>
             <span className="pb-1 text-sm font-semibold text-slate-500">forever</span>
           </div>
-          <p className="mt-4 text-lg font-black text-[#0F1B2D]">Get on the map.</p>
           <ul className="mt-5 space-y-3 text-sm leading-relaxed text-[#5B6472]">
             <li>✓ AI-readable business profile</li>
-            <li>✓ Services, areas and hours structured for AI tools</li>
-            <li>✓ Hosted profile page you can link anywhere</li>
+            <li>✓ Live public page (/b/your-business)</li>
+            <li>✓ Services, suburbs, hours and contact details</li>
+            <li>✓ Quote requests forwarded to your email</li>
           </ul>
-          <p className="mt-5 text-sm font-semibold text-slate-700">Just want to exist properly online? Start here.</p>
+          <p className="mt-5 text-sm font-semibold text-slate-700">
+            Start here if you want your business clear and contactable online.
+          </p>
           <CtaButton
             href={freeProfileUrl}
             eventName="credentials_ai_click_pricing_free"
-            label="Claim your free profile"
+            label="Start free"
             dataCta="pricing-free"
-            target="_blank"
-            rel="noopener noreferrer"
             variant="secondary"
             className="mt-6 w-full"
           >
-            Claim your free profile
+            Start free
           </CtaButton>
         </div>
 
-        <div className="order-first rounded-2xl border border-blue-500 bg-white p-6 shadow-xl shadow-blue-900/10 ring-2 ring-blue-500 lg:order-none lg:-mt-4">
+        <div className="rounded-2xl border border-[#F97316] bg-white p-6 shadow-xl shadow-orange-900/10 ring-2 ring-[#F97316]">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="text-sm font-bold text-[#D97706]">Founder Bundle</p>
-            <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-black uppercase tracking-wide text-amber-800">Founder offer</span>
+            <p className="text-sm font-bold text-[#D97706]">Founding Member — Verified Lead Engine</p>
+            <span className="rounded-full bg-orange-100 px-3 py-1 text-xs font-black uppercase tracking-wide text-orange-800">
+              First 50
+            </span>
           </div>
           <div className="mt-3 flex items-end gap-1">
-            <span className="text-4xl font-black text-[#0F1B2D]">$39</span>
+            <span className="text-4xl font-black text-[#0F1B2D]">$49</span>
             <span className="pb-1 text-sm font-semibold text-slate-500">/mo</span>
           </div>
-          <p className="mt-1 text-sm font-semibold text-slate-500"><span className="line-through">$48/mo separately</span> · locked while subscribed</p>
-          <p className="mt-4 text-lg font-black text-[#0F1B2D]">Everything. One founding price.</p>
+          <p className="mt-1 text-sm font-semibold text-slate-500">$149 setup waived · locked while subscribed</p>
+
           <ul className="mt-5 space-y-3 text-sm leading-relaxed text-[#5B6472]">
             <li>✓ Everything in Free</li>
-            <li>✓ Pro AI Presence ($19 value)</li>
-            <li>✓ TrustBadge Verification ($29 value)</li>
-            <li>✓ Direct line to the founder</li>
-            <li>✓ Price locked while subscribed</li>
+            <li>✓ TrustBadge verification (up to 3 credentials)</li>
+            <li>✓ Public verification page customers can check</li>
+            <li>✓ Tracked calls, email clicks and quote requests</li>
+            <li>✓ Source tracking + instant lead alerts</li>
+            <li>✓ Lead status tracking (new → contacted → quoted → won)</li>
+            <li>✓ Weekly proof summary + CSV export</li>
+            <li>✓ Founder-assisted setup</li>
           </ul>
-          <p className="mt-5 text-sm font-semibold text-slate-700">Want to be findable and provable? This is the one.</p>
+          <p className="mt-5 text-sm font-semibold text-slate-700">
+            This is the full verified lead engine. One plan, no confusion.
+          </p>
           <CtaButton
             href={founderBundleUrl}
             eventName="credentials_ai_click_pricing_founder"
-            label="Claim a founding spot"
+            label="Claim a Founding 50 spot"
             dataCta="pricing-founder"
-            target="_blank"
-            rel="noopener noreferrer"
             className="mt-6 w-full"
           >
-            Claim a founding spot
-          </CtaButton>
-        </div>
-
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <p className="text-sm font-bold text-blue-700">Build your own</p>
-          <div className="mt-3 flex items-end gap-1">
-            <span className="text-4xl font-black text-[#0F1B2D]">From $19</span>
-            <span className="pb-1 text-sm font-semibold text-slate-500">/mo</span>
-          </div>
-          <p className="mt-4 text-lg font-black text-[#0F1B2D]">Prefer one piece at a time?</p>
-          <ul className="mt-5 space-y-3 text-sm leading-relaxed text-[#5B6472]">
-            <li>✓ Pro AI Presence — $19/mo</li>
-            <li>✓ TrustBadge Verification — from $29/mo</li>
-            <li>✓ Upgrade from free when you're ready</li>
-          </ul>
-          <p className="mt-5 text-sm font-semibold text-slate-700">Only need one thing? No worries.</p>
-          <CtaButton
-            href={proPresenceUrl}
-            eventName="credentials_ai_click_pricing_build_your_own"
-            label="Compare options"
-            dataCta="pricing-build-your-own"
-            target="_blank"
-            rel="noopener noreferrer"
-            variant="secondary"
-            className="mt-6 w-full"
-          >
-            Compare options
+            Claim a Founding 50 spot
           </CtaButton>
         </div>
       </div>
-      <p className="mt-8 text-center text-sm font-semibold text-slate-600">
-        Not sure? Start free. You can upgrade whenever you're ready.
-      </p>
+
+      <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 text-sm leading-relaxed text-slate-700">
+        <p className="font-semibold text-slate-900">
+          After the Founding 50: $99/mo + $149 verification setup. Founding Members keep $49/mo for as long as they
+          stay subscribed.
+        </p>
+        <p className="mt-2 text-slate-600">
+          Extra verified credentials +$5/mo each. Multiple locations? Talk to us. Verification is independent — we
+          check credentials against official sources where available; we are not a government body and a badge is not
+          an endorsement.
+        </p>
+        <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-800">
+          Rolling out next to Founding Members: QR kit, embeddable badge, owner dashboard improvements.
+        </p>
+      </div>
     </Section>
   );
 }

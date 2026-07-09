@@ -20,13 +20,11 @@ export function StickyMobileCta({ freeProfileUrl }: { freeProfileUrl: string }) 
       <CtaButton
         href={freeProfileUrl}
         eventName="credentials_ai_click_sticky_mobile"
-        label="Claim your free AI profile"
+        label="Claim your free profile"
         dataCta="sticky-mobile"
-        target="_blank"
-        rel="noopener noreferrer"
         className="w-full"
       >
-        Claim your free AI profile
+        Claim your free profile
       </CtaButton>
     </div>
   );

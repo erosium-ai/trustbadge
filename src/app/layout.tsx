@@ -6,28 +6,28 @@ import { BRAND_NAME } from "@/lib/brand";
 export const metadata: Metadata = {
   metadataBase: new URL("https://credentialsai.com.au"),
   title: {
-    default: `${BRAND_NAME} — AI-Readable Websites & Online Credential Verification`,
+    default: `${BRAND_NAME} — Verified Lead Engine for Local Businesses`,
     template: `%s — ${BRAND_NAME}`,
   },
   description:
-    "Credentials AI helps local businesses get found by AI search and trusted by customers with AI-readable business profiles, ABN checks, TrustBadge verification, and online credential proof.",
+    "Credentials AI helps local businesses get found, get trusted, and track enquiries with verification, source attribution, and weekly proof reporting.",
   keywords: [
-    "AI-readable websites",
-    "AI readable business profile",
-    "online credential verification",
-    "business credential verification",
-    "verified business credentials",
-    "TrustBadge",
-    "business trust badge",
-    "AI search visibility for local business",
+    "verified lead engine",
+    "tracked enquiries",
+    "business profile verification",
+    "trust badge for local business",
+    "AI visibility",
+    "source attribution",
+    "weekly proof reporting",
+    "local business lead tracking",
   ],
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: `${BRAND_NAME} — AI-Readable Websites & Online Credential Verification`,
+    title: `${BRAND_NAME} — Get found. Get trusted. Get enquiries.`,
     description:
-      "Create an AI-readable business profile and verified TrustBadge so customers and AI systems can understand and trust your business.",
+      "Verified lead engine for local businesses: clear profile, trust verification, tracked enquiries, and weekly proof.",
     url: "https://credentialsai.com.au",
     siteName: BRAND_NAME,
     locale: "en_AU",
@@ -43,9 +43,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: `${BRAND_NAME} — AI-Readable Websites & Online Credential Verification`,
+    title: `${BRAND_NAME} — Verified Lead Engine for Local Businesses`,
     description:
-      "AI-readable business profiles and online credential verification for local businesses.",
+      "Get found, get trusted, and track enquiries with proof reporting.",
     images: ["/brand/credentials-ai-logo-tile.png"],
   },
   icons: {

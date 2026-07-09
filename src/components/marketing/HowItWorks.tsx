@@ -4,18 +4,18 @@ import { CtaButton } from "./CtaButton";
 const steps = [
   {
     step: "01",
-    title: "Tell us about your business",
-    body: "Services, areas, hours, website, phone and social links. About 10 minutes.",
+    title: "Claim your free profile",
+    body: "Tell us your services, suburbs, hours and contact details. About 10 minutes — if you can fill in a form, you're qualified.",
   },
   {
     step: "02",
-    title: "We build your AI-readable profile",
-    body: "Your details are structured so search engines and AI assistants can understand them clearly.",
+    title: "Get verified",
+    body: "Send your ABN, licence and insurance details. We check what we can against official sources and publish your verification page.",
   },
   {
     step: "03",
-    title: "Add verified trust signals",
-    body: "Upload your licence, insurance or registration. Once checked, you get a badge customers can click to verify.",
+    title: "See every enquiry — with receipts",
+    body: "Calls, email clicks and quote requests through your profile are counted, tracked by source, and summarised weekly.",
   },
 ];
 
@@ -29,7 +29,7 @@ export function HowItWorks({ freeProfileUrl }: { freeProfileUrl: string }) {
             Three steps. No tech skills needed.
           </h2>
           <p className="mt-4 text-lg leading-relaxed text-[#5B6472]">
-            If you can fill out a form, you can set this up.
+            You don&apos;t need to be technical. The setup is founder-guided and built for local businesses.
           </p>
           <div className="mt-7">
             <CtaButton

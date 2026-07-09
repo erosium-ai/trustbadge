@@ -116,8 +116,6 @@ export function TopBar() {
               </Link>
               <Link
                 href={freeProfileUrl}
-                target="_blank"
-                rel="noopener noreferrer"
                 onClick={() =>
                   trackCtaClick({
                     eventName: "credentials_ai_click_free_profile_topbar",
@@ -127,7 +125,7 @@ export function TopBar() {
                     label: "Claim free profile",
                   })
                 }
-                className="rounded-md bg-teal-600 px-2.5 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-teal-700 sm:px-3 sm:text-sm"
+                className="rounded-md bg-[#F97316] px-2.5 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-[#EA580C] sm:px-3 sm:text-sm"
               >
                 <span className="sm:hidden">Start free</span>
                 <span className="hidden sm:inline">Claim free profile</span>

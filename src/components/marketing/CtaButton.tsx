@@ -15,7 +15,7 @@ interface CtaButtonProps {
 
 const variants = {
   primary:
-    "bg-[#1D6FE0] text-white shadow-sm hover:bg-[#1758B5] focus-visible:ring-[#1D6FE0]",
+    "bg-[#F97316] text-white shadow-sm hover:bg-[#EA580C] focus-visible:ring-[#F97316]",
   secondary:
     "border border-slate-300 bg-white text-[#0F1B2D] hover:bg-slate-50 focus-visible:ring-[#1D6FE0]",
   dark:

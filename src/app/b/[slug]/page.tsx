@@ -11,6 +11,31 @@ interface ProfilePageProps {
   params: Promise<{ slug: string }>;
 }
 
+function getSampleProfile() {
+  return {
+    slug: "sample-plumbing-co",
+    business_name: "Sample Plumbing Co",
+    description:
+      "Sample profile for Credentials AI demo. Fast plumbing repairs across Burleigh and nearby suburbs.",
+    phone: "0400 000 000",
+    email: "hello@sampleplumbingco.com.au",
+    website: "https://credentialsai.com.au",
+    suburb: "Burleigh Heads",
+    state: "QLD",
+    postcode: "4220",
+    service_areas: ["Burleigh Heads", "Varsity Lakes", "Mermaid Beach", "Robina"],
+    services: [
+      { name: "Blocked drains", description: "Jet blasting, camera inspections, same-day service." },
+      { name: "Hot water repairs", description: "Electric and gas hot water troubleshooting and replacement." },
+      { name: "Emergency plumbing", description: "Burst pipes, leaks and urgent callouts." },
+    ],
+    plan: "founding_member",
+    abn: "12 345 678 901",
+    status: "active",
+    metadata: { sample_profile: true },
+  };
+}
+
 function toStringArray(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
   return value.filter((item): item is string => typeof item === "string" && item.trim().length > 0);
@@ -48,7 +73,9 @@ function toServiceList(value: unknown): Array<{ name: string; description?: stri
 
 export default async function PublicBusinessProfilePage({ params }: ProfilePageProps) {
   const { slug } = await params;
-  const profile = await getBusinessProfileBySlug(slug);
+  const normalizedSlug = slug.trim().toLowerCase();
+  const sampleProfileRequested = normalizedSlug === "sample-plumbing-co";
+  const profile = (await getBusinessProfileBySlug(slug)) ?? (sampleProfileRequested ? getSampleProfile() : null);
 
   if (!profile) {
     notFound();
@@ -104,6 +131,9 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
 
         <div className="mt-5 flex flex-wrap gap-2 text-xs sm:text-sm">
           <span className="rounded-full bg-emerald-50 px-3 py-1 font-medium text-emerald-700">Verified profile</span>
+          {sampleProfileRequested && (
+            <span className="rounded-full bg-orange-100 px-3 py-1 font-medium text-orange-700">Sample data</span>
+          )}
           {profile.plan && (
             <span className="rounded-full bg-slate-100 px-3 py-1 font-medium capitalize text-slate-700">
               Plan: {profile.plan.replace("_", " ")}

@@ -11,15 +11,17 @@ export function TrustBadgeShowcase({ freeProfileUrl }: TrustBadgeShowcaseProps) 
     <Section>
       <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
         <div>
-          <p className="text-sm font-bold uppercase tracking-wide text-[#0E9F6E]">TrustBadge</p>
+          <p className="text-sm font-bold uppercase tracking-wide text-[#0E9F6E]">TrustBadge / verification</p>
           <h2 className="mt-3 text-3xl font-black tracking-tight text-[#0F1B2D] sm:text-4xl">
-            Verification beats promises.
+            The tick that answers “are these guys legit?”
           </h2>
           <p className="mt-4 text-lg leading-relaxed text-[#5B6472]">
-            The Credentials AI TrustBadge shows customers your credentials have actually been checked — and lets them verify it themselves in one click.
+            TrustBadge gives customers proof they can click and check: ABN/business details, licence, insurance, and
+            verification timestamps where available.
           </p>
           <p className="mt-4 text-base leading-relaxed text-[#5B6472]">
-            Every badge links to a verification page showing what's been verified — licence, insurance, business registration — and when. No fine print. No “trust us.” Customers see the verification details.
+            No "trust us" copy. A public verification page shows what was checked and when. We&apos;re an independent
+            verification service — not a government body, and not an endorsement.
           </p>
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
             <CtaButton
@@ -44,7 +46,7 @@ export function TrustBadgeShowcase({ freeProfileUrl }: TrustBadgeShowcaseProps) 
         <div className="rounded-[2rem] border border-slate-200 bg-white p-4 shadow-xl shadow-slate-900/8">
           <div className="overflow-hidden rounded-3xl border border-slate-200 bg-[#F7F6F3]">
             <div className="bg-[#0F1B2D] px-5 py-4 text-white">
-              <p className="text-xs font-semibold uppercase tracking-wide text-blue-200">Example local business site</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-blue-200">Example business profile</p>
               <h3 className="mt-1 text-xl font-black">Coastal Spark Electrical</h3>
               <p className="mt-1 text-sm text-white/70">Residential and commercial electrical work · Gold Coast</p>
             </div>
@@ -52,8 +54,8 @@ export function TrustBadgeShowcase({ freeProfileUrl }: TrustBadgeShowcaseProps) 
               <div className="rounded-2xl bg-white p-5 shadow-sm">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <p className="text-sm font-black text-[#0F1B2D]">Need a licensed electrician?</p>
-                    <p className="mt-1 text-sm text-slate-600">Fast quotes, tidy work, verified credentials.</p>
+                      <p className="text-sm font-black text-[#0F1B2D]">Need a licensed electrician?</p>
+                      <p className="mt-1 text-sm text-slate-600">Fast quotes, tidy work, credentials customers can verify.</p>
                   </div>
                   <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-3 text-center">
                     <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">Verified by</p>
@@ -71,7 +73,7 @@ export function TrustBadgeShowcase({ freeProfileUrl }: TrustBadgeShowcaseProps) 
                     <div key={item} className="rounded-xl bg-emerald-50 p-3 text-sm font-bold text-emerald-800">✓ {item}</div>
                   ))}
                 </div>
-                <p className="mt-4 text-xs text-slate-500">Example only. Real pages show the specific credentials submitted and review status.</p>
+                <p className="mt-4 text-xs text-slate-500">Sample data only. Real pages show submitted credentials and current review status.</p>
               </div>
             </div>
           </div>

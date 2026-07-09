@@ -25,7 +25,7 @@ export function getFreeProfileUrl(campaign = "homepage_free_ai_profile"): string
 
 export function getFounderBundleUrl(campaign = "homepage_founder_bundle"): string {
   return withTracking(getStartUrl(), {
-    intent: "founder_bundle",
+    intent: "verified_lead_engine",
     source: "credentialsai",
     campaign,
     utm_source: "credentialsai",
@@ -45,6 +45,11 @@ export function getProPresenceUrl(campaign = "homepage_pro_ai_presence"): string
     utm_campaign: campaign,
     utm_content: "pro_ai_presence",
   });
+}
+
+export function getSampleProfileUrl(): string {
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://credentialsai.com.au").replace(/\/$/, "");
+  return `${siteUrl}/b/sample-plumbing-co?src=credentialsai&campaign=homepage_sample_profile`;
 }
 
 export function getStartUrl(): string {

@@ -2,6 +2,8 @@ import { BRAND_NAME, getSiteUrl } from "@/lib/brand";
 import { Hero } from "@/components/marketing/Hero";
 import { ProblemCards } from "@/components/marketing/ProblemCards";
 import { HowItWorks } from "@/components/marketing/HowItWorks";
+import { LeadProfileSection } from "@/components/marketing/LeadProfileSection";
+import { ProofDashboardSection } from "@/components/marketing/ProofDashboardSection";
 import { TrustBadgeShowcase } from "@/components/marketing/TrustBadgeShowcase";
 import { AudienceGrid } from "@/components/marketing/AudienceGrid";
 import { HonestyBlock } from "@/components/marketing/HonestyBlock";
@@ -9,13 +11,13 @@ import { PricingSection } from "@/components/marketing/PricingSection";
 import { FounderBundleBanner } from "@/components/marketing/FounderBundleBanner";
 import { Faq, faqs } from "@/components/marketing/Faq";
 import { StickyMobileCta } from "@/components/marketing/StickyMobileCta";
-import { getFounderBundleUrl, getFreeProfileUrl, getProPresenceUrl } from "@/components/marketing/urls";
+import { getFounderBundleUrl, getFreeProfileUrl, getSampleProfileUrl } from "@/components/marketing/urls";
 
 export default function HomePage() {
   const siteUrl = getSiteUrl();
   const freeProfileUrl = getFreeProfileUrl();
   const founderBundleUrl = getFounderBundleUrl();
-  const proPresenceUrl = getProPresenceUrl();
+  const sampleProfileUrl = getSampleProfileUrl();
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -26,7 +28,7 @@ export default function HomePage() {
         name: BRAND_NAME,
         url: siteUrl,
         description:
-          "Credentials AI creates AI-readable business profiles and online credential verification pages for local Australian businesses.",
+          "Credentials AI helps local businesses get found, get trusted, and track enquiries with verification and proof reporting.",
       },
       {
         "@type": "WebSite",
@@ -38,14 +40,14 @@ export default function HomePage() {
       {
         "@type": "Service",
         "@id": `${siteUrl}/#service`,
-        name: "AI-readable business profiles and online credential verification",
+        name: "Verified lead engine for local businesses",
         provider: { "@id": `${siteUrl}/#organization` },
         areaServed: "Australia",
         serviceType: [
-          "AI-readable business profiles",
+          "Verified lead profile for local businesses",
           "online credential verification",
-          "business trust badge verification",
-          "AI search visibility for local businesses",
+          "tracked enquiries and source attribution",
+          "weekly proof reporting",
         ],
         offers: [
           {
@@ -56,12 +58,12 @@ export default function HomePage() {
           },
           {
             "@type": "Offer",
-            name: "Founder Bundle",
-            price: "39",
+            name: "Founding Member — Verified Lead Engine",
+            price: "49",
             priceCurrency: "AUD",
             priceSpecification: {
               "@type": "UnitPriceSpecification",
-              price: "39",
+              price: "49",
               priceCurrency: "AUD",
               billingIncrement: "P1M",
             },
@@ -89,16 +91,17 @@ export default function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Hero freeProfileUrl={freeProfileUrl} />
+      <Hero freeProfileUrl={freeProfileUrl} sampleProfileUrl={sampleProfileUrl} />
       <ProblemCards freeProfileUrl={freeProfileUrl} />
       <HowItWorks freeProfileUrl={freeProfileUrl} />
+      <LeadProfileSection sampleProfileUrl={sampleProfileUrl} />
+      <ProofDashboardSection />
       <TrustBadgeShowcase freeProfileUrl={freeProfileUrl} />
-      <AudienceGrid />
       <HonestyBlock />
+      <AudienceGrid />
       <PricingSection
         freeProfileUrl={freeProfileUrl}
         founderBundleUrl={founderBundleUrl}
-        proPresenceUrl={proPresenceUrl}
       />
       <FounderBundleBanner founderBundleUrl={founderBundleUrl} />
       <Faq freeProfileUrl={freeProfileUrl} />

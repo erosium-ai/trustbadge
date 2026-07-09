@@ -4,18 +4,18 @@ import { CtaButton } from "./CtaButton";
 const problems = [
   {
     marker: "01",
-    title: "Hard to find",
-    body: "Most local business websites aren't written in a format AI tools can reliably read.",
+    title: "Unreadable",
+    body: "Search engines and AI assistants are answering 'who should I call?' Most local business sites aren't structured in a way these tools can reliably understand.",
   },
   {
     marker: "02",
-    title: "Hard to trust",
-    body: "Anyone can claim they're licensed and insured. Almost nobody proves it before the customer calls.",
+    title: "Unproven",
+    body: "Anyone can write 'licensed and insured'. Almost nobody proves it. When customers compare two quotes, visible proof wins.",
   },
   {
     marker: "03",
-    title: "Hard to compare",
-    body: "When a customer weighs you against a competitor, the one with visible verification usually wins the call.",
+    title: "Unmeasured",
+    body: "Calls come in, quotes go out, and you still don't know what's actually working. 'Phone felt quiet' is not reporting.",
   },
 ];
 
@@ -23,12 +23,13 @@ export function ProblemCards({ freeProfileUrl }: { freeProfileUrl: string }) {
   return (
     <Section>
       <div className="max-w-3xl">
-        <p className="text-sm font-bold uppercase tracking-wide text-blue-700">The problem</p>
+        <p className="text-sm font-bold uppercase tracking-wide text-blue-700">The three gaps</p>
         <h2 className="mt-3 text-3xl font-black tracking-tight text-[#0F1B2D] sm:text-4xl">
-          Your next customer might never see your website.
+          People already check you out online. You just can&apos;t see it — or prove you&apos;re legit.
         </h2>
         <p className="mt-4 text-lg leading-relaxed text-[#5B6472]">
-          More people are asking ChatGPT, Google's AI, and voice assistants to find local businesses. If your details aren't structured in a way these tools can read, you're harder to find — and harder to trust.
+          This is where most local businesses lose ground: unreadable details, unproven credentials, and zero proof on
+          what enquiries actually came through.
         </p>
       </div>
       <div className="mt-10 grid gap-5 md:grid-cols-3">
@@ -46,13 +47,13 @@ export function ProblemCards({ freeProfileUrl }: { freeProfileUrl: string }) {
         <CtaButton
           href={freeProfileUrl}
           eventName="credentials_ai_click_problem_section"
-          label="Fix all three free"
+          label="Close all three gaps"
           dataCta="problem-primary"
           target="_blank"
           rel="noopener noreferrer"
           variant="secondary"
         >
-          Fix all three — free →
+          Close all three gaps — start free →
         </CtaButton>
       </div>
     </Section>
