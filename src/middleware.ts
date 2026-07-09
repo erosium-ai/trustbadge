@@ -1,17 +1,26 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-const ADMIN_PREFIX = "/admin";
+// 🔑 Keywords: Credentials AI middleware, dashboard guard, admin guard, supabase auth cookie
+// Guards `/admin/*` and `/dashboard/*`. The finer-grained ownership check
+// for `/dashboard/[slug]` (slug ↔ user) happens inside each dashboard page
+// via assertOwnership — the middleware only enforces "must be logged in."
+
+const GUARDED_PREFIXES = ["/admin", "/dashboard"];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (!pathname.startsWith(ADMIN_PREFIX)) {
+  const needsAuth = GUARDED_PREFIXES.some((p) => pathname.startsWith(p));
+  if (!needsAuth) {
     return NextResponse.next();
   }
 
   const hasSupabaseAuthCookie = request.cookies
     .getAll()
-    .some((cookie) => cookie.name.startsWith("sb-") && cookie.name.endsWith("-auth-token"));
+    .some(
+      (cookie) =>
+        cookie.name.startsWith("sb-") && cookie.name.endsWith("-auth-token")
+    );
 
   if (hasSupabaseAuthCookie) {
     return NextResponse.next();
@@ -25,6 +34,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/admin/:path*", "/dashboard/:path*"],
 };
-
