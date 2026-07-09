@@ -1,7 +1,105 @@
-// 🔑 Keywords: Credentials AI founding member, business_profiles upsert, subscription mirror, welcome flow
+// 🔑 Keywords: Credentials AI founding member, business_profiles upsert, subscription mirror, welcome flow, pages fallback create
 // Server-side helpers for the /welcome flow and Founding Member membership state.
+//
+// Includes a fallback path: if the business_profiles row does not exist yet for
+// the given slug (because SchemaPage created the profile in the `pages` table
+// but the mirror never populated business_profiles), we hydrate the row from
+// the `pages` table on the fly so the /welcome + dashboard flow can proceed.
 
 import { getServiceClient } from "./supabase";
+
+type PagesRow = {
+  id: string;
+  slug: string;
+  business_name: string;
+  tagline: string | null;
+  description: string | null;
+  services: unknown;
+  contact_email: string | null;
+  contact_phone: string | null;
+  website_url: string | null;
+  location_address: string | null;
+  social_links: unknown;
+  metadata: unknown;
+};
+
+/**
+ * Hydrate a business_profiles row from the SchemaPage `pages` table.
+ * Only used as a fallback when the mirror hasn't populated the row yet.
+ * Returns the inserted row id (or existing id if a race-inserted row is found).
+ */
+async function hydrateBusinessProfileFromPage(
+  slug: string
+): Promise<{ ok: boolean; reason?: string; id?: string }> {
+  const client = getServiceClient();
+  const normalizedSlug = slug.trim().toLowerCase();
+
+  const { data: page, error: pageErr } = await client
+    .from("pages")
+    .select(
+      "id, slug, business_name, tagline, description, services, contact_email, contact_phone, website_url, location_address, social_links, metadata"
+    )
+    .eq("slug", normalizedSlug)
+    .maybeSingle();
+
+  if (pageErr) {
+    return { ok: false, reason: `pages_lookup_failed: ${pageErr.message}` };
+  }
+  if (!page) {
+    return { ok: false, reason: "pages_row_missing" };
+  }
+
+  const p = page as PagesRow;
+
+  const insertPayload: Record<string, unknown> = {
+    source_page_id: p.id,
+    slug: normalizedSlug,
+    business_name: p.business_name,
+    description: p.description ?? null,
+    phone: p.contact_phone ?? null,
+    email: p.contact_email ?? null,
+    website: p.website_url ?? null,
+    services: Array.isArray(p.services) ? p.services : [],
+    social_links:
+      p.social_links && typeof p.social_links === "object" ? p.social_links : {},
+    metadata: {
+      ...(p.metadata && typeof p.metadata === "object"
+        ? (p.metadata as Record<string, unknown>)
+        : {}),
+      tagline: p.tagline ?? null,
+      location_address: p.location_address ?? null,
+      hydrated_from_pages_at: new Date().toISOString(),
+    },
+    plan: "free",
+    status: "active",
+  };
+
+  const { data: inserted, error: insertErr } = await client
+    .from("business_profiles")
+    .insert(insertPayload)
+    .select("id")
+    .maybeSingle();
+
+  if (insertErr) {
+    // If another process (webhook) already inserted the row between our SELECT
+    // and INSERT, look it up and return the existing id — that's a success.
+    if (insertErr.code === "23505" || insertErr.message?.includes("duplicate")) {
+      const { data: existing } = await client
+        .from("business_profiles")
+        .select("id")
+        .eq("slug", normalizedSlug)
+        .maybeSingle();
+      if (existing?.id) return { ok: true, id: existing.id as string };
+    }
+    return { ok: false, reason: `insert_failed: ${insertErr.message}` };
+  }
+
+  if (!inserted?.id) {
+    return { ok: false, reason: "insert_returned_no_id" };
+  }
+
+  return { ok: true, id: inserted.id as string };
+}
 
 export interface FoundingMemberUpsertInput {
   slug: string;
@@ -39,7 +137,7 @@ export async function upsertFoundingMember(
   const client = getServiceClient();
   const slug = input.slug.trim().toLowerCase();
 
-  const { data: existing, error: fetchErr } = await client
+  let { data: existing, error: fetchErr } = await client
     .from("business_profiles")
     .select(
       "id, slug, business_name, owner_user_id, plan, stripe_customer_id, stripe_subscription_id, subscription_status, founding_number, verification_status, next_payment_at, payment_email"
@@ -50,8 +148,26 @@ export async function upsertFoundingMember(
   if (fetchErr) {
     return { ok: false, reason: fetchErr.message };
   }
+
+  // Fallback: hydrate a business_profiles row from the SchemaPage `pages`
+  // table if the mirror hasn't populated it yet. This unblocks the /welcome
+  // flow for the very first customers after payment.
   if (!existing) {
-    return { ok: false, reason: "profile_not_found" };
+    const hydrate = await hydrateBusinessProfileFromPage(slug);
+    if (!hydrate.ok) {
+      return { ok: false, reason: `profile_not_found (${hydrate.reason ?? "hydrate_failed"})` };
+    }
+    const { data: refetched, error: refetchErr } = await client
+      .from("business_profiles")
+      .select(
+        "id, slug, business_name, owner_user_id, plan, stripe_customer_id, stripe_subscription_id, subscription_status, founding_number, verification_status, next_payment_at, payment_email"
+      )
+      .eq("slug", slug)
+      .maybeSingle();
+    if (refetchErr || !refetched) {
+      return { ok: false, reason: refetchErr?.message ?? "hydrate_refetch_failed" };
+    }
+    existing = refetched;
   }
 
   const update: Record<string, unknown> = {
