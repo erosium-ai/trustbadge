@@ -2,6 +2,7 @@
 
 import { Metadata } from "next";
 import Link from "next/link";
+import { getFreeProfileUrl } from "@/components/marketing/urls";
 
 export const metadata: Metadata = {
   title: "AI-Readable Websites for Local Businesses",
@@ -46,6 +47,9 @@ const FAQS = [
 ];
 
 export default function AIReadableWebsitesPage() {
+  const topCtaUrl = getFreeProfileUrl("ai_readable_websites_page");
+  const bottomCtaUrl = getFreeProfileUrl("ai_readable_websites_page_bottom");
+
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -81,7 +85,7 @@ export default function AIReadableWebsitesPage() {
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <Link
-              href="https://schemapage-production.up.railway.app/?source=credentialsai&utm_source=seo&utm_medium=ai_readable_websites_page&utm_campaign=free_ai_profile"
+              href={topCtaUrl}
               className="rounded-xl bg-teal-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-teal-700"
             >
               Create free AI profile
@@ -192,7 +196,7 @@ export default function AIReadableWebsitesPage() {
             presence and verified credential proof.
           </p>
           <Link
-            href="https://schemapage-production.up.railway.app/?source=credentialsai&utm_source=seo&utm_medium=ai_readable_websites_page&utm_campaign=bottom_cta"
+            href={bottomCtaUrl}
             className="mt-5 inline-flex rounded-xl bg-white px-5 py-3 text-sm font-semibold text-teal-800 transition hover:bg-teal-50"
           >
             Create free AI profile

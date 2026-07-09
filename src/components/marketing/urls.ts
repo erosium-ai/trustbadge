@@ -13,7 +13,7 @@ export function withTracking(baseUrl: string, params: Record<string, string>): s
 }
 
 export function getFreeProfileUrl(campaign = "homepage_free_ai_profile"): string {
-  return withTracking(getSchemaPageUrl(), {
+  return withTracking(getStartUrl(), {
     source: "credentialsai",
     campaign,
     utm_source: "credentialsai",
@@ -24,7 +24,7 @@ export function getFreeProfileUrl(campaign = "homepage_free_ai_profile"): string
 }
 
 export function getFounderBundleUrl(campaign = "homepage_founder_bundle"): string {
-  return withTracking(getSchemaPageUrl(), {
+  return withTracking(getStartUrl(), {
     intent: "founder_bundle",
     source: "credentialsai",
     campaign,
@@ -36,7 +36,7 @@ export function getFounderBundleUrl(campaign = "homepage_founder_bundle"): strin
 }
 
 export function getProPresenceUrl(campaign = "homepage_pro_ai_presence"): string {
-  return withTracking(getSchemaPageUrl(), {
+  return withTracking(getStartUrl(), {
     intent: "pro",
     source: "credentialsai",
     campaign,
@@ -45,4 +45,13 @@ export function getProPresenceUrl(campaign = "homepage_pro_ai_presence"): string
     utm_campaign: campaign,
     utm_content: "pro_ai_presence",
   });
+}
+
+export function getStartUrl(): string {
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://credentialsai.com.au").replace(/\/$/, "");
+  return `${siteUrl}/start`;
+}
+
+export function getDirectSchemaPageUrl(): string {
+  return getSchemaPageUrl();
 }

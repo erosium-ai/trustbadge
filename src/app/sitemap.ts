@@ -3,6 +3,7 @@ import { getSiteUrl } from "@/lib/brand";
 
 const staticRoutes = [
   "",
+  "/start",
   "/ai-readable-websites",
   "/online-credential-verification",
   "/trust-badge-for-business",
