@@ -73,18 +73,35 @@ export default function LoginPage() {
       return;
     }
 
+    const nextPath = safeNextPath();
+    if (nextPath) {
+      router.push(nextPath);
+      return;
+    }
+
+    // Prefer the Credentials AI Founding Member / business_profiles flow: if
+    // the user owns a business_profiles row, take them straight to that
+    // dashboard. This covers Founding Members who signed up via /welcome.
+    type BusinessProfileSlugRow = { slug: string };
+    const { data: businessProfile } = await supabase
+      .from("business_profiles")
+      .select("slug")
+      .eq("owner_user_id", data.user.id)
+      .limit(1)
+      .maybeSingle<BusinessProfileSlugRow>();
+
+    if (businessProfile?.slug) {
+      router.push(`/dashboard/${businessProfile.slug}`);
+      return;
+    }
+
+    // Legacy TrustBadge path (pre-Founding Member flow).
     type BadgeSlugRow = { slug: string };
     const { data: badgeData } = await supabase
       .from("trustbadges")
       .select("slug")
       .eq("user_id", data.user.id)
       .single<BadgeSlugRow>();
-
-    const nextPath = safeNextPath();
-    if (nextPath) {
-      router.push(nextPath);
-      return;
-    }
 
     if (badgeData?.slug) {
       router.push(`/dashboard/${badgeData.slug}`);
