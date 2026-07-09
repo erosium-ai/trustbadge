@@ -4,6 +4,15 @@ import { getCurrentAuthUser, isAdminUser } from "@/lib/admin-auth";
 
 export const dynamic = "force-dynamic";
 
+const ALLOWED_LEAD_STATUSES = new Set([
+  "new",
+  "contacted",
+  "quoted",
+  "won",
+  "lost",
+  "spam",
+]);
+
 function isMissingLeadEventsRelationError(message?: string): boolean {
   if (!message) return false;
   const lowered = message.toLowerCase();
@@ -122,6 +131,82 @@ export async function GET(req: NextRequest) {
       trackedLeads,
       trackedLeadSummary,
     });
+  } catch (err) {
+    return NextResponse.json(
+      { error: (err as Error).message || "Internal server error" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PATCH(req: NextRequest) {
+  try {
+    const user = await getCurrentAuthUser();
+    if (!user || !(await isAdminUser(user))) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    }
+
+    const payload = await req.json().catch(() => ({}));
+    const leadId = typeof payload?.leadId === "string" ? payload.leadId.trim() : "";
+    const status = typeof payload?.status === "string" ? payload.status.trim().toLowerCase() : "";
+
+    if (!leadId || !status) {
+      return NextResponse.json({ error: "leadId and status are required" }, { status: 400 });
+    }
+
+    if (!ALLOWED_LEAD_STATUSES.has(status)) {
+      return NextResponse.json({ error: "Invalid status" }, { status: 400 });
+    }
+
+    const service = getServiceClient();
+
+    const { data: existing, error: existingError } = await service
+      .from("lead_events")
+      .select("id,status,metadata")
+      .eq("id", leadId)
+      .single();
+
+    if (existingError) {
+      return NextResponse.json({ error: existingError.message }, { status: 404 });
+    }
+
+    const metadata =
+      existing?.metadata && typeof existing.metadata === "object"
+        ? (existing.metadata as Record<string, unknown>)
+        : {};
+
+    const history = Array.isArray(metadata.status_history)
+      ? metadata.status_history.slice(-19)
+      : [];
+
+    history.push({
+      from: existing?.status || null,
+      to: status,
+      changed_at: new Date().toISOString(),
+      changed_by: user.email || user.id,
+    });
+
+    const nextMetadata = {
+      ...metadata,
+      status_history: history,
+      last_status_changed_by: user.email || user.id,
+      last_status_changed_at: new Date().toISOString(),
+    };
+
+    const { data, error } = await service
+      .from("lead_events")
+      .update({ status, metadata: nextMetadata })
+      .eq("id", leadId)
+      .select(
+        "id,type,status,source,referrer,name,phone,email,suburb,service_needed,message,metadata,created_at,updated_at,business_profile:business_profiles(slug,business_name,plan,email,phone)"
+      )
+      .single();
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true, lead: data });
   } catch (err) {
     return NextResponse.json(
       { error: (err as Error).message || "Internal server error" },

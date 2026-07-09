@@ -71,6 +71,7 @@ type LeadTypeFilter =
   | "qr_scan"
   | "badge_click";
 type LeadStatusFilter = "all" | "new" | "contacted" | "quoted" | "won" | "lost" | "spam";
+const STATUS_ACTIONS: Array<Exclude<LeadStatusFilter, "all">> = ["new", "contacted", "quoted", "won", "lost", "spam"];
 
 function formatDateTime(iso?: string | null): string {
   if (!iso) return "—";
@@ -108,6 +109,7 @@ export default function AdminLeadsPage() {
   const [daysBack, setDaysBack] = useState<string>("9999");
   const [leadType, setLeadType] = useState<LeadTypeFilter>("all");
   const [leadStatus, setLeadStatus] = useState<LeadStatusFilter>("all");
+  const [updatingLeadId, setUpdatingLeadId] = useState<string | null>(null);
 
   useEffect(() => {
     void fetchLeads();
@@ -147,6 +149,28 @@ export default function AdminLeadsPage() {
       setError(err instanceof Error ? err.message : "Unknown error");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function updateLeadStatus(leadId: string, status: Exclude<LeadStatusFilter, "all">) {
+    setUpdatingLeadId(leadId);
+    try {
+      const res = await fetch("/api/leads", {
+        method: "PATCH",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ leadId, status }),
+      });
+
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.success) {
+        throw new Error(json.error || `HTTP ${res.status}`);
+      }
+
+      await fetchLeads();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to update lead status");
+    } finally {
+      setUpdatingLeadId(null);
     }
   }
 
@@ -614,6 +638,22 @@ export default function AdminLeadsPage() {
                             >
                               {lead.status}
                             </span>
+                            <div className="mt-2 flex flex-wrap gap-1">
+                              {STATUS_ACTIONS.map((statusOption) => (
+                                <button
+                                  key={`${lead.id}-${statusOption}`}
+                                  onClick={() => void updateLeadStatus(lead.id, statusOption)}
+                                  disabled={updatingLeadId === lead.id || lead.status === statusOption}
+                                  className={`rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
+                                    lead.status === statusOption
+                                      ? "border-brand-300 bg-brand-50 text-brand-700"
+                                      : "border-slate-300 bg-white text-slate-600 hover:bg-slate-50"
+                                  } disabled:cursor-not-allowed disabled:opacity-50`}
+                                >
+                                  {statusOption}
+                                </button>
+                              ))}
+                            </div>
                           </td>
                           <td className="px-4 py-3 text-slate-700">
                             <div className="space-y-0.5">
