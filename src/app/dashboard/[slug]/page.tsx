@@ -504,8 +504,8 @@ export default async function DashboardOverviewPage({
                 Founding Member &mdash; Verified Lead Engine
               </p>
               <p className="mt-1 text-sm text-slate-600">
-                $49/month, locked in while you stay subscribed. Setup fee:
-                waived.
+                $49/month, locked in while you stay subscribed. Direct founder
+                access included, no charge.
               </p>
               {record.next_payment_at ? (
                 <p className="mt-2 text-sm text-slate-600">

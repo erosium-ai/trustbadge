@@ -15,7 +15,7 @@ export function PricingSection({ freeProfileUrl, founderBundleUrl }: PricingSect
           One decision. Start free, or run the full engine.
         </h2>
         <p className="mt-4 text-lg leading-relaxed text-[#5B6472]">
-          No lock-in contracts. No setup fee for Founding Members. Cancel anytime.
+          No lock-in contracts. Direct founder access included for Founding Members. Cancel anytime.
         </p>
       </div>
 
@@ -58,7 +58,7 @@ export function PricingSection({ freeProfileUrl, founderBundleUrl }: PricingSect
             <span className="text-4xl font-black text-[#0F1B2D]">$49</span>
             <span className="pb-1 text-sm font-semibold text-slate-500">/mo</span>
           </div>
-          <p className="mt-1 text-sm font-semibold text-slate-500">$149 setup waived · locked while subscribed</p>
+          <p className="mt-1 text-sm font-semibold text-slate-500">Founder access included · price locked while subscribed</p>
 
           <ul className="mt-5 space-y-3 text-sm leading-relaxed text-[#5B6472]">
             <li>✓ Everything in Free</li>
@@ -68,7 +68,7 @@ export function PricingSection({ freeProfileUrl, founderBundleUrl }: PricingSect
             <li>✓ Source tracking + instant lead alerts</li>
             <li>✓ Lead status tracking (new → contacted → quoted → won)</li>
             <li>✓ Weekly proof summary + CSV export</li>
-            <li>✓ Founder-assisted setup</li>
+            <li>✓ Direct founder access (call, text, or coffee if Gold Coast local) — normally $149, yours free</li>
           </ul>
           <p className="mt-5 text-sm font-semibold text-slate-700">
             This is the full verified lead engine. One plan, no confusion.
@@ -87,8 +87,8 @@ export function PricingSection({ freeProfileUrl, founderBundleUrl }: PricingSect
 
       <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 text-sm leading-relaxed text-slate-700">
         <p className="font-semibold text-slate-900">
-          After the Founding 50: $99/mo + $149 verification setup. Founding Members keep $49/mo for as long as they
-          stay subscribed.
+          After the Founding 50: $99/mo, with founder access charged separately. Founding Members keep $49/mo for as
+          long as they stay subscribed.
         </p>
         <p className="mt-2 text-slate-600">
           Extra verified credentials +$5/mo each. Multiple locations? Talk to us. Verification is independent — we

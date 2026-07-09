@@ -11,8 +11,9 @@ export function FounderBundleBanner({ founderBundleUrl }: { founderBundleUrl: st
             <h2 className="text-3xl font-black tracking-tight text-[#0F1B2D] sm:text-4xl">Why the first 50 get it for $49.</h2>
             <p className="mt-5 text-lg leading-relaxed text-slate-700">
               Simple trade. Credentials AI is new, and I need real proof stories more than margin right now. So the
-              first 50 businesses get the full Verified Lead Engine at $49/mo, setup fee waived, with personal founder
-              onboarding.
+              first 50 businesses get the full Verified Lead Engine at $49/mo with direct access to me — the founder —
+              at no charge. Call, text, or grab a coffee if you&apos;re Gold Coast local. Zero obligation, no appointment
+              needed. Most people set it up themselves in 4 minutes.
             </p>
             <p className="mt-4 text-base leading-relaxed text-slate-700">
               In return, I get honest feedback and real outcomes to improve the product. When spot 50 is gone,
@@ -28,8 +29,8 @@ export function FounderBundleBanner({ founderBundleUrl }: { founderBundleUrl: st
             <h3 className="text-xl font-black text-[#0F1B2D]">Founding 50 includes</h3>
             <ul className="mt-5 space-y-3 text-sm font-semibold leading-relaxed text-slate-700">
               <li>✓ Verified Lead Engine at $49/mo</li>
-              <li>✓ $149 setup fee waived</li>
-              <li>✓ Founder-assisted setup</li>
+              <li>✓ Direct founder access, yours no charge (normally $149)</li>
+              <li>✓ Call, text, or coffee (Gold Coast local) — or self-serve</li>
               <li>✓ Price lock while subscribed</li>
             </ul>
             <CtaButton
