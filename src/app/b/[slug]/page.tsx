@@ -10,7 +10,7 @@
 
 import { notFound } from "next/navigation";
 import { LeadCapturePanel } from "@/components/profiles/LeadCapturePanel";
-import { getBusinessProfileBySlug } from "@/lib/trustbadge";
+import { getBusinessProfileBySlug, getPublicBadgeData } from "@/lib/trustbadge";
 import { getSiteUrl, BRAND_NAME } from "@/lib/brand";
 import { schemaTypeFor, textureFor } from "@/lib/business-types";
 
@@ -110,11 +110,17 @@ function initialsOf(name: string): string {
 // Verification seal — state driven by verification_status. Grey when pending.
 // ---------------------------------------------------------------------------
 
-function VerificationSeal({ verified }: { verified: boolean }) {
-  return (
+function VerificationSeal({ verified, href }: { verified: boolean; href?: string | null }) {
+  const seal = (
     <div
       className="flex flex-col items-center gap-1.5"
-      title={verified ? "Verified by Credentials AI" : "Verification pending"}
+      title={
+        verified
+          ? href
+            ? "Verified by Credentials AI — click to see what was checked and when"
+            : "Verified by Credentials AI"
+          : "Verification pending"
+      }
     >
       <div
         className={`relative flex h-16 w-16 items-center justify-center rounded-full sm:h-20 sm:w-20 ${
@@ -156,6 +162,19 @@ function VerificationSeal({ verified }: { verified: boolean }) {
       </span>
     </div>
   );
+
+  if (href) {
+    return (
+      <a
+        href={href}
+        className="transition-transform hover:scale-105"
+        aria-label="See what was checked and when"
+      >
+        {seal}
+      </a>
+    );
+  }
+  return seal;
 }
 
 export default async function PublicBusinessProfilePage({ params }: ProfilePageProps) {
@@ -174,6 +193,19 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
   const canonicalUrl = `${siteUrl}/b/${profile.slug}`;
   const isVerified =
     (profile as { verification_status?: string }).verification_status === "verified";
+
+  // Public verification page link — only when a real badge record exists
+  // (never link to a 404; the copy promises clickable proof, so the click
+  // must always land on an actual verification page).
+  let badgeUrl: string | null = null;
+  try {
+    const badge = await getPublicBadgeData(profile.slug);
+    if (badge.trustbadge) {
+      badgeUrl = `/badge/${profile.slug}`;
+    }
+  } catch {
+    badgeUrl = null;
+  }
 
   // v1.1: business type + GBP link + FAQs ride in metadata (no migration).
   const meta =
@@ -277,7 +309,7 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
                 )}
               </div>
               <div className="flex-none">
-                <VerificationSeal verified={isVerified} />
+                <VerificationSeal verified={isVerified} href={badgeUrl} />
               </div>
             </div>
 
@@ -297,9 +329,18 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
                 </span>
               )}
               {isVerified ? (
-                <span className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 font-medium text-emerald-300">
-                  Credentials verified
-                </span>
+                badgeUrl ? (
+                  <a
+                    href={badgeUrl}
+                    className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 font-medium text-emerald-300 underline-offset-2 hover:underline"
+                  >
+                    Credentials verified — see what was checked →
+                  </a>
+                ) : (
+                  <span className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 font-medium text-emerald-300">
+                    Credentials verified
+                  </span>
+                )
               ) : (
                 <span className="rounded-full border border-white/15 bg-white/5 px-3 py-1 font-medium text-slate-400">
                   Verification in progress
