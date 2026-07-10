@@ -5,7 +5,7 @@ import { SupportEmailLink } from "@/components/SupportEmailLink";
 
 export function LegalFooter() {
   return (
-    <footer className="border-t border-slate-200 bg-white px-4 py-8 text-center text-xs leading-6 text-slate-500">
+    <footer className="border-t border-slate-200 bg-white px-4 pb-[calc(7.5rem+env(safe-area-inset-bottom))] pt-8 text-center text-xs leading-6 text-slate-500 md:py-8">
       <p>Credentials AI is operated by Beastly Tech GC Pty Ltd · ABN 52 699 330 553 · Trading as Erosium</p>
       <nav className="mt-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-1" aria-label="Legal">
         <Link href="/privacy" className="font-medium text-slate-700 underline-offset-4 hover:underline">
