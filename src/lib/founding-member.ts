@@ -51,6 +51,14 @@ async function hydrateBusinessProfileFromPage(
 
   const p = page as PagesRow;
 
+  const pageMeta =
+    p.metadata && typeof p.metadata === "object" ? (p.metadata as Record<string, unknown>) : {};
+  const metaServiceAreas = Array.isArray(pageMeta.service_areas)
+    ? (pageMeta.service_areas as unknown[]).filter(
+        (v): v is string => typeof v === "string" && v.trim().length > 0
+      )
+    : [];
+
   const insertPayload: Record<string, unknown> = {
     source_page_id: p.id,
     slug: normalizedSlug,
@@ -60,12 +68,11 @@ async function hydrateBusinessProfileFromPage(
     email: p.contact_email ?? null,
     website: p.website_url ?? null,
     services: Array.isArray(p.services) ? p.services : [],
+    service_areas: metaServiceAreas,
     social_links:
       p.social_links && typeof p.social_links === "object" ? p.social_links : {},
     metadata: {
-      ...(p.metadata && typeof p.metadata === "object"
-        ? (p.metadata as Record<string, unknown>)
-        : {}),
+      ...pageMeta,
       tagline: p.tagline ?? null,
       location_address: p.location_address ?? null,
       hydrated_from_pages_at: new Date().toISOString(),

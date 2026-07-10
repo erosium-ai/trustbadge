@@ -12,6 +12,7 @@ import { notFound } from "next/navigation";
 import { LeadCapturePanel } from "@/components/profiles/LeadCapturePanel";
 import { getBusinessProfileBySlug } from "@/lib/trustbadge";
 import { getSiteUrl, BRAND_NAME } from "@/lib/brand";
+import { schemaTypeFor, textureFor } from "@/lib/business-types";
 
 export const dynamic = "force-dynamic";
 
@@ -41,7 +42,20 @@ function getSampleProfile() {
     abn: "12 345 678 901",
     status: "active",
     verification_status: "verified",
-    metadata: { sample_profile: true },
+    metadata: {
+      sample_profile: true,
+      business_type: "plumber",
+      faqs: [
+        {
+          question: "Which areas do you service?",
+          answer: "Burleigh Heads, Varsity Lakes, Mermaid Beach and Robina — same-day where possible.",
+        },
+        {
+          question: "Are you licensed and insured?",
+          answer: "Yes — QBCC licensed and fully insured for residential and commercial work.",
+        },
+      ],
+    },
   };
 }
 
@@ -161,9 +175,39 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
   const isVerified =
     (profile as { verification_status?: string }).verification_status === "verified";
 
+  // v1.1: business type + GBP link + FAQs ride in metadata (no migration).
+  const meta =
+    profile.metadata && typeof profile.metadata === "object"
+      ? (profile.metadata as Record<string, unknown>)
+      : {};
+  const businessType = typeof meta.business_type === "string" ? meta.business_type : null;
+  const gbpUrl =
+    typeof meta.google_business_profile_url === "string" && meta.google_business_profile_url
+      ? meta.google_business_profile_url
+      : null;
+  const faqs = Array.isArray(meta.faqs)
+    ? (meta.faqs as Array<{ question?: string; answer?: string }>)
+        .map((f) => ({
+          question: String(f?.question ?? "").trim().slice(0, 180),
+          answer: String(f?.answer ?? "").trim().slice(0, 1000),
+        }))
+        .filter((f) => f.question && f.answer)
+        .slice(0, 8)
+    : [];
+  const headerTexture = textureFor(businessType);
+
+  const socialSource = (profile as { social_links?: unknown }).social_links;
+  const socialLinks =
+    socialSource && typeof socialSource === "object"
+      ? Object.values(socialSource as Record<string, unknown>).filter(
+          (v): v is string => typeof v === "string" && v.startsWith("http")
+        )
+      : [];
+  const sameAs = [...(gbpUrl ? [gbpUrl] : []), ...socialLinks];
+
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
+    "@type": schemaTypeFor(businessType),
     "@id": canonicalUrl,
     name: profile.business_name,
     description: profile.description || undefined,
@@ -180,6 +224,7 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
           addressCountry: "AU",
         }
       : undefined,
+    sameAs: sameAs.length > 0 ? sameAs : undefined,
     makesOffer: services.map((service) => ({
       "@type": "Offer",
       itemOffered: {
@@ -329,6 +374,36 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
             )}
           </aside>
         </section>
+
+        {/* ── FAQs (rendered for humans + FAQPage schema for machines) ──── */}
+        {faqs.length > 0 && (
+          <section className="card-float mt-6 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{
+                __html: safeJsonLd({
+                  "@context": "https://schema.org",
+                  "@type": "FAQPage",
+                  mainEntity: faqs.map((f) => ({
+                    "@type": "Question",
+                    name: f.question,
+                    acceptedAnswer: { "@type": "Answer", text: f.answer },
+                  })),
+                }),
+              }}
+            />
+            <h2 className="text-lg font-semibold text-slate-900">Common questions</h2>
+            <div className="mt-1 h-px w-10 bg-sunset" aria-hidden />
+            <dl className="mt-4 space-y-4">
+              {faqs.map((f) => (
+                <div key={f.question} className="rounded-xl border border-slate-100 bg-cream/60 p-4">
+                  <dt className="text-sm font-semibold text-slate-900">{f.question}</dt>
+                  <dd className="mt-1 text-sm leading-relaxed text-slate-600">{f.answer}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        )}
 
         {/* ── Certificate signature line ──────────────────────────────── */}
         <footer className="mt-8 flex flex-col items-center gap-1 border-t border-slate-200 pt-6 text-center">
