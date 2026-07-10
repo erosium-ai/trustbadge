@@ -42,7 +42,7 @@ function Card({
 }) {
   return (
     <div
-      className={`rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 ${className}`}
+      className={`card-float rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 ${className}`}
     >
       {children}
     </div>
@@ -547,16 +547,19 @@ export default async function DashboardOverviewPage({
 
 function ProofTile({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-xl bg-slate-50 p-4">
+    <div className="rounded-xl border border-slate-100 bg-cream/70 p-4">
       <p
-        className="text-3xl font-bold tabular-nums text-slate-900 sm:text-4xl"
+        className={`text-3xl font-black tabular-nums sm:text-4xl ${
+          value > 0 ? "text-ink" : "text-slate-400"
+        }`}
         style={{ fontVariantNumeric: "tabular-nums" }}
       >
         {value}
       </p>
-      <p className="mt-1 text-xs uppercase tracking-wide text-slate-500">
+      <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-slate-500">
         {label}
       </p>
+      <div className={`mt-2 h-0.5 w-8 rounded ${value > 0 ? "bg-sunset" : "bg-slate-200"}`} aria-hidden />
     </div>
   );
 }
