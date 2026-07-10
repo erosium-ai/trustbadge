@@ -84,7 +84,12 @@ export function TopBar() {
     router.push("/");
   }
 
-  const slug = primary.slug;
+  // Primary slug from API, with pathname fallback so mobile dashboard
+  // users see Leads/Verification links even when the fetch races after
+  // a fresh claim/login.
+  const slugFromPath =
+    (pathname.match(/^\/dashboard\/([^/?#]+)/) ?? [])[1] ?? null;
+  const slug = primary.slug ?? slugFromPath;
   const inDashboard = pathname.startsWith("/dashboard");
 
   return (
