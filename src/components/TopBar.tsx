@@ -220,13 +220,13 @@ export function TopBar() {
                         ) : null}
                       </div>
                       <a
-                        href="mailto:billing@credentialsai.com.au"
+                        href="mailto:support@erosium.ai"
                         className="block rounded-md px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
                       >
-                        Billing
+                        Billing & support
                       </a>
                       <a
-                        href="mailto:help@credentialsai.com.au"
+                        href="mailto:support@erosium.ai"
                         className="block rounded-md px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
                       >
                         Help

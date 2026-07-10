@@ -68,10 +68,10 @@ export default async function VerificationPage({ params }: VerificationPageProps
           <li>
             &bull; Or email photos of your licence and insurance to{" "}
             <a
-              href="mailto:verify@credentialsai.com.au"
+              href="mailto:support@erosium.ai"
               className="font-medium text-[#F97316] hover:underline"
             >
-              verify@credentialsai.com.au
+              support@erosium.ai
             </a>
             .
           </li>
@@ -122,10 +122,10 @@ export default async function VerificationPage({ params }: VerificationPageProps
       <div className="mt-8 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
         Prefer to send by email? Photos of your licence and insurance to{" "}
         <a
-          href="mailto:verify@credentialsai.com.au"
+          href="mailto:support@erosium.ai"
           className="font-medium underline"
         >
-          verify@credentialsai.com.au
+          support@erosium.ai
         </a>{" "}
         &mdash; whichever&rsquo;s easier for you.
       </div>

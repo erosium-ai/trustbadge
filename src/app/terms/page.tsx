@@ -85,9 +85,7 @@ export default function TermsPage() {
         <h2>10. Contact</h2>
         <p>
           Questions about these terms can be sent to{" "}
-          <a href="mailto:support@credentialsai.com.au">
-            support@credentialsai.com.au
-          </a>
+          <a href="mailto:support@erosium.ai">support@erosium.ai</a>
           .
         </p>
       </article>

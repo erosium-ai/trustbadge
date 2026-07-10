@@ -200,8 +200,8 @@ export default async function DashboardOverviewPage({
         href: `/dashboard/${record.slug}/verification`,
       },
       subCta: {
-        label: "or email photos to verify@credentialsai.com.au",
-        href: "mailto:verify@credentialsai.com.au",
+        label: "or email photos to support@erosium.ai",
+        href: "mailto:support@erosium.ai",
       },
     },
     {
@@ -465,10 +465,10 @@ export default async function DashboardOverviewPage({
                   Upload documents
                 </Link>
                 <a
-                  href="mailto:verify@credentialsai.com.au"
+                  href="mailto:support@erosium.ai"
                   className="text-center text-xs text-slate-500 hover:underline"
                 >
-                  or email photos to verify@credentialsai.com.au
+                  or email photos to support@erosium.ai
                 </a>
               </div>
             </Card>
@@ -484,10 +484,10 @@ export default async function DashboardOverviewPage({
               </p>
               <div className="mt-4 flex flex-col gap-2">
                 <a
-                  href="mailto:ike@credentialsai.com.au?subject=Founding%20Member%20setup"
+                  href="mailto:support@erosium.ai?subject=Founding%20Member%20setup"
                   className="w-full rounded-lg bg-[#F97316] px-3 py-2 text-center text-sm font-semibold text-white hover:bg-[#EA580C]"
                 >
-                  Email Ike
+                  Founder support
                 </a>
               </div>
               <p className="mt-3 text-xs text-slate-500">
@@ -518,10 +518,10 @@ export default async function DashboardOverviewPage({
               <p className="mt-3 text-sm text-slate-500">
                 Change card or cancel?{" "}
                 <a
-                  href="mailto:billing@credentialsai.com.au"
+                  href="mailto:support@erosium.ai"
                   className="font-medium text-[#F97316] hover:underline"
                 >
-                  Email billing@credentialsai.com.au
+                  Email support@erosium.ai
                 </a>{" "}
                 &mdash; sorted within one business day.
               </p>
@@ -532,10 +532,10 @@ export default async function DashboardOverviewPage({
         <footer className="mt-10 text-center text-sm text-slate-500">
           Stuck on anything? Email{" "}
           <a
-            href="mailto:help@credentialsai.com.au"
+            href="mailto:support@erosium.ai"
             className="font-medium text-[#F97316] hover:underline"
           >
-            help@credentialsai.com.au
+            support@erosium.ai
           </a>{" "}
           or reply to any email we&rsquo;ve sent &mdash; a human answers,
           usually same day.

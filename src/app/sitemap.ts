@@ -14,6 +14,7 @@ const staticRoutes = [
   "/trust-badge-for-business",
   "/terms",
   "/refunds",
+  "/privacy",
 ];
 
 function isExcludedSlug(slug: string): boolean {

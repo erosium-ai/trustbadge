@@ -317,6 +317,18 @@ export function LeadCapturePanel({
               className="min-h-28 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
             />
 
+            <p className="text-xs leading-relaxed text-slate-500">
+              Credentials AI stores your enquiry and attribution details and
+              sends them to {businessName} so they can respond. Submitting this
+              form is not marketing consent.{" "}
+              <a
+                href="/privacy"
+                className="font-medium text-slate-700 underline hover:text-slate-900"
+              >
+                Privacy Policy
+              </a>
+            </p>
+
             <div className="flex items-center justify-between gap-3">
               <button
                 type="button"

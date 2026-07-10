@@ -37,7 +37,7 @@ export default function RefundPolicyPage() {
 
         <h2>4. How to request a refund</h2>
         <p>
-          Email <a href="mailto:support@credentialsai.com.au">support@credentialsai.com.au</a>{" "}
+          Email <a href="mailto:support@erosium.ai">support@erosium.ai</a>{" "}
           with:
         </p>
         <ul>

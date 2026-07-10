@@ -255,10 +255,10 @@ function WelcomeFailure({
               ? `This business (${slug}) already has an owner on Credentials AI. Email `
               : "Check your inbox within the hour \u2014 you should have a welcome from the founder. If not, email "}
             <a
-              href="mailto:help@credentialsai.com.au"
+              href="mailto:support@erosium.ai"
               className="font-medium text-[#F97316] hover:underline"
             >
-              help@credentialsai.com.au
+              support@erosium.ai
             </a>{" "}
             and we&rsquo;ll sort it within one business day.
           </p>
