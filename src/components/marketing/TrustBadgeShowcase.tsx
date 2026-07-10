@@ -43,7 +43,11 @@ export function TrustBadgeShowcase({ freeProfileUrl }: TrustBadgeShowcaseProps) 
           </div>
         </div>
 
-        <div className="rounded-[2rem] border border-slate-200 bg-white p-4 shadow-xl shadow-slate-900/8">
+        <Link
+          href="/trust-badge-for-business"
+          aria-label="See how the clickable Credentials AI TrustBadge works"
+          className="group block touch-manipulation rounded-[2rem] border border-slate-200 bg-white p-4 shadow-xl shadow-slate-900/8 transition hover:-translate-y-0.5 hover:shadow-2xl focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-300"
+        >
           <div className="overflow-hidden rounded-3xl border border-slate-200 bg-[#F7F6F3]">
             <div className="bg-[#0F1B2D] px-5 py-4 text-white">
               <p className="text-xs font-semibold uppercase tracking-wide text-blue-200">Example business profile</p>
@@ -57,10 +61,10 @@ export function TrustBadgeShowcase({ freeProfileUrl }: TrustBadgeShowcaseProps) 
                       <p className="text-sm font-black text-[#0F1B2D]">Need a licensed electrician?</p>
                       <p className="mt-1 text-sm text-slate-600">Fast quotes, tidy work, credentials customers can verify.</p>
                   </div>
-                  <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-3 text-center">
+                  <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-3 text-center transition-colors group-hover:bg-emerald-100">
                     <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">Verified by</p>
                     <p className="mt-1 text-lg font-black text-emerald-800">Credentials AI</p>
-                    <p className="mt-1 text-xs font-semibold text-emerald-700">Click to verify details →</p>
+                    <p className="mt-1 text-xs font-semibold text-emerald-700">Tap to verify details →</p>
                   </div>
                 </div>
               </div>
@@ -77,7 +81,7 @@ export function TrustBadgeShowcase({ freeProfileUrl }: TrustBadgeShowcaseProps) 
               </div>
             </div>
           </div>
-        </div>
+        </Link>
       </div>
     </Section>
   );
