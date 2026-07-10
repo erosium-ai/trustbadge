@@ -1,5 +1,6 @@
 import { BRAND_NAME, getSiteUrl } from "@/lib/brand";
 import { Hero } from "@/components/marketing/Hero";
+import { AiReadableSection } from "@/components/marketing/AiReadableSection";
 import { ProblemCards } from "@/components/marketing/ProblemCards";
 import { HowItWorks } from "@/components/marketing/HowItWorks";
 import { LeadProfileSection } from "@/components/marketing/LeadProfileSection";
@@ -92,6 +93,7 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Hero freeProfileUrl={freeProfileUrl} sampleProfileUrl={sampleProfileUrl} />
+      <AiReadableSection />
       <ProblemCards freeProfileUrl={freeProfileUrl} />
       <HowItWorks freeProfileUrl={freeProfileUrl} />
       <LeadProfileSection sampleProfileUrl={sampleProfileUrl} />
