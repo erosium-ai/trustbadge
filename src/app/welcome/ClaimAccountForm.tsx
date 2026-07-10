@@ -11,6 +11,21 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { getBrowserClient } from "@/lib/supabase-browser";
 
+function claimErrorMessage(code: unknown): string {
+  switch (code) {
+    case "email_mismatch":
+      return "That email doesn't match the one used for payment. Use your payment email, or contact help@credentialsai.com.au.";
+    case "password_too_short":
+      return "Password must be at least 8 characters.";
+    case "invalid_email":
+      return "Please enter a valid email address.";
+    case "profile_not_found":
+      return "We couldn't find your business profile — email help@credentialsai.com.au and we'll sort it.";
+    default:
+      return typeof code === "string" ? code : "Could not create your account";
+  }
+}
+
 interface ClaimAccountFormProps {
   slug: string;
   paymentEmail: string | null;
@@ -35,25 +50,35 @@ export function ClaimAccountForm({
 
     const supabase = getBrowserClient();
     try {
-      const { data, error: signUpError } = await supabase.auth.signUp({
-        email,
-        password,
+      // Create the account SERVER-SIDE (admin API, pre-confirmed email) and
+      // attach ownership in the same call. A browser signUp() would return
+      // no session while Supabase email confirmation is enabled, causing the
+      // attach call to 401.
+      const claim = await fetch("/api/founding/claim", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ slug, email, password }),
       });
-      if (signUpError || !data.user) {
-        setError(signUpError?.message ?? "Could not create your account");
+
+      if (!claim.ok) {
+        const body = await claim.json().catch(() => ({}));
+        if (body?.error === "email_exists" || body?.error === "already_owned") {
+          // Existing account for this email — fall through to password login.
+          await handleLoginInsteadInner();
+          return;
+        }
+        setError(claimErrorMessage(body?.error));
         setLoading(false);
         return;
       }
 
-      // Attach ownership server-side.
-      const attach = await fetch("/api/founding/attach", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ slug, userId: data.user.id }),
+      // Account exists + ownership attached — now establish the session.
+      const { data, error: authErr } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
-      if (!attach.ok) {
-        const body = await attach.json().catch(() => ({}));
-        setError(body?.error ?? "Could not attach your business");
+      if (authErr || !data.user) {
+        setError(authErr?.message ?? "Account created — please log in");
         setLoading(false);
         return;
       }
@@ -69,6 +94,10 @@ export function ClaimAccountForm({
     e.preventDefault();
     setError(null);
     setLoading(true);
+    await handleLoginInsteadInner();
+  }
+
+  async function handleLoginInsteadInner() {
     const supabase = getBrowserClient();
     const { data, error: authErr } = await supabase.auth.signInWithPassword({
       email,

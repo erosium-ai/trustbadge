@@ -19,7 +19,9 @@ export function middleware(request: NextRequest) {
     .getAll()
     .some(
       (cookie) =>
-        cookie.name.startsWith("sb-") && cookie.name.endsWith("-auth-token")
+        // `.includes` (not `.endsWith`) so chunked Supabase cookies
+        // (sb-<ref>-auth-token.0, .1, …) are also recognised.
+        cookie.name.startsWith("sb-") && cookie.name.includes("-auth-token")
     );
 
   if (hasSupabaseAuthCookie) {

@@ -79,29 +79,34 @@ export default function LoginPage() {
       return;
     }
 
-    // Prefer the Credentials AI Founding Member / business_profiles flow: if
-    // the user owns a business_profiles row, take them straight to that
-    // dashboard. This covers Founding Members who signed up via /welcome.
-    type BusinessProfileSlugRow = { slug: string };
-    const { data: businessProfile } = await supabase
-      .from("business_profiles")
-      .select("slug")
-      .eq("owner_user_id", data.user.id)
-      .limit(1)
-      .maybeSingle<BusinessProfileSlugRow>();
-
-    if (businessProfile?.slug) {
-      router.push(`/dashboard/${businessProfile.slug}`);
-      return;
+    // Resolve the user's primary business SERVER-SIDE via
+    // /api/me/primary-business (service role). We cannot query
+    // business_profiles from the browser client: its RLS policies are
+    // service-role-only, so the query silently returns null and Founding
+    // Members would be misrouted to /auth/register.
+    try {
+      const res = await fetch("/api/me/primary-business", {
+        cache: "no-store",
+      });
+      if (res.ok) {
+        const body = (await res.json()) as { slug?: string | null };
+        if (body?.slug) {
+          router.push(`/dashboard/${body.slug}`);
+          return;
+        }
+      }
+    } catch {
+      // fall through to legacy path below
     }
 
-    // Legacy TrustBadge path (pre-Founding Member flow).
+    // Legacy TrustBadge path (pre-Founding Member flow). trustbadges is
+    // readable by the owner via RLS, so the browser query is fine here.
     type BadgeSlugRow = { slug: string };
     const { data: badgeData } = await supabase
       .from("trustbadges")
       .select("slug")
       .eq("user_id", data.user.id)
-      .single<BadgeSlugRow>();
+      .maybeSingle<BadgeSlugRow>();
 
     if (badgeData?.slug) {
       router.push(`/dashboard/${badgeData.slug}`);
