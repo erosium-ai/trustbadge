@@ -6,10 +6,13 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export function GET(req: NextRequest) {
-  const url = req.nextUrl.clone();
-  const checkout = url.searchParams.get("checkout");
-  url.pathname = "/";
-  url.search = checkout ? `?checkout=${encodeURIComponent(checkout)}` : "";
-  url.hash = "pricing";
-  return NextResponse.redirect(url, 307);
+  // Behind Railway's proxy req.nextUrl.origin resolves to the internal host
+  // (localhost:8080), so build the redirect from the canonical site URL.
+  const base =
+    process.env.NEXT_PUBLIC_SITE_URL || "https://credentialsai.com.au";
+  const checkout = req.nextUrl.searchParams.get("checkout");
+  const target = new URL("/", base);
+  if (checkout) target.searchParams.set("checkout", checkout);
+  target.hash = "pricing";
+  return NextResponse.redirect(target, 307);
 }
