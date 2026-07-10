@@ -1,6 +1,7 @@
 /* 🔑 Keywords: Credentials AI legal footer, privacy link, terms link, Beastly Tech GC Pty Ltd, ABN */
 
 import Link from "next/link";
+import { SupportEmailLink } from "@/components/SupportEmailLink";
 
 export function LegalFooter() {
   return (
@@ -13,9 +14,7 @@ export function LegalFooter() {
         <Link href="/terms" className="font-medium text-slate-700 underline-offset-4 hover:underline">
           Terms
         </Link>
-        <a href="mailto:support@erosium.ai" className="font-medium text-slate-700 underline-offset-4 hover:underline">
-          Support
-        </a>
+        <SupportEmailLink className="cursor-pointer border-0 bg-transparent p-0 font-medium text-slate-700 underline-offset-4 hover:underline" />
       </nav>
     </footer>
   );
