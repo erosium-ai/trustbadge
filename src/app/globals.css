@@ -1,8 +1,49 @@
 @import "tailwindcss";
 
+/* 🔑 Keywords: Ink and Sunset design tokens, v1.1 premium palette, shadow depth system */
+/* Ink & Sunset — v1.1 premium design system (2026-07-10).
+   Rules: ink anchors hero/footer/header bands; cream for content sections;
+   sunset orange is a SCALPEL — primary buttons, verified ticks, key numbers,
+   and the logo ONLY. Nothing else gets orange. */
+@theme {
+  --color-ink: #0f172a;
+  --color-ink-soft: #1e293b;
+  --color-ink-line: #334155;
+  --color-cream: #faf7f2;
+  --color-cream-deep: #f3ede3;
+  --color-sunset: #f97316;
+  --color-sunset-deep: #ea580c;
+  --color-verified: #10b981;
+
+  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.06), 0 4px 12px rgb(15 23 42 / 0.08);
+  --shadow-card-hover: 0 2px 4px rgb(15 23 42 / 0.08), 0 12px 28px rgb(15 23 42 / 0.16);
+  --shadow-emboss: inset 0 1px 2px rgb(255 255 255 / 0.35), inset 0 -2px 4px rgb(15 23 42 / 0.25), 0 2px 8px rgb(15 23 42 / 0.2);
+  --shadow-seal-glow: 0 0 0 3px rgb(16 185 129 / 0.15), 0 2px 12px rgb(16 185 129 / 0.25);
+}
+
 :root {
   --background: #ffffff;
   --foreground: #0f172a;
+}
+
+/* Reusable premium primitives */
+.card-float {
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 200ms ease, transform 200ms ease;
+}
+.card-float:hover {
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-2px);
+}
+.ink-gradient {
+  background-image: linear-gradient(160deg, #0f172a 0%, #1e293b 60%, #24344d 100%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .card-float,
+  .card-float:hover {
+    transition: none;
+    transform: none;
+  }
 }
 
 body {
