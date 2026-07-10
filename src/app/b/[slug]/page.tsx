@@ -243,8 +243,15 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }} />
 
         {/* ── Certificate letterhead ──────────────────────────────────── */}
-        <header className="ink-gradient card-float overflow-hidden rounded-2xl">
-          <div className="p-6 sm:p-10">
+        <header className="ink-gradient card-float relative overflow-hidden rounded-2xl">
+          {headerTexture && (
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 opacity-[0.14]"
+              style={{ backgroundImage: headerTexture, backgroundRepeat: "repeat" }}
+            />
+          )}
+          <div className="relative p-6 sm:p-10">
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
@@ -300,7 +307,7 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
               )}
             </div>
           </div>
-          <div className="h-1 w-full bg-gradient-to-r from-sunset via-sunset-deep to-transparent" aria-hidden />
+          <div className="relative h-1 w-full bg-gradient-to-r from-sunset via-sunset-deep to-transparent" aria-hidden />
         </header>
 
         {/* ── Certificate body ────────────────────────────────────────── */}
