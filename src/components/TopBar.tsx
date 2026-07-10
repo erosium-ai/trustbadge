@@ -182,6 +182,43 @@ export function TopBar() {
                           {user.email ?? "\u2014"}
                         </div>
                       </div>
+                      {/* Nav links — essential on mobile where the inline
+                          Dashboard/Leads/Verification links are hidden. */}
+                      <div className="border-b border-slate-100 pb-1">
+                        <Link
+                          href={slug ? `/dashboard/${slug}` : "/dashboard"}
+                          onClick={() => setMenuOpen(false)}
+                          className="block rounded-md px-3 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50"
+                        >
+                          Dashboard
+                        </Link>
+                        {slug ? (
+                          <>
+                            <Link
+                              href={`/dashboard/${slug}/leads`}
+                              onClick={() => setMenuOpen(false)}
+                              className="block rounded-md px-3 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50"
+                            >
+                              Leads
+                            </Link>
+                            <Link
+                              href={`/dashboard/${slug}/verification`}
+                              onClick={() => setMenuOpen(false)}
+                              className="block rounded-md px-3 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50"
+                            >
+                              Verification
+                            </Link>
+                            <Link
+                              href={`/b/${slug}`}
+                              target="_blank"
+                              onClick={() => setMenuOpen(false)}
+                              className="block rounded-md px-3 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50"
+                            >
+                              View my profile →
+                            </Link>
+                          </>
+                        ) : null}
+                      </div>
                       <a
                         href="mailto:billing@credentialsai.com.au"
                         className="block rounded-md px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
