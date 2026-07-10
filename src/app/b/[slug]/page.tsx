@@ -1,4 +1,12 @@
-/* 🔑 Keywords: public business profile route, /b/[slug], Credentials AI lead profile page, mobile CTA */
+/* 🔑 Keywords: public business profile route, /b/[slug], credential certificate design, Ink and Sunset, verified seal, mobile CTA */
+
+// v1.1 "credential certificate" redesign (2026-07-10):
+// - Ink gradient letterhead band with embossed TrustBadge seal (top-right)
+// - Seal state is DRIVEN BY verification_status — pending profiles get a grey
+//   seal, never a fake verified look (no-overclaim rule applies to pixels)
+// - Cream certificate body, hairline dividers, floating cards
+// - Footer signature line: "Verified by Credentials AI" + link
+// - JSON-LD escaped against </script> injection
 
 import { notFound } from "next/navigation";
 import { LeadCapturePanel } from "@/components/profiles/LeadCapturePanel";
@@ -32,6 +40,7 @@ function getSampleProfile() {
     plan: "founding_member",
     abn: "12 345 678 901",
     status: "active",
+    verification_status: "verified",
     metadata: { sample_profile: true },
   };
 }
@@ -71,6 +80,70 @@ function toServiceList(value: unknown): Array<{ name: string; description?: stri
   return services;
 }
 
+/** Escape JSON-LD so user content can never break out of the script tag. */
+function safeJsonLd(value: unknown): string {
+  return JSON.stringify(value).replace(/</g, "\\u003c");
+}
+
+function initialsOf(name: string): string {
+  const words = name.trim().split(/\s+/).filter(Boolean);
+  const first = words[0]?.[0] ?? "";
+  const second = words.length > 1 ? words[words.length - 1][0] : "";
+  return (first + second).toUpperCase() || "?";
+}
+
+// ---------------------------------------------------------------------------
+// Verification seal — state driven by verification_status. Grey when pending.
+// ---------------------------------------------------------------------------
+
+function VerificationSeal({ verified }: { verified: boolean }) {
+  return (
+    <div
+      className="flex flex-col items-center gap-1.5"
+      title={verified ? "Verified by Credentials AI" : "Verification pending"}
+    >
+      <div
+        className={`relative flex h-16 w-16 items-center justify-center rounded-full sm:h-20 sm:w-20 ${
+          verified
+            ? "bg-gradient-to-br from-emerald-400 via-emerald-500 to-emerald-700"
+            : "bg-gradient-to-br from-slate-500 via-slate-600 to-slate-700"
+        }`}
+        style={{
+          boxShadow: verified
+            ? "var(--shadow-emboss), var(--shadow-seal-glow)"
+            : "var(--shadow-emboss)",
+        }}
+      >
+        <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/25 bg-white/10 sm:h-[3.75rem] sm:w-[3.75rem]">
+          {verified ? (
+            <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6 text-white sm:h-7 sm:w-7" aria-hidden>
+              <path
+                d="M20 6L9 17l-5-5"
+                stroke="currentColor"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          ) : (
+            <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6 text-white/80 sm:h-7 sm:w-7" aria-hidden>
+              <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" />
+              <path d="M12 7v5l3 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+          )}
+        </div>
+      </div>
+      <span
+        className={`text-[10px] font-semibold uppercase tracking-widest ${
+          verified ? "text-emerald-300" : "text-slate-400"
+        }`}
+      >
+        {verified ? "Verified" : "Pending"}
+      </span>
+    </div>
+  );
+}
+
 export default async function PublicBusinessProfilePage({ params }: ProfilePageProps) {
   const { slug } = await params;
   const normalizedSlug = slug.trim().toLowerCase();
@@ -85,6 +158,8 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
   const services = toServiceList(profile.services);
   const siteUrl = getSiteUrl();
   const canonicalUrl = `${siteUrl}/b/${profile.slug}`;
+  const isVerified =
+    (profile as { verification_status?: string }).verification_status === "verified";
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -118,105 +193,156 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
   };
 
   return (
-    <div className="mx-auto max-w-4xl px-4 pb-28 pt-8 sm:px-6 sm:pt-12 md:pb-10">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+    <div className="min-h-screen bg-cream">
+      <div className="mx-auto max-w-4xl px-4 pb-28 pt-6 sm:px-6 sm:pt-10 md:pb-12">
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }} />
 
-      <header className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-        <p className="text-xs font-semibold uppercase tracking-wide text-brand-600">{BRAND_NAME} profile</p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">{profile.business_name}</h1>
-
-        {profile.description && (
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base">{profile.description}</p>
-        )}
-
-        <div className="mt-5 flex flex-wrap gap-2 text-xs sm:text-sm">
-          <span className="rounded-full bg-emerald-50 px-3 py-1 font-medium text-emerald-700">Verified profile</span>
-          {sampleProfileRequested && (
-            <span className="rounded-full bg-orange-100 px-3 py-1 font-medium text-orange-700">Sample data</span>
-          )}
-          {profile.plan && (
-            <span className="rounded-full bg-slate-100 px-3 py-1 font-medium capitalize text-slate-700">
-              Plan: {profile.plan.replace("_", " ")}
-            </span>
-          )}
-          {profile.abn && (
-            <span className="rounded-full bg-slate-100 px-3 py-1 font-medium text-slate-700">ABN: {profile.abn}</span>
-          )}
-          {profile.suburb && (
-            <span className="rounded-full bg-slate-100 px-3 py-1 font-medium text-slate-700">
-              {profile.suburb}
-              {profile.state ? `, ${profile.state}` : ""}
-            </span>
-          )}
-        </div>
-      </header>
-
-      <section className="mt-6 grid gap-6 lg:grid-cols-5">
-        <div className="space-y-6 lg:col-span-3">
-          <LeadCapturePanel
-            profileSlug={profile.slug}
-            businessName={profile.business_name}
-            phone={profile.phone}
-            email={profile.email}
-          />
-
-          {services.length > 0 && (
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-              <h2 className="text-lg font-semibold text-slate-900">Services</h2>
-              <ul className="mt-3 grid gap-3">
-                {services.map((service) => (
-                  <li key={`${service.name}-${service.price ?? ""}`} className="rounded-lg border border-slate-100 bg-slate-50 p-3">
-                    <div className="flex items-start justify-between gap-3">
-                      <p className="text-sm font-semibold text-slate-900">{service.name}</p>
-                      {service.price && <span className="text-xs font-medium text-slate-600">{service.price}</span>}
-                    </div>
-                    {service.description && <p className="mt-1 text-xs text-slate-600">{service.description}</p>}
-                  </li>
-                ))}
-              </ul>
+        {/* ── Certificate letterhead ──────────────────────────────────── */}
+        <header className="ink-gradient card-float overflow-hidden rounded-2xl">
+          <div className="p-6 sm:p-10">
+            <div className="flex items-start justify-between gap-4">
+              <div className="min-w-0">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
+                  {BRAND_NAME} · Business profile
+                </p>
+                <div className="mt-3 flex items-center gap-4">
+                  <div
+                    className="hidden h-14 w-14 flex-none items-center justify-center rounded-xl bg-white/10 text-xl font-bold text-white sm:flex"
+                    aria-hidden
+                  >
+                    {initialsOf(profile.business_name)}
+                  </div>
+                  <h1 className="break-words text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                    {profile.business_name}
+                  </h1>
+                </div>
+                {profile.suburb && (
+                  <p className="mt-2 text-sm font-medium text-slate-300">
+                    {profile.suburb}
+                    {profile.state ? `, ${profile.state}` : ""}
+                    {serviceAreas.length > 0 ? ` · Servicing ${serviceAreas.length} areas` : ""}
+                  </p>
+                )}
+              </div>
+              <div className="flex-none">
+                <VerificationSeal verified={isVerified} />
+              </div>
             </div>
-          )}
-        </div>
 
-        <aside className="space-y-6 lg:col-span-2">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Contact</h3>
-            <dl className="mt-3 space-y-3 text-sm">
-              {profile.phone && (
-                <div>
-                  <dt className="text-slate-500">Phone</dt>
-                  <dd className="font-medium text-slate-900">{profile.phone}</dd>
-                </div>
+            {profile.description && (
+              <p className="mt-5 max-w-2xl text-sm leading-relaxed text-slate-300 sm:text-base">
+                {profile.description}
+              </p>
+            )}
+
+            <div className="mt-6 flex flex-wrap gap-2 text-xs">
+              {sampleProfileRequested && (
+                <span className="rounded-full bg-sunset/20 px-3 py-1 font-medium text-orange-200">Sample data</span>
               )}
-              {profile.email && (
-                <div>
-                  <dt className="text-slate-500">Email</dt>
-                  <dd className="break-words font-medium text-slate-900">{profile.email}</dd>
-                </div>
+              {profile.abn && (
+                <span className="rounded-full border border-white/15 bg-white/5 px-3 py-1 font-medium text-slate-300">
+                  ABN {profile.abn}
+                </span>
               )}
-              {profile.website && (
-                <div>
-                  <dt className="text-slate-500">Website</dt>
-                  <dd className="break-words font-medium text-slate-900">{profile.website}</dd>
-                </div>
+              {isVerified ? (
+                <span className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 font-medium text-emerald-300">
+                  Credentials verified
+                </span>
+              ) : (
+                <span className="rounded-full border border-white/15 bg-white/5 px-3 py-1 font-medium text-slate-400">
+                  Verification in progress
+                </span>
               )}
-            </dl>
+            </div>
+          </div>
+          <div className="h-1 w-full bg-gradient-to-r from-sunset via-sunset-deep to-transparent" aria-hidden />
+        </header>
+
+        {/* ── Certificate body ────────────────────────────────────────── */}
+        <section className="mt-6 grid gap-6 lg:grid-cols-5">
+          <div className="space-y-6 lg:col-span-3">
+            <LeadCapturePanel
+              profileSlug={profile.slug}
+              businessName={profile.business_name}
+              phone={profile.phone}
+              email={profile.email}
+            />
+
+            {services.length > 0 && (
+              <div className="card-float rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
+                <h2 className="text-lg font-semibold text-slate-900">Services</h2>
+                <div className="mt-1 h-px w-10 bg-sunset" aria-hidden />
+                <ul className="mt-4 grid gap-3">
+                  {services.map((service) => (
+                    <li
+                      key={`${service.name}-${service.price ?? ""}`}
+                      className="rounded-xl border border-slate-100 bg-cream/60 p-3.5"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <p className="text-sm font-semibold text-slate-900">{service.name}</p>
+                        {service.price && <span className="text-xs font-medium text-slate-600">{service.price}</span>}
+                      </div>
+                      {service.description && <p className="mt-1 text-xs leading-relaxed text-slate-600">{service.description}</p>}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
 
-          {serviceAreas.length > 0 && (
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Service areas</h3>
-              <ul className="mt-3 flex flex-wrap gap-2">
-                {serviceAreas.map((area) => (
-                  <li key={area} className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
-                    {area}
-                  </li>
-                ))}
-              </ul>
+          <aside className="space-y-6 lg:col-span-2">
+            <div className="card-float rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
+              <h3 className="text-xs font-semibold uppercase tracking-widest text-slate-500">Contact</h3>
+              <dl className="mt-3 space-y-3 text-sm">
+                {profile.phone && (
+                  <div>
+                    <dt className="text-slate-500">Phone</dt>
+                    <dd className="font-medium text-slate-900">{profile.phone}</dd>
+                  </div>
+                )}
+                {profile.email && (
+                  <div>
+                    <dt className="text-slate-500">Email</dt>
+                    <dd className="break-words font-medium text-slate-900">{profile.email}</dd>
+                  </div>
+                )}
+                {profile.website && (
+                  <div>
+                    <dt className="text-slate-500">Website</dt>
+                    <dd className="break-words font-medium text-slate-900">{profile.website}</dd>
+                  </div>
+                )}
+              </dl>
             </div>
-          )}
-        </aside>
-      </section>
+
+            {serviceAreas.length > 0 && (
+              <div className="card-float rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
+                <h3 className="text-xs font-semibold uppercase tracking-widest text-slate-500">Service areas</h3>
+                <ul className="mt-3 flex flex-wrap gap-2">
+                  {serviceAreas.map((area) => (
+                    <li key={area} className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
+                      {area}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </aside>
+        </section>
+
+        {/* ── Certificate signature line ──────────────────────────────── */}
+        <footer className="mt-8 flex flex-col items-center gap-1 border-t border-slate-200 pt-6 text-center">
+          <p className="text-sm font-medium text-slate-700">
+            {isVerified ? "Verified by" : "Profile powered by"}{" "}
+            <a href={siteUrl} className="font-semibold text-sunset-deep hover:underline">
+              {BRAND_NAME}
+            </a>
+          </p>
+          <p className="text-xs text-slate-400">
+            AI-readable business profile · credentialsai.com.au
+          </p>
+        </footer>
+      </div>
     </div>
   );
 }
