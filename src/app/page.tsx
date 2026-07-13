@@ -12,6 +12,7 @@ import { PricingSection } from "@/components/marketing/PricingSection";
 import { FounderBundleBanner } from "@/components/marketing/FounderBundleBanner";
 import { Faq, faqs } from "@/components/marketing/Faq";
 import { StickyMobileCta } from "@/components/marketing/StickyMobileCta";
+import { HomepageViewTracker } from "@/components/marketing/HomepageViewTracker";
 import { getFounderBundleUrl, getFreeProfileUrl, getSampleProfileUrl } from "@/components/marketing/urls";
 
 export default function HomePage() {
@@ -88,6 +89,7 @@ export default function HomePage() {
 
   return (
     <div className="bg-[#F7F6F3] pb-20 md:pb-0">
+      <HomepageViewTracker />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

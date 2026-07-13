@@ -27,8 +27,8 @@ export function trackCtaClick(input: TrackCtaClickInput): void {
 
   const body = {
     eventName: input.eventName,
-    source: input.source,
-    campaign: input.campaign,
+    source: input.source ?? readQueryParam("source"),
+    campaign: input.campaign ?? readQueryParam("campaign"),
     targetUrl: input.targetUrl,
     label: input.label,
     utmSource: input.utmSource ?? readQueryParam("utm_source"),
@@ -54,4 +54,3 @@ export function trackCtaClick(input: TrackCtaClickInput): void {
     // Tracking is best-effort and must never block UX.
   }
 }
-
