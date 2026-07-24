@@ -1,7 +1,7 @@
 "use client";
 
 // 🔑 Keywords: Credentials AI TopBar, logged-in nav, dashboard nav, avatar menu, Fable Five §4
-// Logged-in nav shows: Dashboard / Leads / Verification / View my profile
+// Logged-in nav shows: Dashboard / Leads / ABN check / View my profile
 // with an avatar menu holding email + Billing + Help + Log out. Logged-out
 // nav keeps the marketing links + Login + Claim free profile CTA.
 
@@ -146,7 +146,7 @@ export function TopBar() {
                           : "text-slate-500 hover:text-slate-900"
                       }`}
                     >
-                      Verification
+                      ABN check
                     </Link>
                     <Link
                       href={`/b/${slug}`}
@@ -188,7 +188,7 @@ export function TopBar() {
                         </div>
                       </div>
                       {/* Nav links — essential on mobile where the inline
-                          Dashboard/Leads/Verification links are hidden. */}
+                          Dashboard/Leads/ABN check links are hidden. */}
                       <div className="border-b border-slate-100 pb-1">
                         <Link
                           href={slug ? `/dashboard/${slug}` : "/dashboard"}
@@ -211,7 +211,7 @@ export function TopBar() {
                               onClick={() => setMenuOpen(false)}
                               className="block rounded-md px-3 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50"
                             >
-                              Verification
+                              ABN check
                             </Link>
                             <Link
                               href={`/b/${slug}`}

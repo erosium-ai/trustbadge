@@ -131,6 +131,7 @@ export interface FoundingMemberRecord {
   verification_status: string;
   next_payment_at: string | null;
   payment_email: string | null;
+  abn?: string | null;
 }
 
 /**

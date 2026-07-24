@@ -22,7 +22,7 @@ export function Hero({ freeProfileUrl, sampleProfileUrl }: HeroProps) {
         <span />
         <span />
       </div>
-      <AiParticles tone="home" count={14} placement="absolute" />
+      <AiParticles tone="home" count={20} placement="absolute" />
       <div className="pointer-events-none absolute -left-24 top-24 h-72 w-72 rounded-full bg-cyan-400/20 blur-3xl" />
       <div className="pointer-events-none absolute -right-20 top-10 h-80 w-80 rounded-full bg-violet-500/24 blur-3xl" />
       <div className="mx-auto grid max-w-6xl gap-10 px-4 pb-16 pt-12 sm:px-6 md:grid-cols-[1.02fr_0.98fr] md:items-center md:pb-24 md:pt-20">

@@ -188,20 +188,16 @@ export default async function DashboardOverviewPage({
     },
     {
       done: checklist.verificationStatus === "verified",
-      title: "Get verified",
+      title: "ABN check",
       body:
         checklist.verificationStatus === "in_review"
-          ? "We're checking against official registers — usually 1–2 business days."
+          ? "We're checking your ABN against the Australian Business Register — usually 1–2 business days."
           : checklist.verificationStatus === "action_needed"
-            ? "We need a couple of things — see verification for details."
+            ? "There's a mismatch with the official ABR data — see ABN check for details."
             : "Send your ABN so we can check the official ABR data and keep your trust wording accurate.",
       cta: {
-        label: "Upload documents",
+        label: "Check ABN details",
         href: `/dashboard/${record.slug}/verification`,
-      },
-      subCta: {
-        label: "or email photos to support@erosium.ai",
-        href: "mailto:support@erosium.ai",
       },
     },
     {
@@ -317,14 +313,6 @@ export default async function DashboardOverviewPage({
                               {step.cta.label}
                             </Link>
                           )}
-                          {"subCta" in step && step.subCta ? (
-                            <Link
-                              href={step.subCta.href}
-                              className="text-xs text-slate-500 hover:underline"
-                            >
-                              {step.subCta.label}
-                            </Link>
-                          ) : null}
                         </div>
                       ) : null}
                     </div>
@@ -427,34 +415,39 @@ export default async function DashboardOverviewPage({
 
           {/* Side column */}
           <aside className="space-y-6">
-            {/* 5. Verification card */}
+            {/* 5. ABN check card */}
             <Card>
               <div className="flex items-center justify-between">
                 <h3 className="text-base font-semibold text-slate-900">
-                  Verification
+                  ABN check
                 </h3>
                 <StatusChip status={record.verification_status} />
               </div>
               {record.verification_status === "not_started" ? (
                 <p className="mt-3 text-sm text-slate-600">
-                  Nothing submitted yet. Two ways &mdash; whichever&rsquo;s easier:
+                  No ABN on file yet. Add your ABN and we&rsquo;ll check your
+                  business details against official Australian Business
+                  Register data.
                 </p>
               ) : record.verification_status === "in_review" ? (
                 <p className="mt-3 text-sm text-slate-600">
-                  We&rsquo;re checking against official registers &mdash;
-                  usually 1&ndash;2 business days.
+                  We&rsquo;re checking your ABN against the Australian Business
+                  Register &mdash; usually 1&ndash;2 business days.
                 </p>
               ) : record.verification_status === "verified" ? (
                 <p className="mt-3 text-sm text-slate-600">
-                  All set. We&rsquo;ll re-check before anything expires.
+                  All set. Your ABN and business details match the Australian
+                  Business Register.
                 </p>
               ) : record.verification_status === "action_needed" ? (
                 <p className="mt-3 text-sm text-red-700">
-                  We need a couple of things to complete verification.
+                  There&rsquo;s a mismatch between your details and the
+                  Australian Business Register &mdash; see ABN check for
+                  details.
                 </p>
               ) : (
                 <p className="mt-3 text-sm text-amber-800">
-                  Something&rsquo;s expiring soon &mdash; please renew.
+                  Your ABN details need a quick re-check &mdash; see ABN check.
                 </p>
               )}
               <div className="mt-4 flex flex-col gap-2">
@@ -462,14 +455,8 @@ export default async function DashboardOverviewPage({
                   href={`/dashboard/${record.slug}/verification`}
                   className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-center text-sm font-medium text-slate-700 hover:bg-slate-50"
                 >
-                  Upload documents
+                  Review ABN status
                 </Link>
-                <a
-                  href="mailto:support@erosium.ai"
-                  className="text-center text-xs text-slate-500 hover:underline"
-                >
-                  or email photos to support@erosium.ai
-                </a>
               </div>
             </Card>
 
@@ -487,8 +474,15 @@ export default async function DashboardOverviewPage({
                   href="mailto:support@erosium.ai?subject=Credentials%20AI%20support"
                   className="w-full rounded-lg bg-[#F97316] px-3 py-2 text-center text-sm font-semibold text-white hover:bg-[#EA580C]"
                 >
-                  Contact support
+                  Email support
                 </a>
+                <p className="text-center text-xs text-slate-500">
+                  Opens your email app &mdash; or write to{" "}
+                  <span className="font-medium text-slate-700">
+                    support@erosium.ai
+                  </span>{" "}
+                  directly.
+                </p>
               </div>
 
             </Card>
@@ -521,15 +515,21 @@ export default async function DashboardOverviewPage({
                   Manage billing / cancel plan
                 </a>
               ) : null}
-              <p className="mt-3 text-sm text-slate-500">
-                Need a hand with billing? Email{" "}
+              <div className="mt-4 flex flex-col gap-2">
                 <a
-                  href="mailto:support@erosium.ai"
-                  className="font-medium text-[#F97316] hover:underline"
+                  href="mailto:support@erosium.ai?subject=Credentials%20AI%20billing%20help"
+                  className="inline-flex w-full items-center justify-center rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
                 >
-                  support@erosium.ai
-                </a>.
-              </p>
+                  Email billing support
+                </a>
+                <p className="text-center text-xs text-slate-500">
+                  Need a hand with billing? Write to{" "}
+                  <span className="font-medium text-slate-700">
+                    support@erosium.ai
+                  </span>{" "}
+                  &mdash; a human answers.
+                </p>
+              </div>
             </Card>
           </aside>
         </div>

@@ -316,12 +316,18 @@
 .ai-particles--absolute {
   position: absolute;
 }
+.ai-particles--paid {
+  z-index: 1;
+}
 .ai-particle {
   position: absolute;
   border-radius: 9999px;
   opacity: 0;
   will-change: transform, opacity;
   animation: aiParticleFloat linear infinite;
+}
+.ai-particles--paid .ai-particle {
+  filter: saturate(1.25);
 }
 @keyframes aiParticleFloat {
   0% { transform: translate3d(0, 12vh, 0); opacity: 0; }

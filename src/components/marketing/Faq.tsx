@@ -56,6 +56,45 @@ export function Faq({ freeProfileUrl }: { freeProfileUrl: string }) {
             Claim Your Free Profile
           </CtaButton>
           <p className="mt-4 text-sm font-semibold text-slate-500">Free plan · No card · Cancel anytime on paid</p>
+
+          <div className="ai-glass-soft mt-8 rounded-[1.5rem] p-5 sm:p-6">
+            <p className="text-[11px] font-black uppercase tracking-[0.24em] text-cyan-200">
+              What AI can read
+            </p>
+            <h3 className="mt-2 text-lg font-black text-white">
+              Your profile, in a format AI tools actually understand.
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed text-slate-300">
+              Behind the clean design is a structured data layer. When ChatGPT,
+              Google, Claude or Siri look at your business, this is what they
+              can pick up:
+            </p>
+            <ul className="mt-4 space-y-2">
+              {[
+                "Business name, suburb and service areas",
+                "Services in structured, machine-readable data",
+                "ABN-checked trust status",
+                "Call, email and quote actions",
+                "A plain-language summary of what you do",
+              ].map((item) => (
+                <li key={item} className="flex items-center gap-3 text-sm font-semibold text-slate-200">
+                  <span className="h-1.5 w-1.5 flex-none rounded-full bg-cyan-300" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <pre className="mt-5 overflow-x-auto rounded-2xl border border-white/10 bg-slate-950/72 p-4 text-[11px] leading-relaxed text-cyan-100/90">
+{`{
+  "@type": "LocalBusiness",
+  "areaServed": "Gold Coast",
+  "hasOfferCatalog": "Services",
+  "identifier": "ABN checked"
+}`}
+            </pre>
+            <p className="mt-3 text-xs font-semibold text-slate-500">
+              This is the layer AI tools can actually read — built for you automatically.
+            </p>
+          </div>
         </div>
         <dl className="space-y-4">
           {faqs.map((faq) => (

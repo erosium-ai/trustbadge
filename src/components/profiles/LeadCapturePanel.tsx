@@ -204,39 +204,49 @@ export function LeadCapturePanel({
         </p>
 
         <div className="mt-4 grid gap-3 sm:grid-cols-3">
-          <a
-            href={canCall ? `tel:${phone}` : "#"}
-            onClick={() => {
-              if (canCall && phone) {
-                void handleLeadTypeClick("call_click", "Call now", `tel:${phone}`);
-              }
-            }}
-            className={`inline-flex items-center justify-center rounded-2xl px-4 py-3 text-sm font-black transition ${
-              canCall
-                ? "ai-glow-button-paid bg-gradient-to-r from-emerald-400 to-cyan-300 text-slate-950 hover:-translate-y-0.5"
-                : "cursor-not-allowed border border-white/10 bg-white/5 text-slate-500"
-            }`}
-            aria-disabled={!canCall}
-          >
-            Call now
-          </a>
+          {canCall ? (
+            <a
+              href={`tel:${phone}`}
+              onClick={() => {
+                if (phone) {
+                  void handleLeadTypeClick("call_click", "Call now", `tel:${phone}`);
+                }
+              }}
+              className="inline-flex items-center justify-center rounded-2xl px-4 py-3 text-sm font-black transition ai-glow-button-paid bg-gradient-to-r from-emerald-400 to-cyan-300 text-slate-950 hover:-translate-y-0.5"
+            >
+              Call now
+            </a>
+          ) : (
+            <span
+              className="inline-flex cursor-not-allowed items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-black text-slate-500"
+              aria-disabled
+              title="No phone number listed yet"
+            >
+              Call now
+            </span>
+          )}
 
-          <a
-            href={canEmail ? `mailto:${email}` : "#"}
-            onClick={() => {
-              if (canEmail && email) {
-                void handleLeadTypeClick("email_click", "Email business", `mailto:${email}`);
-              }
-            }}
-            className={`inline-flex items-center justify-center rounded-2xl px-4 py-3 text-sm font-black transition ${
-              canEmail
-                ? "border border-white/15 bg-white/8 text-white hover:bg-white/14"
-                : "cursor-not-allowed border border-white/10 bg-white/5 text-slate-500"
-            }`}
-            aria-disabled={!canEmail}
-          >
-            Email business
-          </a>
+          {canEmail ? (
+            <a
+              href={`mailto:${email}`}
+              onClick={() => {
+                if (email) {
+                  void handleLeadTypeClick("email_click", "Email business", `mailto:${email}`);
+                }
+              }}
+              className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/8 px-4 py-3 text-sm font-black text-white transition hover:bg-white/14"
+            >
+              Email business
+            </a>
+          ) : (
+            <span
+              className="inline-flex cursor-not-allowed items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-black text-slate-500"
+              aria-disabled
+              title="No email listed yet"
+            >
+              Email not listed
+            </span>
+          )}
 
           <button
             type="button"
@@ -351,32 +361,46 @@ export function LeadCapturePanel({
 
       <div className="fixed inset-x-0 bottom-0 z-50 border-t border-white/10 bg-slate-950/92 p-3 shadow-2xl backdrop-blur md:hidden">
         <div className="grid grid-cols-3 gap-2">
-          <a
-            href={canCall ? `tel:${phone}` : "#"}
-            onClick={() => {
-              if (canCall && phone) {
-                void handleLeadTypeClick("call_click", "Sticky mobile call", `tel:${phone}`);
-              }
-            }}
-            className={`inline-flex items-center justify-center rounded-2xl px-3 py-2 text-xs font-black ${
-              canCall ? "bg-gradient-to-r from-emerald-400 to-cyan-300 text-slate-950" : "border border-white/10 bg-white/5 text-slate-500"
-            }`}
-          >
-            Call
-          </a>
-          <a
-            href={canEmail ? `mailto:${email}` : "#"}
-            onClick={() => {
-              if (canEmail && email) {
-                void handleLeadTypeClick("email_click", "Sticky mobile email", `mailto:${email}`);
-              }
-            }}
-            className={`inline-flex items-center justify-center rounded-2xl px-3 py-2 text-xs font-black ${
-              canEmail ? "border border-white/15 bg-white/8 text-white" : "border border-white/10 bg-white/5 text-slate-500"
-            }`}
-          >
-            Email
-          </a>
+          {canCall ? (
+            <a
+              href={`tel:${phone}`}
+              onClick={() => {
+                if (phone) {
+                  void handleLeadTypeClick("call_click", "Sticky mobile call", `tel:${phone}`);
+                }
+              }}
+              className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-300 px-3 py-2 text-xs font-black text-slate-950"
+            >
+              Call
+            </a>
+          ) : (
+            <span
+              className="inline-flex cursor-not-allowed items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-black text-slate-500"
+              aria-disabled
+            >
+              Call
+            </span>
+          )}
+          {canEmail ? (
+            <a
+              href={`mailto:${email}`}
+              onClick={() => {
+                if (email) {
+                  void handleLeadTypeClick("email_click", "Sticky mobile email", `mailto:${email}`);
+                }
+              }}
+              className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/8 px-3 py-2 text-xs font-black text-white"
+            >
+              Email
+            </a>
+          ) : (
+            <span
+              className="inline-flex cursor-not-allowed items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-black text-slate-500"
+              aria-disabled
+            >
+              Email
+            </span>
+          )}
           <button
             type="button"
             onClick={() => void openQuote()}

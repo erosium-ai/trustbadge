@@ -140,7 +140,7 @@ export async function assertOwnership(
   const { data, error } = await client
     .from("business_profiles")
     .select(
-      "id, slug, business_name, owner_user_id, plan, stripe_customer_id, stripe_subscription_id, subscription_status, founding_number, verification_status, next_payment_at, payment_email"
+      "id, slug, business_name, owner_user_id, plan, stripe_customer_id, stripe_subscription_id, subscription_status, founding_number, verification_status, next_payment_at, payment_email, abn"
     )
     .eq("slug", slug.trim().toLowerCase())
     .maybeSingle();

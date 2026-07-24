@@ -314,7 +314,7 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
           <span />
         </div>
         <AiParticles tone="paid" />
-        <main className="relative mx-auto max-w-5xl px-4 pb-28 pt-6 sm:px-6 sm:pt-10 md:pb-14">
+        <main className="relative z-10 mx-auto max-w-5xl px-4 pb-28 pt-6 sm:px-6 sm:pt-10 md:pb-14">
           <header className="ai-glass-paid overflow-hidden rounded-[2rem]">
             <div className="relative p-6 sm:p-10 lg:p-12">
               <div className="absolute inset-x-0 top-0 h-64 bg-gradient-to-br from-emerald-400/22 via-cyan-400/14 to-transparent" />

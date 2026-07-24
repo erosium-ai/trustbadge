@@ -9,7 +9,7 @@ type ParticleTone = "home" | "paid";
 interface AiParticlesProps {
   /** home = cyan/purple/teal brand shell · paid = emerald/cyan trust signals */
   tone: ParticleTone;
-  /** Override particle count (defaults: home 22, paid 16). */
+  /** Override particle count (defaults: home 30, paid 38). */
   count?: number;
   /** fixed = page-level viewport layer · absolute = inside a positioned section (e.g. Hero). */
   placement?: "fixed" | "absolute";
@@ -66,7 +66,7 @@ export function AiParticles({
 }: AiParticlesProps) {
   const [particles, setParticles] = useState<ParticleSpec[] | null>(null);
 
-  const resolvedCount = count ?? (tone === "paid" ? 16 : 22);
+  const resolvedCount = count ?? (tone === "paid" ? 38 : 30);
 
   useEffect(() => {
     // Respect reduced motion: no particles at all.
@@ -74,8 +74,12 @@ export function AiParticles({
 
     const rand = mulberry32(seed + (tone === "paid" ? 101 : 0));
     const palette = tone === "paid" ? PAID_PALETTE : HOME_PALETTE;
+    const isHome = tone === "home";
     const next: ParticleSpec[] = Array.from({ length: resolvedCount }, (_, i) => {
-      const size = 1.6 + rand() * 2.6;
+      // Homepage and paid profile particles are deliberately visible enough
+      // to read as an AI field in screenshots, while the free card stays quiet
+      // by not rendering this particle layer at all.
+      const size = isHome ? 2.8 + rand() * 4 : 3.2 + rand() * 4.2;
       return {
         left: `${(rand() * 100).toFixed(2)}%`,
         top: `${(15 + rand() * 90).toFixed(2)}%`,
@@ -85,8 +89,8 @@ export function AiParticles({
         duration: `${(24 + rand() * 24).toFixed(1)}s`,
         sway: `${((rand() - 0.5) * 6).toFixed(2)}rem`,
         color: palette[i % palette.length],
-        glowRadius: Math.round(size * 3.2),
-        peakOpacity: 0.25 + rand() * 0.4,
+        glowRadius: Math.round(size * (isHome ? 7 : 8.4)),
+        peakOpacity: isHome ? 0.45 + rand() * 0.4 : 0.52 + rand() * 0.36,
       };
     });
     setParticles(next);
@@ -97,7 +101,7 @@ export function AiParticles({
 
   return (
     <div
-      className={`ai-particles${placement === "absolute" ? " ai-particles--absolute" : ""}`}
+      className={`ai-particles ai-particles--${tone}${placement === "absolute" ? " ai-particles--absolute" : ""}`}
       aria-hidden
     >
       {particles.map((p, i) => (
