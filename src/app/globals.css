@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* 🔑 Keywords: Ink and Sunset design tokens, v1.1 premium palette, shadow depth system */
+/* 🔑 Keywords: Ink and Sunset design tokens, v1.1 premium palette, shadow depth system, Credentials AI V2, AI-native glass design system, micro-site */
 /* Ink & Sunset — v1.1 premium design system (2026-07-10).
    Rules: ink anchors hero/footer/header bands; cream for content sections;
    sunset orange is a SCALPEL — primary buttons, verified ticks, key numbers,
@@ -19,6 +19,15 @@
   --shadow-card-hover: 0 2px 4px rgb(15 23 42 / 0.08), 0 12px 28px rgb(15 23 42 / 0.16);
   --shadow-emboss: inset 0 1px 2px rgb(255 255 255 / 0.35), inset 0 -2px 4px rgb(15 23 42 / 0.25), 0 2px 8px rgb(15 23 42 / 0.2);
   --shadow-seal-glow: 0 0 0 3px rgb(16 185 129 / 0.15), 0 2px 12px rgb(16 185 129 / 0.25);
+
+  --color-ai-midnight: #050816;
+  --color-ai-navy: #07162f;
+  --color-ai-purple: #20104a;
+  --color-ai-cyan: #22d3ee;
+  --color-ai-teal: #14b8a6;
+  --color-ai-violet: #8b5cf6;
+  --shadow-ai-glow: 0 0 0 1px rgb(34 211 238 / 0.18), 0 22px 70px rgb(14 165 233 / 0.16), 0 8px 30px rgb(139 92 246 / 0.12);
+  --shadow-ai-strong: 0 0 0 1px rgb(34 211 238 / 0.24), 0 28px 90px rgb(34 211 238 / 0.22), 0 12px 40px rgb(139 92 246 / 0.18);
 }
 
 :root {
@@ -38,12 +47,355 @@
 .ink-gradient {
   background-image: linear-gradient(160deg, #0f172a 0%, #1e293b 60%, #24344d 100%);
 }
+.ai-v2-bg {
+  background:
+    radial-gradient(circle at 18% 8%, rgb(34 211 238 / 0.20), transparent 28rem),
+    radial-gradient(circle at 82% 12%, rgb(139 92 246 / 0.26), transparent 30rem),
+    radial-gradient(ellipse at 50% 100%, rgb(34 211 238 / 0.26), transparent 34rem),
+    linear-gradient(140deg, #050816 0%, #07162f 44%, #20104a 100%);
+}
+/* Paid AI-Ready Business Page — full-screen dark environment with a distinct
+   verified emerald/cyan accent system (Visual Contrast Lock 2026-07-24). */
+.ai-v2-bg-paid {
+  background:
+    radial-gradient(circle at 16% 6%, rgb(16 185 129 / 0.22), transparent 30rem),
+    radial-gradient(circle at 84% 10%, rgb(34 211 238 / 0.18), transparent 28rem),
+    radial-gradient(ellipse at 50% 100%, rgb(16 185 129 / 0.28), transparent 34rem),
+    linear-gradient(150deg, #04120f 0%, #071a24 48%, #062018 100%);
+}
+/* Free AI Business Card — simpler navy/cyan, restrained glow, compact feel. */
+.ai-v2-bg-card {
+  background:
+    radial-gradient(circle at 24% 10%, rgb(34 211 238 / 0.13), transparent 24rem),
+    radial-gradient(ellipse at 50% 100%, rgb(34 211 238 / 0.12), transparent 26rem),
+    linear-gradient(150deg, #050816 0%, #07162f 70%, #0a1f3d 100%);
+}
+.ai-glass-paid {
+  border: 1px solid rgb(52 211 153 / 0.22);
+  background: linear-gradient(145deg, rgb(16 185 129 / 0.10), rgb(255 255 255 / 0.05));
+  box-shadow: 0 0 0 1px rgb(16 185 129 / 0.14), 0 22px 70px rgb(16 185 129 / 0.14), 0 8px 30px rgb(34 211 238 / 0.10);
+  backdrop-filter: blur(18px);
+}
+.ai-glow-button-paid {
+  box-shadow: 0 0 0 1px rgb(52 211 153 / 0.32), 0 0 28px rgb(16 185 129 / 0.26), 0 12px 28px rgb(34 211 238 / 0.18);
+}
+.ai-shield-pulse-paid {
+  animation: aiShieldPulsePaid 2.6s ease-in-out infinite;
+}
+@keyframes aiShieldPulsePaid {
+  0%, 100% { box-shadow: 0 0 0 0 rgb(52 211 153 / 0.30), 0 0 34px rgb(16 185 129 / 0.30); }
+  50% { box-shadow: 0 0 0 8px rgb(52 211 153 / 0.02), 0 0 48px rgb(34 211 238 / 0.28); }
+}
+.ai-glass {
+  border: 1px solid rgb(255 255 255 / 0.13);
+  background: linear-gradient(145deg, rgb(255 255 255 / 0.12), rgb(255 255 255 / 0.055));
+  box-shadow: var(--shadow-ai-glow);
+  backdrop-filter: blur(18px);
+}
+.ai-glass-soft {
+  border: 1px solid rgb(255 255 255 / 0.10);
+  background: linear-gradient(145deg, rgb(15 23 42 / 0.82), rgb(30 41 59 / 0.42));
+  box-shadow: 0 18px 60px rgb(2 6 23 / 0.28);
+  backdrop-filter: blur(14px);
+}
+.ai-glow-button {
+  box-shadow: 0 0 0 1px rgb(34 211 238 / 0.26), 0 0 28px rgb(34 211 238 / 0.22), 0 12px 28px rgb(20 184 166 / 0.18);
+}
+.ai-grid-overlay {
+  background-image:
+    linear-gradient(rgb(255 255 255 / 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 0.045) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: linear-gradient(to bottom, black, transparent 78%);
+}
+.ai-trust-horizon,
+.ai-trust-horizon-paid,
+.ai-trust-horizon-card {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.ai-trust-horizon::before,
+.ai-trust-horizon-paid::before,
+.ai-trust-horizon-card::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -18rem;
+  width: min(92rem, 150vw);
+  height: 38rem;
+  transform: translateX(-50%);
+  border-radius: 9999px 9999px 0 0;
+  filter: blur(12px);
+}
+.ai-trust-horizon::before {
+  background:
+    radial-gradient(ellipse at center, rgb(34 211 238 / 0.30), transparent 58%),
+    radial-gradient(ellipse at 42% 35%, rgb(139 92 246 / 0.22), transparent 52%);
+}
+.ai-trust-horizon-paid::before {
+  background:
+    radial-gradient(ellipse at center, rgb(16 185 129 / 0.34), transparent 58%),
+    radial-gradient(ellipse at 58% 35%, rgb(34 211 238 / 0.22), transparent 52%);
+}
+.ai-trust-horizon-card::before {
+  bottom: -20rem;
+  height: 34rem;
+  background: radial-gradient(ellipse at center, rgb(34 211 238 / 0.16), transparent 58%);
+}
+.ai-trust-horizon::after,
+.ai-trust-horizon-paid::after,
+.ai-trust-horizon-card::after {
+  content: "";
+  position: absolute;
+  inset-inline: -12%;
+  bottom: 0;
+  height: 55%;
+  opacity: 0.74;
+  background-repeat: repeat-x;
+  background-size: 260px 110px, 340px 150px, 7px 7px;
+  mask-image: linear-gradient(to top, black, transparent 86%);
+}
+.ai-trust-horizon::after {
+  background-image:
+    radial-gradient(ellipse at 50% 100%, rgb(34 211 238 / 0.30) 0 1px, transparent 2px),
+    radial-gradient(ellipse at 50% 100%, rgb(139 92 246 / 0.22) 0 1px, transparent 2px),
+    radial-gradient(circle, rgb(255 255 255 / 0.12) 0 1px, transparent 1.6px);
+}
+.ai-trust-horizon-paid::after {
+  background-image:
+    radial-gradient(ellipse at 50% 100%, rgb(52 211 153 / 0.34) 0 1px, transparent 2px),
+    radial-gradient(ellipse at 50% 100%, rgb(34 211 238 / 0.22) 0 1px, transparent 2px),
+    radial-gradient(circle, rgb(255 255 255 / 0.12) 0 1px, transparent 1.6px);
+}
+.ai-trust-horizon-card::after {
+  opacity: 0.38;
+  background-image:
+    radial-gradient(ellipse at 50% 100%, rgb(34 211 238 / 0.22) 0 1px, transparent 2px),
+    radial-gradient(ellipse at 50% 100%, rgb(14 165 233 / 0.12) 0 1px, transparent 2px),
+    radial-gradient(circle, rgb(255 255 255 / 0.08) 0 1px, transparent 1.6px);
+}
+.ai-horizon-line,
+.ai-horizon-line-paid {
+  position: absolute;
+  left: 50%;
+  bottom: 12%;
+  width: min(64rem, 92vw);
+  height: 1px;
+  transform: translateX(-50%);
+  opacity: 0.72;
+}
+.ai-horizon-line {
+  background: linear-gradient(90deg, transparent, rgb(34 211 238 / 0.68), rgb(139 92 246 / 0.44), transparent);
+  box-shadow: 0 0 26px rgb(34 211 238 / 0.32);
+}
+.ai-horizon-line-paid {
+  background: linear-gradient(90deg, transparent, rgb(52 211 153 / 0.70), rgb(34 211 238 / 0.42), transparent);
+  box-shadow: 0 0 26px rgb(16 185 129 / 0.34);
+}
+.ai-aurora-ribbons {
+  position: absolute;
+  inset: -10% -12%;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+.ai-aurora-ribbons::before,
+.ai-aurora-ribbons::after {
+  content: "";
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(32px);
+  opacity: 0.78;
+}
+.ai-aurora-ribbons::before {
+  left: 8%;
+  top: 8%;
+  width: 36rem;
+  height: 18rem;
+  transform: rotate(-18deg);
+  background: radial-gradient(ellipse at center, rgb(34 211 238 / 0.24), transparent 68%);
+}
+.ai-aurora-ribbons::after {
+  right: 2%;
+  top: 14%;
+  width: 42rem;
+  height: 24rem;
+  transform: rotate(14deg);
+  background: radial-gradient(ellipse at center, rgb(139 92 246 / 0.24), transparent 68%);
+}
+.ai-aurora-ribbons span {
+  position: absolute;
+  left: 50%;
+  width: min(92rem, 142vw);
+  height: 20rem;
+  border-radius: 9999px;
+  border-top: 1.5px solid rgb(34 211 238 / 0.70);
+  box-shadow: 0 -20px 70px rgb(34 211 238 / 0.18), 0 -3px 18px rgb(255 255 255 / 0.12);
+  opacity: 0.78;
+}
+.ai-aurora-ribbons span:nth-child(1) {
+  top: 8%;
+  transform: translateX(-48%) rotate(-10deg);
+}
+.ai-aurora-ribbons span:nth-child(2) {
+  top: 22%;
+  transform: translateX(-54%) rotate(7deg);
+  border-top-color: rgb(139 92 246 / 0.62);
+  box-shadow: 0 -22px 72px rgb(139 92 246 / 0.20), 0 -3px 18px rgb(34 211 238 / 0.10);
+}
+.ai-aurora-ribbons span:nth-child(3) {
+  top: 42%;
+  width: min(78rem, 128vw);
+  transform: translateX(-42%) rotate(-16deg);
+  border-top-color: rgb(20 184 166 / 0.50);
+  opacity: 0.48;
+}
+.ai-aurora-ribbons span:nth-child(4) {
+  top: 60%;
+  width: min(84rem, 132vw);
+  transform: translateX(-60%) rotate(12deg);
+  border-top-color: rgb(255 255 255 / 0.22);
+  box-shadow: 0 -18px 60px rgb(34 211 238 / 0.14);
+  opacity: 0.44;
+}
+.ai-aurora-ribbons-paid::before {
+  background: radial-gradient(ellipse at center, rgb(52 211 153 / 0.28), transparent 68%);
+}
+.ai-aurora-ribbons-paid::after {
+  background: radial-gradient(ellipse at center, rgb(34 211 238 / 0.22), transparent 68%);
+}
+.ai-aurora-ribbons-paid span {
+  border-top-color: rgb(52 211 153 / 0.72);
+  box-shadow: 0 -22px 78px rgb(16 185 129 / 0.22), 0 -3px 18px rgb(34 211 238 / 0.10);
+}
+.ai-aurora-ribbons-paid span:nth-child(2) {
+  border-top-color: rgb(34 211 238 / 0.58);
+  box-shadow: 0 -22px 72px rgb(34 211 238 / 0.18), 0 -3px 18px rgb(52 211 153 / 0.10);
+}
+.ai-aurora-ribbons-card {
+  opacity: 0.52;
+}
+.ai-aurora-ribbons-card::before {
+  background: radial-gradient(ellipse at center, rgb(34 211 238 / 0.16), transparent 70%);
+}
+.ai-aurora-ribbons-card::after {
+  opacity: 0.28;
+  background: radial-gradient(ellipse at center, rgb(14 165 233 / 0.14), transparent 72%);
+}
+.ai-aurora-ribbons-card span {
+  border-top-color: rgb(34 211 238 / 0.36);
+  box-shadow: 0 -18px 52px rgb(34 211 238 / 0.12);
+}
+.ai-orb {
+  filter: blur(2px);
+  opacity: 0.7;
+}
+.ai-shield-pulse {
+  animation: aiShieldPulse 2.6s ease-in-out infinite;
+}
+@keyframes aiShieldPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgb(34 211 238 / 0.28), 0 0 34px rgb(20 184 166 / 0.26); }
+  50% { box-shadow: 0 0 0 8px rgb(34 211 238 / 0.02), 0 0 48px rgb(139 92 246 / 0.28); }
+}
+/* ---- Credentials AI V2 ambient motion pass (2026-07-24) ----
+   Erosium-principle ambient motion, NOT copied styling: slow premium drift.
+   CSS keyframes + deterministic client-side particles (AiParticles.tsx).
+   Everything decorative is aria-hidden and disabled under reduced motion. */
+
+/* Floating AI particles — tiny glowing dots drifting slowly upward. */
+.ai-particles {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.ai-particles--absolute {
+  position: absolute;
+}
+.ai-particle {
+  position: absolute;
+  border-radius: 9999px;
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: aiParticleFloat linear infinite;
+}
+@keyframes aiParticleFloat {
+  0% { transform: translate3d(0, 12vh, 0); opacity: 0; }
+  12% { opacity: var(--p-peak, 0.5); }
+  82% { opacity: var(--p-peak, 0.5); }
+  100% { transform: translate3d(var(--p-sway, 1.5rem), -75vh, 0); opacity: 0; }
+}
+
+/* Slow Aurora ribbon drift — animates the independent `translate` property so
+   it composes with the base `transform` rotate/translateX set on each span. */
+.ai-aurora-ribbons span {
+  animation: aiRibbonDrift 34s ease-in-out infinite alternate;
+}
+.ai-aurora-ribbons span:nth-child(2) { animation-duration: 42s; animation-delay: -9s; }
+.ai-aurora-ribbons span:nth-child(3) { animation-duration: 50s; animation-delay: -17s; }
+.ai-aurora-ribbons span:nth-child(4) { animation-duration: 58s; animation-delay: -26s; }
+@keyframes aiRibbonDrift {
+  from { translate: 0 0; }
+  to { translate: -2.4rem 1.5rem; }
+}
+
+/* Aurora bloom pulse — the soft glow fields breathe very slowly. */
+.ai-aurora-ribbons::before { animation: aiBloomPulse 16s ease-in-out infinite; }
+.ai-aurora-ribbons::after { animation: aiBloomPulse 21s ease-in-out infinite -7s; }
+@keyframes aiBloomPulse {
+  0%, 100% { opacity: 0.52; }
+  50% { opacity: 0.85; }
+}
+
+/* Trust-horizon ground glow breathes on home + paid. */
+.ai-trust-horizon::before,
+.ai-trust-horizon-paid::before { animation: aiHorizonBloom 18s ease-in-out infinite; }
+@keyframes aiHorizonBloom {
+  0%, 100% { opacity: 0.72; }
+  50% { opacity: 1; }
+}
+
+/* Horizon hairline shimmer. */
+.ai-horizon-line,
+.ai-horizon-line-paid { animation: aiHorizonLinePulse 12s ease-in-out infinite; }
+@keyframes aiHorizonLinePulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.85; }
+}
+
+/* FREE AI Business Card — deliberately (almost) static: no particles, no ribbon
+   drift. Only one very slow, very subtle bloom breathe so the free card never
+   out-shines the homepage or the paid AI-Ready Business Page. */
+.ai-aurora-ribbons-card span { animation: none; }
+.ai-aurora-ribbons-card::before { animation: aiCardBloomPulse 36s ease-in-out infinite; }
+.ai-aurora-ribbons-card::after { animation: none; }
+@keyframes aiCardBloomPulse {
+  0%, 100% { opacity: 0.34; }
+  50% { opacity: 0.5; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .card-float,
   .card-float:hover {
     transition: none;
     transform: none;
   }
+  .ai-shield-pulse { animation: none; }
+  .ai-shield-pulse-paid { animation: none; }
+  .ai-aurora-ribbons span { opacity: 0.34; }
+  .ai-particles { display: none; }
+  .ai-particle { animation: none; }
+  .ai-aurora-ribbons span,
+  .ai-aurora-ribbons::before,
+  .ai-aurora-ribbons::after { animation: none; }
+  .ai-trust-horizon::before,
+  .ai-trust-horizon-paid::before { animation: none; }
+  .ai-horizon-line,
+  .ai-horizon-line-paid { animation: none; }
 }
 
 body {

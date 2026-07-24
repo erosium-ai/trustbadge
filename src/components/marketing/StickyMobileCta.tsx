@@ -16,15 +16,15 @@ export function StickyMobileCta({ freeProfileUrl }: { freeProfileUrl: string }) 
   if (!show) return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-50 border-t border-slate-200 bg-white/95 p-3 shadow-2xl backdrop-blur md:hidden">
+    <div className="fixed inset-x-0 bottom-0 z-50 border-t border-white/10 bg-slate-950/92 p-3 shadow-2xl backdrop-blur md:hidden">
       <CtaButton
         href={freeProfileUrl}
         eventName="credentials_ai_click_sticky_mobile"
-        label="Claim your free profile"
+        label="Claim Your Free Profile"
         dataCta="sticky-mobile"
         className="w-full"
       >
-        Claim your free profile
+        Claim Your Free Profile
       </CtaButton>
     </div>
   );

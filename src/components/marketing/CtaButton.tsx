@@ -15,13 +15,13 @@ interface CtaButtonProps {
 
 const variants = {
   primary:
-    "bg-[#F97316] text-white shadow-sm hover:bg-[#EA580C] focus-visible:ring-[#F97316]",
+    "ai-glow-button border border-cyan-300/35 bg-gradient-to-r from-cyan-400 via-teal-400 to-emerald-400 text-slate-950 shadow-lg shadow-cyan-500/20 hover:from-cyan-300 hover:via-teal-300 hover:to-emerald-300 focus-visible:ring-cyan-300",
   secondary:
-    "border border-slate-300 bg-white text-[#0F1B2D] hover:bg-slate-50 focus-visible:ring-[#1D6FE0]",
+    "border border-white/15 bg-white/8 text-white shadow-sm backdrop-blur hover:bg-white/14 focus-visible:ring-cyan-300",
   dark:
-    "bg-white text-[#0F1B2D] shadow-sm hover:bg-slate-100 focus-visible:ring-white",
+    "border border-cyan-300/25 bg-white text-slate-950 shadow-sm hover:bg-cyan-50 focus-visible:ring-cyan-300",
   amber:
-    "bg-[#D97706] text-white shadow-sm hover:bg-[#B45309] focus-visible:ring-[#D97706]",
+    "border border-violet-300/30 bg-gradient-to-r from-violet-500 via-fuchsia-500 to-cyan-400 text-white shadow-lg shadow-violet-500/20 hover:from-violet-400 hover:via-fuchsia-400 hover:to-cyan-300 focus-visible:ring-violet-300",
 };
 
 export function CtaButton({
@@ -40,12 +40,12 @@ export function CtaButton({
       href={href}
       eventName={eventName}
       source="credentialsai"
-      campaign="homepage_redesign"
+      campaign="homepage_v2_ai_microsite"
       label={label}
       target={target}
       rel={rel}
       dataCta={dataCta}
-      className={`inline-flex min-h-11 items-center justify-center rounded-xl px-6 py-3.5 text-sm font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${variants[variant]} ${className}`}
+      className={`inline-flex min-h-12 items-center justify-center rounded-2xl px-6 py-3.5 text-sm font-black transition-all duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 ${variants[variant]} ${className}`}
     >
       {children}
     </TrackedLink>

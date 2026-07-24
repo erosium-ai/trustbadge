@@ -7,28 +7,28 @@ import { BRAND_NAME } from "@/lib/brand";
 export const metadata: Metadata = {
   metadataBase: new URL("https://credentialsai.com.au"),
   title: {
-    default: `${BRAND_NAME} — Verified Lead Engine for Local Businesses`,
+    default: `${BRAND_NAME} — AI-Verified Business Profiles`,
     template: `%s — ${BRAND_NAME}`,
   },
   description:
-    "Credentials AI helps local businesses get found, get trusted, and track enquiries with verification, source attribution, and weekly proof reporting.",
+    "Credentials AI builds AI-verified business profiles that bring local businesses measured leads — ABN-checked, AI-readable, and enquiry-tracked.",
   keywords: [
-    "verified lead engine",
-    "tracked enquiries",
-    "business profile verification",
+    "AI Business Card",
+    "AI-Ready Business Page",
+    "AI-readable business profile",
+    "ABN verified business profile",
     "trust badge for local business",
     "AI visibility",
-    "source attribution",
-    "weekly proof reporting",
-    "local business lead tracking",
+    "tracked enquiries",
+    "weekly enquiry summary",
   ],
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: `${BRAND_NAME} — Get found. Get trusted. Get enquiries.`,
+    title: `${BRAND_NAME} — Your Business, Seen by AI`,
     description:
-      "Verified lead engine for local businesses: clear profile, trust verification, tracked enquiries, and weekly proof.",
+      "AI-verified profiles that bring you measured leads. ABN-checked, AI-readable, enquiry-tracked.",
     url: "https://credentialsai.com.au",
     siteName: BRAND_NAME,
     locale: "en_AU",
@@ -44,9 +44,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: `${BRAND_NAME} — Verified Lead Engine for Local Businesses`,
+    title: `${BRAND_NAME} — AI-Verified Business Profiles`,
     description:
-      "Get found, get trusted, and track enquiries with proof reporting.",
+      "AI-verified profiles that bring you measured leads.",
     images: ["/brand/credentials-ai-logo-tile.png"],
   },
   icons: {

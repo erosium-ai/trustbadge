@@ -1,19 +1,12 @@
 import { BRAND_NAME, getSiteUrl } from "@/lib/brand";
 import { Hero } from "@/components/marketing/Hero";
-import { AiReadableSection } from "@/components/marketing/AiReadableSection";
-import { ProblemCards } from "@/components/marketing/ProblemCards";
-import { HowItWorks } from "@/components/marketing/HowItWorks";
-import { LeadProfileSection } from "@/components/marketing/LeadProfileSection";
-import { ProofDashboardSection } from "@/components/marketing/ProofDashboardSection";
-import { TrustBadgeShowcase } from "@/components/marketing/TrustBadgeShowcase";
-import { AudienceGrid } from "@/components/marketing/AudienceGrid";
-import { HonestyBlock } from "@/components/marketing/HonestyBlock";
+import { FeatureCards } from "@/components/marketing/FeatureCards";
 import { PricingSection } from "@/components/marketing/PricingSection";
-import { FounderBundleBanner } from "@/components/marketing/FounderBundleBanner";
 import { Faq, faqs } from "@/components/marketing/Faq";
 import { StickyMobileCta } from "@/components/marketing/StickyMobileCta";
 import { HomepageViewTracker } from "@/components/marketing/HomepageViewTracker";
 import { getFounderBundleUrl, getFreeProfileUrl, getSampleProfileUrl } from "@/components/marketing/urls";
+import { AiParticles } from "@/components/AiParticles";
 
 export default function HomePage() {
   const siteUrl = getSiteUrl();
@@ -30,7 +23,7 @@ export default function HomePage() {
         name: BRAND_NAME,
         url: siteUrl,
         description:
-          "Credentials AI helps local businesses get found, get trusted, and track enquiries with verification and proof reporting.",
+          "Credentials AI builds AI-verified business profiles that bring local businesses measured leads — ABN-checked, AI-readable, and enquiry-tracked.",
       },
       {
         "@type": "WebSite",
@@ -42,25 +35,25 @@ export default function HomePage() {
       {
         "@type": "Service",
         "@id": `${siteUrl}/#service`,
-        name: "Verified lead engine for local businesses",
+        name: "AI-verified business profiles for local businesses",
         provider: { "@id": `${siteUrl}/#organization` },
         areaServed: "Australia",
         serviceType: [
-          "Verified lead profile for local businesses",
-          "online credential verification",
+          "AI-readable business profile",
+          "ABN-backed trust signals",
           "tracked enquiries and source attribution",
-          "weekly proof reporting",
+          "weekly enquiry summary",
         ],
         offers: [
           {
             "@type": "Offer",
-            name: "Free AI Profile",
+            name: "AI Business Card",
             price: "0",
             priceCurrency: "AUD",
           },
           {
             "@type": "Offer",
-            name: "Founding Member — Verified Lead Engine",
+            name: "AI-Ready Business Page",
             price: "49",
             priceCurrency: "AUD",
             priceSpecification: {
@@ -88,26 +81,27 @@ export default function HomePage() {
   };
 
   return (
-    <div className="bg-[#F7F6F3] pb-20 md:pb-0">
+    <div className="ai-v2-bg relative min-h-screen overflow-hidden pb-20 text-white md:pb-0">
+      <div className="ai-trust-horizon fixed inset-0" />
+      <div className="ai-horizon-line fixed" />
+      <div className="ai-aurora-ribbons fixed" aria-hidden>
+        <span />
+        <span />
+        <span />
+        <span />
+      </div>
+      <AiParticles tone="home" />
       <HomepageViewTracker />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Hero freeProfileUrl={freeProfileUrl} sampleProfileUrl={sampleProfileUrl} />
-      <AiReadableSection />
-      <ProblemCards freeProfileUrl={freeProfileUrl} />
-      <HowItWorks freeProfileUrl={freeProfileUrl} />
-      <LeadProfileSection sampleProfileUrl={sampleProfileUrl} />
-      <ProofDashboardSection />
-      <TrustBadgeShowcase freeProfileUrl={freeProfileUrl} />
-      <HonestyBlock />
-      <AudienceGrid />
+      <FeatureCards />
       <PricingSection
         freeProfileUrl={freeProfileUrl}
         founderBundleUrl={founderBundleUrl}
       />
-      <FounderBundleBanner founderBundleUrl={founderBundleUrl} />
       <Faq freeProfileUrl={freeProfileUrl} />
       <StickyMobileCta freeProfileUrl={freeProfileUrl} />
     </div>

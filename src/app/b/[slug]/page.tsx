@@ -1,18 +1,12 @@
-/* 🔑 Keywords: public business profile route, /b/[slug], credential certificate design, Ink and Sunset, verified seal, mobile CTA */
-
-// v1.1 "credential certificate" redesign (2026-07-10):
-// - Ink gradient letterhead band with embossed TrustBadge seal (top-right)
-// - Seal state is DRIVEN BY verification_status — pending profiles get a grey
-//   seal, never a fake verified look (no-overclaim rule applies to pixels)
-// - Cream certificate body, hairline dividers, floating cards
-// - Footer signature line: "Verified by Credentials AI" + link
-// - JSON-LD escaped against </script> injection
+/* 🔑 Keywords: Credentials AI V2 public business profile, /b/[slug], AI Business Card (free), AI-Ready Business Page (paid), emerald verified accent, ABN-only verification, glassmorphism */
 
 import { notFound } from "next/navigation";
 import { LeadCapturePanel } from "@/components/profiles/LeadCapturePanel";
 import { getBusinessProfileBySlug, getPublicBadgeData } from "@/lib/trustbadge";
 import { getSiteUrl, BRAND_NAME } from "@/lib/brand";
-import { schemaTypeFor, textureFor } from "@/lib/business-types";
+import { schemaTypeFor } from "@/lib/business-types";
+import { getFounderBundleUrl } from "@/components/marketing/urls";
+import { AiParticles } from "@/components/AiParticles";
 
 export const dynamic = "force-dynamic";
 
@@ -23,20 +17,20 @@ interface ProfilePageProps {
 function getSampleProfile() {
   return {
     slug: "sample-plumbing-co",
-    business_name: "Sample Plumbing Co",
+    business_name: "Coastal Plumbing Co",
     description:
-      "Sample profile for Credentials AI demo. Fast plumbing repairs across Burleigh and nearby suburbs.",
+      "Proudly servicing the Gold Coast. Emergency repairs, hot water systems and gas fitting — fast, tidy and measured.",
     phone: "0400 000 000",
-    email: "hello@sampleplumbingco.com.au",
+    email: "hello@coastalplumbingco.com.au",
     website: "https://credentialsai.com.au",
     suburb: "Burleigh Heads",
     state: "QLD",
     postcode: "4220",
     service_areas: ["Burleigh Heads", "Varsity Lakes", "Mermaid Beach", "Robina"],
     services: [
-      { name: "Blocked drains", description: "Jet blasting, camera inspections, same-day service." },
-      { name: "Hot water repairs", description: "Electric and gas hot water troubleshooting and replacement." },
-      { name: "Emergency plumbing", description: "Burst pipes, leaks and urgent callouts." },
+      { name: "Emergency Repairs", description: "Burst pipes, leaks and urgent callouts — same-day where possible." },
+      { name: "Hot Water", description: "Electric and gas hot water troubleshooting, repairs and replacement." },
+      { name: "Gas Fitting", description: "Safe gas installs and repairs for homes and small business." },
     ],
     plan: "founding_member",
     abn: "12 345 678 901",
@@ -51,10 +45,38 @@ function getSampleProfile() {
           answer: "Burleigh Heads, Varsity Lakes, Mermaid Beach and Robina — same-day where possible.",
         },
         {
-          question: "Are you licensed and insured?",
-          answer: "Yes — QBCC licensed and fully insured for residential and commercial work.",
+          question: "What does ABN Verified mean here?",
+          answer: "Sample wording only. Real Credentials AI pages show the ABN check against the Australian Business Register and when it was done.",
         },
       ],
+    },
+  };
+}
+
+function getSampleFreeProfile() {
+  return {
+    slug: "sample-free-card",
+    business_name: "Gold Coast Flow Plumbing",
+    description: "Blocked drains and general plumbing across the southern Gold Coast.",
+    phone: "0400 111 111",
+    email: "hello@gcflowplumbing.com.au",
+    website: null,
+    suburb: "Burleigh Heads",
+    state: "QLD",
+    postcode: "4220",
+    service_areas: ["Burleigh Heads", "Varsity Lakes", "Palm Beach"],
+    services: [
+      { name: "Blocked drains" },
+      { name: "Tap and toilet repairs" },
+      { name: "General plumbing" },
+    ],
+    plan: "free",
+    abn: "98 765 432 109",
+    status: "active",
+    verification_status: "verified",
+    metadata: {
+      sample_profile: true,
+      business_type: "plumber",
     },
   };
 }
@@ -76,9 +98,7 @@ function toServiceList(value: unknown): Array<{ name: string; description?: stri
       continue;
     }
 
-    if (!item || typeof item !== "object") {
-      continue;
-    }
+    if (!item || typeof item !== "object") continue;
 
     const row = item as Record<string, unknown>;
     const name = typeof row.name === "string" ? row.name.trim() : "";
@@ -94,7 +114,6 @@ function toServiceList(value: unknown): Array<{ name: string; description?: stri
   return services;
 }
 
-/** Escape JSON-LD so user content can never break out of the script tag. */
 function safeJsonLd(value: unknown): string {
   return JSON.stringify(value).replace(/</g, "\\u003c");
 }
@@ -106,135 +125,154 @@ function initialsOf(name: string): string {
   return (first + second).toUpperCase() || "?";
 }
 
+function isPremiumPlan(plan?: string | null): boolean {
+  const normalized = String(plan ?? "").toLowerCase();
+  return ["founding_member", "founding", "pro", "paid", "verified_lead_engine"].includes(normalized);
+}
+
 // ---------------------------------------------------------------------------
-// Verification seal — state driven by verification_status. Grey when pending.
+// TrustBadge shield — emerald accent on paid pages, cyan on free cards.
+// State driven by verification_status. Never a fake verified look.
 // ---------------------------------------------------------------------------
 
-function VerificationSeal({ verified, href }: { verified: boolean; href?: string | null }) {
-  const seal = (
-    <div
-      className="flex flex-col items-center gap-1.5"
-      title={
-        verified
-          ? href
-            ? "Verified by Credentials AI — click to see what was checked and when"
-            : "Verified by Credentials AI"
-          : "Verification pending"
-      }
-    >
+function VerificationShield({ verified, href, tone }: { verified: boolean; href?: string | null; tone: "paid" | "free" }) {
+  const inner = (
+    <div className="flex flex-col items-center gap-2">
       <div
-        className={`relative flex h-16 w-16 items-center justify-center rounded-full sm:h-20 sm:w-20 ${
+        className={`flex h-20 w-20 items-center justify-center rounded-3xl border ${
           verified
-            ? "bg-gradient-to-br from-emerald-400 via-emerald-500 to-emerald-700"
-            : "bg-gradient-to-br from-slate-500 via-slate-600 to-slate-700"
+            ? tone === "paid"
+              ? "ai-shield-pulse-paid border-emerald-300/40 bg-emerald-300/12 text-emerald-100"
+              : "ai-shield-pulse border-cyan-300/40 bg-cyan-300/12 text-cyan-100"
+            : "border-slate-400/25 bg-white/7 text-slate-300"
         }`}
-        style={{
-          boxShadow: verified
-            ? "var(--shadow-emboss), var(--shadow-seal-glow)"
-            : "var(--shadow-emboss)",
-        }}
       >
-        <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/25 bg-white/10 sm:h-[3.75rem] sm:w-[3.75rem]">
+        <svg viewBox="0 0 24 24" fill="none" className="h-10 w-10" aria-hidden>
+          <path d="M12 3l7 3v5c0 4.6-2.9 8.8-7 10-4.1-1.2-7-5.4-7-10V6l7-3Z" stroke="currentColor" strokeWidth="1.8" />
           {verified ? (
-            <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6 text-white sm:h-7 sm:w-7" aria-hidden>
-              <path
-                d="M20 6L9 17l-5-5"
-                stroke="currentColor"
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+            <path d="M8.5 12.2l2.1 2.1 4.9-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           ) : (
-            <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6 text-white/80 sm:h-7 sm:w-7" aria-hidden>
-              <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" />
-              <path d="M12 7v5l3 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            </svg>
+            <path d="M12 8v4l2.5 2.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
           )}
-        </div>
+        </svg>
       </div>
       <span
-        className={`text-[10px] font-semibold uppercase tracking-widest ${
-          verified ? "text-emerald-300" : "text-slate-400"
+        className={`text-[11px] font-black uppercase tracking-[0.22em] ${
+          verified ? (tone === "paid" ? "text-emerald-200" : "text-cyan-200") : "text-slate-400"
         }`}
       >
-        {verified ? "Verified" : "Pending"}
+        {verified ? "ABN verified" : "Verification pending"}
       </span>
     </div>
   );
 
   if (href) {
     return (
-      <a
-        href={href}
-        className="transition-transform hover:scale-105"
-        aria-label="See what was checked and when"
-      >
-        {seal}
+      <a href={href} className="transition-transform hover:scale-105" aria-label="See what was checked and when">
+        {inner}
       </a>
     );
   }
-  return seal;
+  return inner;
+}
+
+// ---------------------------------------------------------------------------
+// Upgrade preview — baked into the free AI Business Card. Shows the real
+// AI-Ready Business Page look (emerald accent) the owner is missing.
+// ---------------------------------------------------------------------------
+
+function UpgradePreview({ businessName }: { businessName: string }) {
+  const upgradeUrl = getFounderBundleUrl("free_card_upgrade_preview");
+  return (
+    <section className="ai-glass mt-8 overflow-hidden rounded-[2rem] p-5 text-white sm:p-6">
+      <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-200">Upgrade preview</p>
+      <div className="mt-4 grid gap-5 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+        <div>
+          <h2 className="text-2xl font-black tracking-tight sm:text-3xl">Want it to look like this?</h2>
+          <p className="mt-3 text-sm leading-relaxed text-slate-300">
+            Upgrade {businessName} from the free AI Business Card to the full AI-Ready Business Page: premium
+            AI-style design, ABN-backed TrustBadge, services and about sections, enquiry form, and call, email
+            and quote tracking with a weekly summary.
+          </p>
+          <p className="mt-4 text-sm font-bold text-white">
+            $49/month or $12.90/week
+            <span className="mt-1 block text-xs font-semibold text-slate-400">
+              Same product. Choose weekly or monthly. Cancel anytime.
+            </span>
+          </p>
+          <a
+            href={upgradeUrl}
+            className="ai-glow-button-paid mt-5 inline-flex rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-300 px-5 py-3 text-sm font-black text-slate-950 transition hover:-translate-y-0.5"
+          >
+            Start AI-Ready Page
+          </a>
+        </div>
+        <div className="overflow-hidden rounded-[1.5rem] border border-emerald-300/20 bg-[#04120f] p-4">
+          <div className="relative h-24 rounded-2xl bg-gradient-to-br from-emerald-400/25 via-cyan-400/15 to-transparent">
+            <div className="ai-shield-pulse-paid absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-xl border border-emerald-300/40 bg-emerald-300/12 text-emerald-100">
+              <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden>
+                <path d="M12 3l7 3v5c0 4.6-2.9 8.8-7 10-4.1-1.2-7-5.4-7-10V6l7-3Z" stroke="currentColor" strokeWidth="1.8" />
+                <path d="M8.5 12.2l2.1 2.1 4.9-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+          </div>
+          <div className="mt-3 grid grid-cols-3 gap-2">
+            {["Services", "About", "Enquiry form"].map((label) => (
+              <div key={label} className="rounded-2xl border border-emerald-300/15 bg-white/7 p-3 text-center">
+                <p className="text-[11px] font-black text-emerald-100">{label}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-2 rounded-2xl border border-emerald-300/15 bg-white/7 p-3">
+            <p className="text-[11px] font-black text-emerald-100">Lead proof — calls, quotes and sources tracked</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }
 
 export default async function PublicBusinessProfilePage({ params }: ProfilePageProps) {
   const { slug } = await params;
   const normalizedSlug = slug.trim().toLowerCase();
-  const sampleProfileRequested = normalizedSlug === "sample-plumbing-co";
-  const profile = (await getBusinessProfileBySlug(slug)) ?? (sampleProfileRequested ? getSampleProfile() : null);
+  const samplePaidRequested = normalizedSlug === "sample-plumbing-co";
+  const sampleFreeRequested = normalizedSlug === "sample-free-card";
+  const profile =
+    (await getBusinessProfileBySlug(slug)) ??
+    (samplePaidRequested ? getSampleProfile() : sampleFreeRequested ? getSampleFreeProfile() : null);
 
-  if (!profile) {
-    notFound();
-  }
+  if (!profile) notFound();
 
   const serviceAreas = toStringArray(profile.service_areas);
   const services = toServiceList(profile.services);
   const siteUrl = getSiteUrl();
   const canonicalUrl = `${siteUrl}/b/${profile.slug}`;
-  const isVerified =
-    (profile as { verification_status?: string }).verification_status === "verified";
+  const isVerified = (profile as { verification_status?: string }).verification_status === "verified";
+  const premium = isPremiumPlan(profile.plan) || samplePaidRequested;
+  const isSample = samplePaidRequested || sampleFreeRequested;
 
-  // Public verification page link — only when a real badge record exists
-  // (never link to a 404; the copy promises clickable proof, so the click
-  // must always land on an actual verification page).
   let badgeUrl: string | null = null;
   try {
     const badge = await getPublicBadgeData(profile.slug);
-    if (badge.trustbadge) {
-      badgeUrl = `/badge/${profile.slug}`;
-    }
+    if (badge.trustbadge) badgeUrl = `/badge/${profile.slug}`;
   } catch {
     badgeUrl = null;
   }
 
-  // v1.1: business type + GBP link + FAQs ride in metadata (no migration).
-  const meta =
-    profile.metadata && typeof profile.metadata === "object"
-      ? (profile.metadata as Record<string, unknown>)
-      : {};
+  const meta = profile.metadata && typeof profile.metadata === "object" ? (profile.metadata as Record<string, unknown>) : {};
   const businessType = typeof meta.business_type === "string" ? meta.business_type : null;
-  const gbpUrl =
-    typeof meta.google_business_profile_url === "string" && meta.google_business_profile_url
-      ? meta.google_business_profile_url
-      : null;
+  const gbpUrl = typeof meta.google_business_profile_url === "string" && meta.google_business_profile_url ? meta.google_business_profile_url : null;
   const faqs = Array.isArray(meta.faqs)
     ? (meta.faqs as Array<{ question?: string; answer?: string }>)
-        .map((f) => ({
-          question: String(f?.question ?? "").trim().slice(0, 180),
-          answer: String(f?.answer ?? "").trim().slice(0, 1000),
-        }))
+        .map((f) => ({ question: String(f?.question ?? "").trim().slice(0, 180), answer: String(f?.answer ?? "").trim().slice(0, 1000) }))
         .filter((f) => f.question && f.answer)
         .slice(0, 8)
     : [];
-  const headerTexture = textureFor(businessType);
 
   const socialSource = (profile as { social_links?: unknown }).social_links;
-  const socialLinks =
-    socialSource && typeof socialSource === "object"
-      ? Object.values(socialSource as Record<string, unknown>).filter(
-          (v): v is string => typeof v === "string" && v.startsWith("http")
-        )
-      : [];
+  const socialLinks = socialSource && typeof socialSource === "object"
+    ? Object.values(socialSource as Record<string, unknown>).filter((v): v is string => typeof v === "string" && v.startsWith("http"))
+    : [];
   const sameAs = [...(gbpUrl ? [gbpUrl] : []), ...socialLinks];
 
   const jsonLd = {
@@ -247,225 +285,276 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
     email: profile.email || undefined,
     url: canonicalUrl,
     areaServed: serviceAreas.length > 0 ? serviceAreas : undefined,
-    address: profile.suburb
-      ? {
-          "@type": "PostalAddress",
-          addressLocality: profile.suburb,
-          addressRegion: profile.state || undefined,
-          postalCode: profile.postcode || undefined,
-          addressCountry: "AU",
-        }
-      : undefined,
+    address: profile.suburb ? { "@type": "PostalAddress", addressLocality: profile.suburb, addressRegion: profile.state || undefined, postalCode: profile.postcode || undefined, addressCountry: "AU" } : undefined,
     sameAs: sameAs.length > 0 ? sameAs : undefined,
     makesOffer: services.map((service) => ({
       "@type": "Offer",
-      itemOffered: {
-        "@type": "Service",
-        name: service.name,
-        description: service.description || undefined,
-      },
+      itemOffered: { "@type": "Service", name: service.name, description: service.description || undefined },
       price: service.price || undefined,
       priceCurrency: service.price ? "AUD" : undefined,
     })),
   };
 
-  return (
-    <div className="min-h-screen bg-cream">
-      <div className="mx-auto max-w-4xl px-4 pb-28 pt-6 sm:px-6 sm:pt-10 md:pb-12">
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }} />
+  const locationLine = [profile.suburb, profile.state].filter(Boolean).join(", ");
 
-        {/* ── Certificate letterhead ──────────────────────────────────── */}
-        <header className="ink-gradient card-float relative overflow-hidden rounded-2xl">
-          {headerTexture && (
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0 opacity-[0.14]"
-              style={{ backgroundImage: headerTexture, backgroundRepeat: "repeat" }}
-            />
-          )}
-          <div className="relative p-6 sm:p-10">
-            <div className="flex items-start justify-between gap-4">
-              <div className="min-w-0">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
-                  {BRAND_NAME} · Business profile
-                </p>
-                <div className="mt-3 flex items-center gap-4">
-                  <div
-                    className="hidden h-14 w-14 flex-none items-center justify-center rounded-xl bg-white/10 text-xl font-bold text-white sm:flex"
-                    aria-hidden
-                  >
-                    {initialsOf(profile.business_name)}
+  // -------------------------------------------------------------------------
+  // PAID — AI-Ready Business Page. Full-screen dark environment, verified
+  // emerald/cyan accent system. Distinct from homepage and free card.
+  // -------------------------------------------------------------------------
+  if (premium) {
+    return (
+      <div className="ai-v2-bg-paid relative min-h-screen overflow-hidden text-white">
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }} />
+        <div className="ai-trust-horizon-paid fixed inset-0" />
+        <div className="ai-horizon-line-paid fixed" />
+        <div className="ai-aurora-ribbons ai-aurora-ribbons-paid fixed" aria-hidden>
+          <span />
+          <span />
+          <span />
+          <span />
+        </div>
+        <AiParticles tone="paid" />
+        <main className="relative mx-auto max-w-5xl px-4 pb-28 pt-6 sm:px-6 sm:pt-10 md:pb-14">
+          <header className="ai-glass-paid overflow-hidden rounded-[2rem]">
+            <div className="relative p-6 sm:p-10 lg:p-12">
+              <div className="absolute inset-x-0 top-0 h-64 bg-gradient-to-br from-emerald-400/22 via-cyan-400/14 to-transparent" />
+              <div className="relative">
+                <div className="flex items-center justify-between gap-4">
+                  <p className="text-[11px] font-black uppercase tracking-[0.24em] text-emerald-200">
+                    AI-Ready Business Page{isSample ? " · Sample data" : ""}
+                  </p>
+                  <p className="hidden text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500 sm:block">
+                    {locationLine ? `Proudly servicing ${profile.suburb ?? locationLine}` : BRAND_NAME}
+                  </p>
+                </div>
+                <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_auto] lg:items-start">
+                  <div>
+                    <div className="flex items-center gap-4">
+                      <div className="flex h-16 w-16 flex-none items-center justify-center rounded-3xl border border-emerald-300/25 bg-emerald-300/10 text-xl font-black text-emerald-100">
+                        {initialsOf(profile.business_name)}
+                      </div>
+                      <div>
+                        <h1 className="break-words text-4xl font-black tracking-tight text-white sm:text-5xl">
+                          {profile.business_name}
+                        </h1>
+                        <p className="mt-2 text-sm font-semibold text-slate-300">
+                          {locationLine}
+                          {serviceAreas.length > 0 ? ` · Servicing ${serviceAreas.length} areas` : ""}
+                        </p>
+                      </div>
+                    </div>
+                    {profile.description && (
+                      <p className="mt-6 max-w-3xl text-lg leading-relaxed text-slate-300">{profile.description}</p>
+                    )}
+                    <div className="mt-6 flex flex-wrap gap-2 text-xs font-bold">
+                      {isVerified && (
+                        <span className="rounded-full border border-emerald-300/30 bg-emerald-300/12 px-3 py-1.5 text-emerald-100">
+                          ABN Verified by {BRAND_NAME}
+                        </span>
+                      )}
+                      {profile.abn && (
+                        <span className="rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-slate-200">
+                          ABN {profile.abn}
+                        </span>
+                      )}
+                      <span className="rounded-full border border-cyan-300/25 bg-cyan-300/10 px-3 py-1.5 text-cyan-100">
+                        Readable by ChatGPT, Google, Claude and Siri
+                      </span>
+                    </div>
                   </div>
-                  <h1 className="break-words text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                  <VerificationShield verified={isVerified} href={badgeUrl} tone="paid" />
+                </div>
+              </div>
+            </div>
+          </header>
+
+          <section className="mt-6 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+            <div className="space-y-6">
+              <LeadCapturePanel profileSlug={profile.slug} businessName={profile.business_name} phone={profile.phone} email={profile.email} />
+
+              {services.length > 0 && (
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {services.map((service) => (
+                    <article key={`${service.name}-${service.price ?? ""}`} className="ai-glass-soft rounded-[1.5rem] border-emerald-300/12 p-5">
+                      <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-200">Service</p>
+                      <h2 className="mt-2 text-lg font-black text-white">{service.name}</h2>
+                      {service.description && <p className="mt-2 text-sm leading-relaxed text-slate-300">{service.description}</p>}
+                      {service.price && <p className="mt-3 text-sm font-bold text-emerald-200">{service.price}</p>}
+                    </article>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <aside className="space-y-6">
+              <div className="ai-glass-soft rounded-[2rem] border-emerald-300/12 p-5 sm:p-6">
+                <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-200">Lead proof</p>
+                <h2 className="mt-3 text-2xl font-black">This page is measured.</h2>
+                <div className="mt-5 grid grid-cols-3 gap-3">
+                  {["Calls", "Quotes", "Sources"].map((label) => (
+                    <div key={label} className="rounded-2xl border border-emerald-300/15 bg-white/7 p-3 text-center">
+                      <p className="text-lg font-black text-emerald-200">✓</p>
+                      <p className="mt-1 text-[10px] font-black uppercase tracking-widest text-slate-500">{label}</p>
+                    </div>
+                  ))}
+                </div>
+                <p className="mt-4 text-sm leading-relaxed text-slate-300">
+                  Calls, email clicks and quote requests are tracked so the owner sees proof — not just hope.
+                </p>
+              </div>
+
+              <div className="ai-glass-soft rounded-[2rem] p-5 sm:p-6">
+                <h3 className="text-xs font-black uppercase tracking-[0.22em] text-slate-400">Business details</h3>
+                <dl className="mt-4 space-y-3 text-sm">
+                  {profile.phone && <div><dt className="text-slate-500">Phone</dt><dd className="font-bold text-white">{profile.phone}</dd></div>}
+                  {profile.email && <div><dt className="text-slate-500">Email</dt><dd className="break-words font-bold text-white">{profile.email}</dd></div>}
+                  {profile.website && <div><dt className="text-slate-500">Website</dt><dd className="break-words font-bold text-white">{profile.website}</dd></div>}
+                </dl>
+              </div>
+
+              {serviceAreas.length > 0 && (
+                <div className="ai-glass-soft rounded-[2rem] p-5 sm:p-6">
+                  <h3 className="text-xs font-black uppercase tracking-[0.22em] text-slate-400">Service areas</h3>
+                  <ul className="mt-4 flex flex-wrap gap-2">
+                    {serviceAreas.map((area) => (
+                      <li key={area} className="rounded-full border border-emerald-300/15 bg-white/8 px-3 py-1.5 text-xs font-bold text-slate-200">{area}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </aside>
+          </section>
+
+          {faqs.length > 0 && (
+            <section className="ai-glass-soft mt-6 rounded-[2rem] p-5 sm:p-6">
+              <script dangerouslySetInnerHTML={{ __html: safeJsonLd({ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faqs.map((f) => ({ "@type": "Question", name: f.question, acceptedAnswer: { "@type": "Answer", text: f.answer } })) }) }} type="application/ld+json" />
+              <h2 className="text-2xl font-black">Common questions</h2>
+              <dl className="mt-5 grid gap-4 md:grid-cols-2">
+                {faqs.map((f) => (
+                  <div key={f.question} className="rounded-2xl border border-white/10 bg-white/7 p-4">
+                    <dt className="text-sm font-black text-white">{f.question}</dt>
+                    <dd className="mt-2 text-sm leading-relaxed text-slate-300">{f.answer}</dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+          )}
+
+          <footer className="mt-8 text-center text-sm font-semibold text-slate-400">
+            {isVerified ? (
+              <>
+                ABN Verified by <a href={siteUrl} className="text-emerald-200 hover:underline">{BRAND_NAME}</a>
+                <span className="mx-2 text-slate-600">·</span>Backed by official Australian Business Register data
+              </>
+            ) : (
+              <>
+                Profile powered by <a href={siteUrl} className="text-emerald-200 hover:underline">{BRAND_NAME}</a> · AI-readable business page
+              </>
+            )}
+          </footer>
+        </main>
+      </div>
+    );
+  }
+
+  // -------------------------------------------------------------------------
+  // FREE — AI Business Card. Simpler navy/cyan, restrained glow, compact card
+  // feel. Upgrade preview baked into the bottom.
+  // -------------------------------------------------------------------------
+  return (
+    <div className="ai-v2-bg-card relative min-h-screen overflow-hidden text-white">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }} />
+      <div className="ai-trust-horizon-card fixed inset-0" />
+      <div className="ai-aurora-ribbons ai-aurora-ribbons-card fixed" aria-hidden>
+        <span />
+        <span />
+        <span />
+        <span />
+      </div>
+      <main className="relative mx-auto max-w-2xl px-4 pb-16 pt-10 sm:px-6 sm:pt-16">
+        <article className="ai-glass overflow-hidden rounded-[2rem]">
+          <div className="relative p-6 sm:p-8">
+            <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-br from-cyan-400/16 to-transparent" />
+            <div className="relative">
+              <div className="flex items-start justify-between gap-4">
+                <p className="text-[11px] font-black uppercase tracking-[0.24em] text-cyan-200">
+                  AI Business Card{isSample ? " · Sample data" : ""}
+                </p>
+                <VerificationShield verified={isVerified} href={badgeUrl} tone="free" />
+              </div>
+              <div className="mt-4 flex items-center gap-4">
+                <div className="flex h-14 w-14 flex-none items-center justify-center rounded-2xl border border-white/12 bg-white/10 text-lg font-black text-white">
+                  {initialsOf(profile.business_name)}
+                </div>
+                <div>
+                  <h1 className="break-words text-3xl font-black tracking-tight text-white sm:text-4xl">
                     {profile.business_name}
                   </h1>
+                  <p className="mt-1 text-sm font-semibold text-slate-300">{locationLine}</p>
                 </div>
-                {profile.suburb && (
-                  <p className="mt-2 text-sm font-medium text-slate-300">
-                    {profile.suburb}
-                    {profile.state ? `, ${profile.state}` : ""}
-                    {serviceAreas.length > 0 ? ` · Servicing ${serviceAreas.length} areas` : ""}
-                  </p>
-                )}
               </div>
-              <div className="flex-none">
-                <VerificationSeal verified={isVerified} href={badgeUrl} />
-              </div>
-            </div>
-
-            {profile.description && (
-              <p className="mt-5 max-w-2xl text-sm leading-relaxed text-slate-300 sm:text-base">
-                {profile.description}
-              </p>
-            )}
-
-            <div className="mt-6 flex flex-wrap gap-2 text-xs">
-              {sampleProfileRequested && (
-                <span className="rounded-full bg-sunset/20 px-3 py-1 font-medium text-orange-200">Sample data</span>
-              )}
-              {profile.abn && (
-                <span className="rounded-full border border-white/15 bg-white/5 px-3 py-1 font-medium text-slate-300">
-                  ABN {profile.abn}
-                </span>
-              )}
-              {isVerified ? (
-                badgeUrl ? (
-                  <a
-                    href={badgeUrl}
-                    className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 font-medium text-emerald-300 underline-offset-2 hover:underline"
-                  >
-                    Credentials verified — see what was checked →
-                  </a>
-                ) : (
-                  <span className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 font-medium text-emerald-300">
-                    Credentials verified
+              {profile.description && <p className="mt-5 text-base leading-relaxed text-slate-300">{profile.description}</p>}
+              <div className="mt-5 flex flex-wrap gap-2 text-xs font-bold">
+                {isVerified && (
+                  <span className="rounded-full border border-cyan-300/25 bg-cyan-300/10 px-3 py-1.5 text-cyan-100">
+                    ABN Verified by {BRAND_NAME}
                   </span>
-                )
-              ) : (
-                <span className="rounded-full border border-white/15 bg-white/5 px-3 py-1 font-medium text-slate-400">
-                  Verification in progress
+                )}
+                <span className="rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-slate-200">
+                  Readable by ChatGPT, Google, Claude and Siri
                 </span>
-              )}
+              </div>
             </div>
           </div>
-          <div className="relative h-1 w-full bg-gradient-to-r from-sunset via-sunset-deep to-transparent" aria-hidden />
-        </header>
 
-        {/* ── Certificate body ────────────────────────────────────────── */}
-        <section className="mt-6 grid gap-6 lg:grid-cols-5">
-          <div className="space-y-6 lg:col-span-3">
-            <LeadCapturePanel
-              profileSlug={profile.slug}
-              businessName={profile.business_name}
-              phone={profile.phone}
-              email={profile.email}
-            />
-
+          <div className="border-t border-white/10 p-6 sm:p-8">
             {services.length > 0 && (
-              <div className="card-float rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
-                <h2 className="text-lg font-semibold text-slate-900">Services</h2>
-                <div className="mt-1 h-px w-10 bg-sunset" aria-hidden />
-                <ul className="mt-4 grid gap-3">
-                  {services.map((service) => (
-                    <li
-                      key={`${service.name}-${service.price ?? ""}`}
-                      className="rounded-xl border border-slate-100 bg-cream/60 p-3.5"
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <p className="text-sm font-semibold text-slate-900">{service.name}</p>
-                        {service.price && <span className="text-xs font-medium text-slate-600">{service.price}</span>}
-                      </div>
-                      {service.description && <p className="mt-1 text-xs leading-relaxed text-slate-600">{service.description}</p>}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <ul className="space-y-2">
+                {services.map((service) => (
+                  <li key={service.name} className="flex items-center gap-3 text-sm font-semibold text-slate-200">
+                    <span className="h-1.5 w-1.5 flex-none rounded-full bg-cyan-300" />
+                    {service.name}
+                  </li>
+                ))}
+              </ul>
             )}
-          </div>
 
-          <aside className="space-y-6 lg:col-span-2">
-            <div className="card-float rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
-              <h3 className="text-xs font-semibold uppercase tracking-widest text-slate-500">Contact</h3>
-              <dl className="mt-3 space-y-3 text-sm">
-                {profile.phone && (
-                  <div>
-                    <dt className="text-slate-500">Phone</dt>
-                    <dd className="font-medium text-slate-900">{profile.phone}</dd>
-                  </div>
-                )}
-                {profile.email && (
-                  <div>
-                    <dt className="text-slate-500">Email</dt>
-                    <dd className="break-words font-medium text-slate-900">{profile.email}</dd>
-                  </div>
-                )}
-                {profile.website && (
-                  <div>
-                    <dt className="text-slate-500">Website</dt>
-                    <dd className="break-words font-medium text-slate-900">{profile.website}</dd>
-                  </div>
-                )}
-              </dl>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              {profile.phone && (
+                <a href={`tel:${profile.phone}`} className="ai-glow-button rounded-2xl bg-gradient-to-r from-cyan-400 to-teal-300 px-5 py-3 text-center text-sm font-black text-slate-950 transition hover:-translate-y-0.5">
+                  Call now
+                </a>
+              )}
+              {profile.email && (
+                <a href={`mailto:${profile.email}`} className="rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-center text-sm font-black text-white transition hover:bg-white/14">
+                  Email
+                </a>
+              )}
             </div>
 
             {serviceAreas.length > 0 && (
-              <div className="card-float rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
-                <h3 className="text-xs font-semibold uppercase tracking-widest text-slate-500">Service areas</h3>
-                <ul className="mt-3 flex flex-wrap gap-2">
-                  {serviceAreas.map((area) => (
-                    <li key={area} className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
-                      {area}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <p className="mt-5 text-xs font-semibold text-slate-400">
+                Servicing {serviceAreas.join(" · ")}
+              </p>
             )}
-          </aside>
-        </section>
+          </div>
+        </article>
 
-        {/* ── FAQs (rendered for humans + FAQPage schema for machines) ──── */}
-        {faqs.length > 0 && (
-          <section className="card-float mt-6 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
-            <script
-              type="application/ld+json"
-              dangerouslySetInnerHTML={{
-                __html: safeJsonLd({
-                  "@context": "https://schema.org",
-                  "@type": "FAQPage",
-                  mainEntity: faqs.map((f) => ({
-                    "@type": "Question",
-                    name: f.question,
-                    acceptedAnswer: { "@type": "Answer", text: f.answer },
-                  })),
-                }),
-              }}
-            />
-            <h2 className="text-lg font-semibold text-slate-900">Common questions</h2>
-            <div className="mt-1 h-px w-10 bg-sunset" aria-hidden />
-            <dl className="mt-4 space-y-4">
-              {faqs.map((f) => (
-                <div key={f.question} className="rounded-xl border border-slate-100 bg-cream/60 p-4">
-                  <dt className="text-sm font-semibold text-slate-900">{f.question}</dt>
-                  <dd className="mt-1 text-sm leading-relaxed text-slate-600">{f.answer}</dd>
-                </div>
-              ))}
-            </dl>
-          </section>
-        )}
+        <UpgradePreview businessName={profile.business_name} />
 
-        {/* ── Certificate signature line ──────────────────────────────── */}
-        <footer className="mt-8 flex flex-col items-center gap-1 border-t border-slate-200 pt-6 text-center">
-          <p className="text-sm font-medium text-slate-700">
-            {isVerified ? "Verified by" : "Profile powered by"}{" "}
-            <a href={siteUrl} className="font-semibold text-sunset-deep hover:underline">
-              {BRAND_NAME}
-            </a>
-          </p>
-          <p className="text-xs text-slate-400">
-            AI-readable business profile · credentialsai.com.au
-          </p>
+        <footer className="mt-8 text-center text-sm font-semibold text-slate-400">
+          {isVerified ? (
+            <>
+              ABN Verified by <a href={siteUrl} className="text-cyan-200 hover:underline">{BRAND_NAME}</a>
+              <span className="mx-2 text-slate-600">·</span>Backed by official Australian Business Register data
+            </>
+          ) : (
+            <>
+              Profile powered by <a href={siteUrl} className="text-cyan-200 hover:underline">{BRAND_NAME}</a> · AI-readable business card
+            </>
+          )}
         </footer>
-      </div>
+      </main>
     </div>
   );
 }

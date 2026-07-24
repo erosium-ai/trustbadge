@@ -189,11 +189,11 @@ function WelcomeSuccess({
           <h1 className="mt-2 text-2xl font-bold text-slate-900 sm:text-3xl">
             You&rsquo;re in.{" "}
             {foundingNumber
-              ? `Founding Member #${foundingNumber}.`
-              : "Founding Member secured."}
+              ? `AI-Ready Business Page secured.`
+              : "AI-Ready Business Page secured."}
           </h1>
           <p className="mt-3 text-slate-700">
-            Payment received &mdash; your Verified Lead Engine is being
+            Payment received &mdash; your AI-Ready Business Page is being
             switched on for{" "}
             <span className="font-semibold text-slate-900">{businessName}</span>.
           </p>

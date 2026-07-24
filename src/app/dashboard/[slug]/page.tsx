@@ -194,7 +194,7 @@ export default async function DashboardOverviewPage({
           ? "We're checking against official registers — usually 1–2 business days."
           : checklist.verificationStatus === "action_needed"
             ? "We need a couple of things — see verification for details."
-            : "Send your ABN, licence and insurance. Most checks are done in 1–2 business days.",
+            : "Send your ABN so we can check the official ABR data and keep your trust wording accurate.",
       cta: {
         label: "Upload documents",
         href: `/dashboard/${record.slug}/verification`,
@@ -228,7 +228,7 @@ export default async function DashboardOverviewPage({
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
         {justWelcomed ? (
           <div className="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-            You&rsquo;re in. Payment received &mdash; your Verified Lead Engine is switched on.
+            You&rsquo;re in. Payment received &mdash; your AI-Ready Business Page is switched on.
           </div>
         ) : null}
 
@@ -473,26 +473,24 @@ export default async function DashboardOverviewPage({
               </div>
             </Card>
 
-            {/* 6. Founder support */}
+            {/* 6. Support */}
             <Card>
               <h3 className="text-base font-semibold text-slate-900">
-                Set up with the founder
+                Support
               </h3>
               <p className="mt-2 text-sm text-slate-600">
-                Every Founding Member gets set up personally &mdash; profile,
-                verification, the lot.
+                Need help with your page, leads, or billing? Send a message and
+                we&rsquo;ll sort it without the runaround.
               </p>
               <div className="mt-4 flex flex-col gap-2">
                 <a
-                  href="mailto:support@erosium.ai?subject=Founding%20Member%20setup"
+                  href="mailto:support@erosium.ai?subject=Credentials%20AI%20support"
                   className="w-full rounded-lg bg-[#F97316] px-3 py-2 text-center text-sm font-semibold text-white hover:bg-[#EA580C]"
                 >
-                  Founder support
+                  Contact support
                 </a>
               </div>
-              <p className="mt-3 text-xs text-slate-500">
-                I read every message. &mdash; Ike, Credentials AI
-              </p>
+
             </Card>
 
             {/* 7. Billing */}
@@ -501,11 +499,11 @@ export default async function DashboardOverviewPage({
                 Billing
               </h3>
               <p className="mt-2 text-sm font-medium text-slate-900">
-                Founding Member &mdash; Verified Lead Engine
+                AI-Ready Business Page
               </p>
               <p className="mt-1 text-sm text-slate-600">
-                $49/month, locked in while you stay subscribed. Direct founder
-                access included, no charge.
+                $49/month or $12.90/week, depending on the option you chose.
+                Same product. Cancel anytime.
               </p>
               {record.next_payment_at ? (
                 <p className="mt-2 text-sm text-slate-600">
@@ -515,15 +513,22 @@ export default async function DashboardOverviewPage({
                   </span>
                 </p>
               ) : null}
+              {record.stripe_customer_id ? (
+                <a
+                  href={`/api/billing-portal?slug=${record.slug}`}
+                  className="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800"
+                >
+                  Manage billing / cancel plan
+                </a>
+              ) : null}
               <p className="mt-3 text-sm text-slate-500">
-                Change card or cancel?{" "}
+                Need a hand with billing? Email{" "}
                 <a
                   href="mailto:support@erosium.ai"
                   className="font-medium text-[#F97316] hover:underline"
                 >
-                  Email support@erosium.ai
-                </a>{" "}
-                &mdash; sorted within one business day.
+                  support@erosium.ai
+                </a>.
               </p>
             </Card>
           </aside>

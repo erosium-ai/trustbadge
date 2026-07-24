@@ -1,5 +1,6 @@
+// 🔑 Keywords: Credentials AI V2 FAQ, ABN-only verification wording, dark theme
+
 import { CtaButton } from "./CtaButton";
-import { Section } from "./Section";
 
 export const faqs = [
   {
@@ -12,74 +13,59 @@ export const faqs = [
   },
   {
     q: "Why not just use my website?",
-    a: "Keep your website. Credentials AI adds a structured profile, verification layer, and enquiry tracking/proof that most websites don't provide out of the box.",
+    a: "Keep your website. Credentials AI adds a structured, AI-readable profile, an ABN-backed trust layer, and enquiry tracking that most websites don't provide out of the box.",
   },
   {
-    q: "What does 'verified' actually mean?",
-    a: "It means we check details like ABN/business registration, licence and insurance where available, then publish what was checked and when. We are independent, not a government body.",
+    q: "What does 'ABN Verified' actually mean?",
+    a: "It means we check the business ABN and details against the Australian Business Register, then publish what was checked and when. We are independent — a badge is not a government endorsement.",
   },
   {
     q: "Do I need to be technical?",
-    a: "No. If you can fill in a form, you're good. Founding Members get founder-assisted setup as part of onboarding.",
+    a: "No. If you can fill in a form, you're good. Claim your free AI Business Card in minutes — no card required.",
   },
   {
     q: "What if I already have Google Business Profile?",
-    a: "Great — keep it. Google helps discovery. Credentials AI adds verification and enquiry proof reporting so you can measure this channel directly.",
+    a: "Great — keep it. Google helps discovery. Credentials AI adds the verified, AI-readable layer and enquiry proof reporting so you can measure this channel directly.",
   },
   {
-    q: "Is this worth paying monthly for?",
-    a: "If one genuine job comes through and closes, it usually covers the plan many times over. If it doesn't earn its keep, you can cancel.",
+    q: "Is the paid page worth it?",
+    a: "If one genuine job comes through and closes, it usually covers the plan many times over. It's $49/month or $12.90/week — same product, cancel anytime. If it doesn't earn its keep, you can leave cleanly.",
   },
 ];
 
 export function Faq({ freeProfileUrl }: { freeProfileUrl: string }) {
   return (
-    <Section>
+    <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
       <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr]">
         <div>
-          <p className="text-sm font-bold uppercase tracking-wide text-blue-700">FAQ</p>
-          <h2 className="mt-3 text-3xl font-black tracking-tight text-[#0F1B2D] sm:text-4xl">
-            Fair questions.
+          <p className="text-[11px] font-black uppercase tracking-[0.24em] text-cyan-200">FAQ</p>
+          <h2 className="mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl">
+            Straight answers, no theatre.
           </h2>
-          <p className="mt-4 text-lg leading-relaxed text-[#5B6472]">
-            Straight answers before you spend a dollar.
+          <p className="mt-4 text-base leading-relaxed text-slate-300">
+            Start with a free AI Business Card. Upgrade to the full AI-Ready Business Page when you want the
+            premium design, ABN-backed trust and enquiry tracking.
           </p>
-        </div>
-        <div className="space-y-3">
-          {faqs.map((faq) => (
-            <details key={faq.q} className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-              <summary className="cursor-pointer list-none text-base font-black text-[#0F1B2D]">
-                <span className="inline-flex w-full items-center justify-between gap-4">
-                  {faq.q}
-                  <span className="text-xl text-blue-700 transition group-open:rotate-45">+</span>
-                </span>
-              </summary>
-              <p className="mt-3 text-sm leading-relaxed text-[#5B6472]">{faq.a}</p>
-            </details>
-          ))}
-        </div>
-      </div>
-
-      <div className="mt-14 rounded-[2rem] bg-[#0F1B2D] p-8 text-center text-white md:p-12">
-          <h2 className="text-3xl font-black tracking-tight sm:text-4xl">Ten minutes now. Findable and verifiable after.</h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-white/70">
-          Start free now. Add verification and proof reporting when you&apos;re ready to run the full lead engine.
-          </p>
-        <div className="mt-7">
           <CtaButton
             href={freeProfileUrl}
-            eventName="credentials_ai_click_final_cta"
-            label="Claim your free profile"
-            dataCta="final-primary"
-            target="_blank"
-            rel="noopener noreferrer"
-            variant="dark"
+            eventName="credentials_ai_click_faq_free"
+            label="Claim Your Free Profile"
+            dataCta="faq-free"
+            className="mt-6"
           >
-            Claim your free profile
+            Claim Your Free Profile
           </CtaButton>
+          <p className="mt-4 text-sm font-semibold text-slate-500">Free plan · No card · Cancel anytime on paid</p>
         </div>
-        <p className="mt-4 text-sm font-semibold text-white/60">Free forever plan · No card · Founding 50 open</p>
+        <dl className="space-y-4">
+          {faqs.map((faq) => (
+            <div key={faq.q} className="ai-glass-soft rounded-[1.5rem] p-5">
+              <dt className="text-base font-black text-white">{faq.q}</dt>
+              <dd className="mt-2 text-sm leading-relaxed text-slate-300">{faq.a}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
-    </Section>
+    </section>
   );
 }
