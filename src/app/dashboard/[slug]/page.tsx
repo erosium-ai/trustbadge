@@ -460,14 +460,14 @@ export default async function DashboardOverviewPage({
               </div>
             </Card>
 
-            {/* 6. Support */}
+            {/* 6. Support + billing */}
             <Card>
               <h3 className="text-base font-semibold text-slate-900">
                 Support
               </h3>
               <p className="mt-2 text-sm text-slate-600">
-                Need help with your page, leads, or billing? Send a message and
-                we&rsquo;ll sort it without the runaround.
+                Need help with your page, leads, billing, or cancelling? Send a
+                message and we&rsquo;ll sort it without the runaround.
               </p>
               <div className="mt-4 flex flex-col gap-2">
                 <a
@@ -485,50 +485,33 @@ export default async function DashboardOverviewPage({
                 </p>
               </div>
 
-            </Card>
-
-            {/* 7. Billing */}
-            <Card>
-              <h3 className="text-base font-semibold text-slate-900">
-                Billing
-              </h3>
-              <p className="mt-2 text-sm font-medium text-slate-900">
-                AI-Ready Business Page
-              </p>
-              <p className="mt-1 text-sm text-slate-600">
-                $49/month or $12.90/week, depending on the option you chose.
-                Same product. Cancel anytime.
-              </p>
-              {record.next_payment_at ? (
-                <p className="mt-2 text-sm text-slate-600">
-                  Next payment:{" "}
-                  <span className="font-medium text-slate-900">
-                    {formatAuDate(record.next_payment_at)}
-                  </span>
+              <div className="mt-5 border-t border-slate-100 pt-5">
+                <h4 className="text-sm font-semibold text-slate-900">
+                  Billing
+                </h4>
+                <p className="mt-2 text-sm font-medium text-slate-900">
+                  AI-Ready Business Page
                 </p>
-              ) : null}
-              {record.stripe_customer_id ? (
-                <a
-                  href={`/api/billing-portal?slug=${record.slug}`}
-                  className="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800"
-                >
-                  Manage billing / cancel plan
-                </a>
-              ) : null}
-              <div className="mt-4 flex flex-col gap-2">
-                <a
-                  href="mailto:support@erosium.ai?subject=Credentials%20AI%20billing%20help"
-                  className="inline-flex w-full items-center justify-center rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
-                >
-                  Email billing support
-                </a>
-                <p className="text-center text-xs text-slate-500">
-                  Need a hand with billing? Write to{" "}
-                  <span className="font-medium text-slate-700">
-                    support@erosium.ai
-                  </span>{" "}
-                  &mdash; a human answers.
+                <p className="mt-1 text-sm text-slate-600">
+                  $49/month or $12.90/week, depending on the option you chose.
+                  Same product. Cancel anytime.
                 </p>
+                {record.next_payment_at ? (
+                  <p className="mt-2 text-sm text-slate-600">
+                    Next payment:{" "}
+                    <span className="font-medium text-slate-900">
+                      {formatAuDate(record.next_payment_at)}
+                    </span>
+                  </p>
+                ) : null}
+                {record.stripe_customer_id ? (
+                  <a
+                    href={`/api/billing-portal?slug=${record.slug}`}
+                    className="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800"
+                  >
+                    Manage billing / cancel plan
+                  </a>
+                ) : null}
               </div>
             </Card>
           </aside>
