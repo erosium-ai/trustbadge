@@ -160,6 +160,12 @@ export default async function DashboardOverviewPage({
 
   const record = ownership.record;
   const isFounding = record.plan === "founder" || record.founding_number != null;
+  const subscriptionStatus = String(record.subscription_status ?? "").toLowerCase();
+  const isCanceledSubscription =
+    subscriptionStatus === "canceled" || subscriptionStatus === "cancelled";
+  const canManageCancellation = ["active", "trialing", "past_due"].includes(
+    subscriptionStatus
+  );
 
   const [snapshot, leads, checklist] = await Promise.all([
     record.id
@@ -241,7 +247,18 @@ export default async function DashboardOverviewPage({
               {requestedSlug && requestedSlug !== record.slug
                 ? `You requested “${requestedSlug}”, so we opened your current business dashboard instead.`
                 : "Billing may still be syncing or the selected page may not belong to this account."}{" "}
-              Check the business name and try Manage billing again, or email support@erosium.ai.
+              Check the business name and try again, or email support@erosium.ai.
+            </p>
+          </div>
+        ) : null}
+
+        {isCanceledSubscription ? (
+          <div className="mb-6 rounded-xl border border-rose-300 bg-rose-50 px-4 py-3 text-sm text-rose-950">
+            <p className="font-semibold">
+              Subscription canceled — no future charges.
+            </p>
+            <p className="mt-1">
+              Your dashboard stays available for records, invoices and support.
             </p>
           </div>
         ) : null}
@@ -511,8 +528,9 @@ export default async function DashboardOverviewPage({
                   AI-Ready Business Page
                 </p>
                 <p className="mt-1 text-sm text-slate-600">
-                  $49/month or $12.90/week, depending on the option you chose.
-                  Same product. Cancel anytime.
+                  {isCanceledSubscription
+                    ? "Subscription canceled. No future charges. You can still view invoices and payment details."
+                    : "$49/month or $12.90/week, depending on the option you chose. Same product. Cancel anytime."}
                 </p>
                 {record.next_payment_at ? (
                   <p className="mt-2 text-sm text-slate-600">
@@ -527,7 +545,11 @@ export default async function DashboardOverviewPage({
                     href={`/api/billing-portal?slug=${record.slug}`}
                     className="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800"
                   >
-                    Manage billing / cancel plan
+                    {canManageCancellation
+                      ? "Manage billing / cancel plan"
+                      : isCanceledSubscription
+                        ? "View invoices / payment details"
+                        : "Manage billing"}
                   </a>
                 ) : null}
               </div>

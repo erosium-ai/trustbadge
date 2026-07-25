@@ -130,6 +130,12 @@ function isPremiumPlan(plan?: string | null): boolean {
   return ["founding_member", "founding", "pro", "paid", "verified_lead_engine"].includes(normalized);
 }
 
+function hasActivePaidEntitlement(profile: { plan?: string | null; subscription_status?: string | null }): boolean {
+  if (!isPremiumPlan(profile.plan)) return false;
+  const subscriptionStatus = String(profile.subscription_status ?? "").toLowerCase();
+  return subscriptionStatus !== "canceled" && subscriptionStatus !== "cancelled";
+}
+
 // ---------------------------------------------------------------------------
 // TrustBadge shield — emerald accent on paid pages, cyan on free cards.
 // State driven by verification_status. Never a fake verified look.
@@ -248,7 +254,7 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
   const siteUrl = getSiteUrl();
   const canonicalUrl = `${siteUrl}/b/${profile.slug}`;
   const isVerified = (profile as { verification_status?: string }).verification_status === "verified";
-  const premium = isPremiumPlan(profile.plan) || samplePaidRequested;
+  const premium = samplePaidRequested || hasActivePaidEntitlement(profile);
   const isSample = samplePaidRequested || sampleFreeRequested;
 
   let badgeUrl: string | null = null;

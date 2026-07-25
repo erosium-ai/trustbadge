@@ -102,6 +102,7 @@ export interface BusinessProfile {
   services?: unknown;
   social_links?: unknown;
   plan?: string | null;
+  subscription_status?: string | null;
   verification_level?: number | null;
   booking_url?: string | null;
   logo_url?: string | null;
