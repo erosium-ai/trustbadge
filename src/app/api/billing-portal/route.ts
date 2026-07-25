@@ -28,7 +28,10 @@ export async function GET(request: NextRequest) {
 
   const ownership = await assertOwnership(slug, user.id);
   if (!ownership.ok || !ownership.record) {
-    return NextResponse.redirect(`${siteUrl}/dashboard`);
+    const reason = ownership.reason === "not_owner" ? "not_owner" : "not_found";
+    return NextResponse.redirect(
+      `${siteUrl}/dashboard?billing=${reason}&requested_slug=${encodeURIComponent(slug)}`
+    );
   }
 
   const record = ownership.record;

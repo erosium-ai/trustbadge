@@ -26,7 +26,11 @@ export const dynamic = "force-dynamic";
 
 interface DashboardPageProps {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ welcome?: string }>;
+  searchParams: Promise<{
+    welcome?: string;
+    billing?: string;
+    requested_slug?: string;
+  }>;
 }
 
 // ---------------------------------------------------------------------------
@@ -137,6 +141,8 @@ export default async function DashboardOverviewPage({
   const { slug } = await params;
   const search = await searchParams;
   const justWelcomed = search?.welcome === "1";
+  const billingIssue = search?.billing;
+  const requestedSlug = search?.requested_slug;
 
   const supabase = await getServerClient();
   const {
@@ -225,6 +231,18 @@ export default async function DashboardOverviewPage({
         {justWelcomed ? (
           <div className="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
             You&rsquo;re in. Payment received &mdash; your AI-Ready Business Page is switched on.
+          </div>
+        ) : null}
+
+        {billingIssue ? (
+          <div className="mb-6 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+            <p className="font-semibold">We couldn&apos;t open billing for that page.</p>
+            <p className="mt-1">
+              {requestedSlug && requestedSlug !== record.slug
+                ? `You requested “${requestedSlug}”, so we opened your current business dashboard instead.`
+                : "Billing may still be syncing or the selected page may not belong to this account."}{" "}
+              Check the business name and try Manage billing again, or email support@erosium.ai.
+            </p>
           </div>
         ) : null}
 
@@ -551,5 +569,4 @@ function ProofTile({ label, value }: { label: string; value: number }) {
     </div>
   );
 }
-
 

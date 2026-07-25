@@ -172,15 +172,30 @@ export async function getPrimaryBusinessForUser(
   userId: string
 ): Promise<FoundingMemberRecord | null> {
   const client = getServiceClient();
-  // Prefer business_profiles rows owned by this user (they carry lead engine
-  // data and Founding Member state).
+  // Prefer the newest paid business owned by this user. A customer can own a
+  // legacy free profile and later purchase a different business page; picking
+  // the oldest row silently sends them back to the legacy dashboard.
+  const { data: paidBp } = await client
+    .from("business_profiles")
+    .select(
+      "id, slug, business_name, owner_user_id, plan, stripe_customer_id, stripe_subscription_id, subscription_status, founding_number, verification_status, next_payment_at, payment_email"
+    )
+    .eq("owner_user_id", userId)
+    .not("stripe_customer_id", "is", null)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (paidBp) return paidBp as unknown as FoundingMemberRecord;
+
+  // Otherwise use the newest owned business profile, not the oldest test or
+  // legacy record.
   const { data: bp } = await client
     .from("business_profiles")
     .select(
       "id, slug, business_name, owner_user_id, plan, stripe_customer_id, stripe_subscription_id, subscription_status, founding_number, verification_status, next_payment_at, payment_email"
     )
     .eq("owner_user_id", userId)
-    .order("created_at", { ascending: true })
+    .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
   if (bp) return bp as unknown as FoundingMemberRecord;
@@ -190,7 +205,7 @@ export async function getPrimaryBusinessForUser(
     .from("trustbadges")
     .select("slug, business_name")
     .eq("user_id", userId)
-    .order("created_at", { ascending: true })
+    .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
   if (!tb) return null;
