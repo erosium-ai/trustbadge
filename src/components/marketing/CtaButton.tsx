@@ -7,7 +7,7 @@ interface CtaButtonProps {
   eventName: string;
   label: string;
   dataCta: string;
-  variant?: "primary" | "secondary" | "dark" | "amber";
+  variant?: "primary" | "secondary" | "dark" | "amber" | "paid" | "ghost";
   className?: string;
   target?: string;
   rel?: string;
@@ -22,6 +22,12 @@ const variants = {
     "border border-cyan-300/25 bg-white text-slate-950 shadow-sm hover:bg-cyan-50 focus-visible:ring-cyan-300",
   amber:
     "border border-violet-300/30 bg-gradient-to-r from-violet-500 via-fuchsia-500 to-cyan-400 text-white shadow-lg shadow-violet-500/20 hover:from-violet-400 hover:via-fuchsia-400 hover:to-cyan-300 focus-visible:ring-violet-300",
+  // Paid tier CTA — emerald-led to match the verified/paid accent system.
+  paid:
+    "ai-glow-button-paid border border-emerald-300/45 bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-300 text-slate-950 hover:from-emerald-300 hover:via-teal-200 hover:to-cyan-200 focus-visible:ring-emerald-300",
+  // Recessed CTA for the deliberately secondary free card.
+  ghost:
+    "border border-white/14 bg-transparent text-slate-300 hover:border-white/28 hover:bg-white/6 hover:text-white focus-visible:ring-slate-300",
 };
 
 export function CtaButton({
