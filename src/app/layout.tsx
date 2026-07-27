@@ -62,6 +62,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Plausible analytics — same site hash as the builder app so the whole
+            funnel (homepage + builder) reports into one dashboard. */}
+        <script async src="https://plausible.io/js/pa-zAPjMspHIa_4gs877_g6N.js"></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init()`,
+          }}
+        />
+      </head>
       <body className="flex min-h-screen flex-col bg-slate-50 text-slate-900">
         <TopBar />
         <main className="flex-1">{children}</main>
