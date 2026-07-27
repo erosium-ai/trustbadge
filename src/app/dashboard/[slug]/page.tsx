@@ -20,6 +20,7 @@ import {
   prettySource,
 } from "@/lib/dashboard-queries";
 import { CopyLinkButton } from "@/components/CopyLinkButton";
+import { SupportEmailLink } from "@/components/SupportEmailLink";
 import { formatAuDate } from "@/lib/date-format";
 
 export const dynamic = "force-dynamic";
@@ -505,16 +506,16 @@ export default async function DashboardOverviewPage({
                 message and we&rsquo;ll sort it without the runaround.
               </p>
               <div className="mt-4 flex flex-col gap-2">
-                <a
-                  href="mailto:support@erosium.ai?subject=Credentials%20AI%20support"
-                  className="w-full rounded-lg bg-[#F97316] px-3 py-2 text-center text-sm font-semibold text-white hover:bg-[#EA580C]"
-                >
-                  Email support
-                </a>
+                <SupportEmailLink
+                  label="Email support"
+                  fullWidth
+                  className="w-full cursor-pointer rounded-lg bg-[#F97316] px-3 py-2 text-center text-sm font-semibold text-white hover:bg-[#EA580C]"
+                />
                 <p className="text-center text-xs text-slate-500">
-                  Opens your email app &mdash; or write to{" "}
+                  Copies the address and opens your email app &mdash; or write
+                  to{" "}
                   <span className="font-medium text-slate-700">
-                    support@erosium.ai
+                    isaac@erosium.com.au
                   </span>{" "}
                   directly.
                 </p>
@@ -559,14 +560,12 @@ export default async function DashboardOverviewPage({
 
         <footer className="mt-10 text-center text-sm text-slate-500">
           Stuck on anything? Email{" "}
-          <a
-            href="mailto:support@erosium.ai"
-            className="font-medium text-[#F97316] hover:underline"
-          >
-            support@erosium.ai
-          </a>{" "}
-          or reply to any email we&rsquo;ve sent &mdash; a human answers,
-          usually same day.
+          <SupportEmailLink
+            label="isaac@erosium.com.au"
+            className="cursor-pointer font-medium text-[#F97316] hover:underline"
+          />{" "}
+          or reply to any email we&rsquo;ve sent &mdash; a human answers, usually
+          same day.
         </footer>
       </div>
     </main>
