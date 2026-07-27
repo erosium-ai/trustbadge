@@ -8,6 +8,8 @@ import Link from "next/link";
 import { getServerClient } from "@/lib/supabase-server";
 import { getOwnerTrustBadgeBySlug } from "@/lib/trustbadge";
 import { TrustSeal } from "@/components/TrustSeal";
+import { AbnCheckForm } from "@/components/AbnCheckForm";
+import { SupportEmailLink } from "@/components/SupportEmailLink";
 import { assertOwnership } from "@/lib/dashboard-queries";
 
 export const dynamic = "force-dynamic";
@@ -123,37 +125,37 @@ export default async function VerificationPage({ params }: VerificationPageProps
       {hasAbn ? (
         <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
           <h2 className="text-base font-semibold text-slate-900">
-            Need to update your ABN?
+            Update or re-run your ABN check
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-slate-600">
-            If your ABN has changed or the details above look wrong, email{" "}
-            <a
-              href="mailto:support@erosium.ai?subject=Credentials%20AI%20ABN%20update"
-              className="font-medium text-[#F97316] hover:underline"
-            >
-              support@erosium.ai
-            </a>{" "}
-            and we&rsquo;ll update it and re-run the check.
+            Changed ABN, or the details above look wrong? Enter the correct
+            ABN below and we&rsquo;ll re-check it against the Australian Business
+            Register immediately.
           </p>
+          <AbnCheckForm slug={record.slug} currentAbn={abn} />
         </div>
       ) : (
-        <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5 sm:p-6">
-          <h2 className="text-base font-semibold text-amber-900">
-            No ABN on file yet
+        <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
+          <h2 className="text-base font-semibold text-slate-900">
+            Add your ABN
           </h2>
-          <p className="mt-2 text-sm leading-relaxed text-amber-900">
-            To get your business checked against the Australian Business
-            Register, email your ABN to{" "}
-            <a
-              href="mailto:support@erosium.ai?subject=Credentials%20AI%20ABN%20check"
-              className="font-medium underline"
-            >
-              support@erosium.ai
-            </a>{" "}
-            and we&rsquo;ll add it and run the check for you.
+          <p className="mt-2 text-sm leading-relaxed text-slate-600">
+            Pop your ABN in below and we&rsquo;ll check it against the Australian
+            Business Register straight away &mdash; no emails, no paperwork,
+            no waiting.
           </p>
+          <AbnCheckForm slug={record.slug} />
         </div>
       )}
+
+      <p className="mt-6 text-center text-xs text-slate-500">
+        Something look off with your result?{" "}
+        <SupportEmailLink
+          label="Contact support"
+          className="cursor-pointer font-medium text-[#F97316] hover:underline"
+        />{" "}
+        and a human will sort it with you.
+      </p>
 
       <p className="mt-8 text-sm text-slate-500">
         <Link

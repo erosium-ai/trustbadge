@@ -2,8 +2,7 @@
 
 export function ProblemIntro() {
   return (
-    <section className="relative isolate border-b border-white/10 bg-slate-950/80 px-4 py-8 text-white sm:px-6 sm:py-10">
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-cyan-300/40 to-transparent" />
+    <section className="relative isolate px-4 pb-2 pt-10 text-white sm:px-6 sm:pt-14">
       <div className="mx-auto max-w-5xl">
         <div className="rounded-[1.75rem] border border-cyan-300/20 bg-white/[0.045] p-5 shadow-[0_0_55px_rgb(34_211_238/0.08)] backdrop-blur sm:p-7">
           <p className="text-[11px] font-black uppercase tracking-[0.22em] text-cyan-200">

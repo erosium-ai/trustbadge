@@ -6,6 +6,7 @@ import { PricingSection } from "@/components/marketing/PricingSection";
 import { QrCodeSection } from "@/components/marketing/QrCodeSection";
 import { UnderTheHoodSection } from "@/components/marketing/UnderTheHoodSection";
 import { Faq, faqs } from "@/components/marketing/Faq";
+import { ClosingCta } from "@/components/marketing/ClosingCta";
 import { StickyMobileCta } from "@/components/marketing/StickyMobileCta";
 import { HomepageViewTracker } from "@/components/marketing/HomepageViewTracker";
 import { getFounderBundleUrl, getFreeProfileUrl, getSampleProfileUrl } from "@/components/marketing/urls";
@@ -109,6 +110,7 @@ export default function HomePage() {
       />
       <UnderTheHoodSection />
       <Faq freeProfileUrl={freeProfileUrl} />
+      <ClosingCta />
       <StickyMobileCta freeProfileUrl={freeProfileUrl} />
     </div>
   );

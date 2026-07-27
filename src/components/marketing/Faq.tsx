@@ -1,6 +1,7 @@
 // 🔑 Keywords: Credentials AI V2 FAQ, ABN-only verification wording, dark theme
 
 import { CtaButton } from "./CtaButton";
+import { getFounderBundleUrl } from "./urls";
 
 export const faqs = [
   {
@@ -98,6 +99,19 @@ export function Faq({ freeProfileUrl }: { freeProfileUrl: string }) {
             </ol>
             <p className="mt-5 text-xs font-semibold text-slate-500">
               No dashboards to learn, no logins to juggle — everything opens from your payment confirmation.
+            </p>
+            <CtaButton
+              href={getFounderBundleUrl("homepage_faq_postpay_panel")}
+              eventName="credentials_ai_click_faq_paid"
+              label="Get the AI-Ready Business Page"
+              dataCta="faq-paid"
+              variant="paid"
+              className="mt-5 w-full"
+            >
+              Get the AI-Ready Business Page — $12.90/week
+            </CtaButton>
+            <p className="mt-3 text-center text-xs font-semibold text-slate-500">
+              Cancel anytime. Same product monthly if you prefer.
             </p>
           </div>
         </div>
