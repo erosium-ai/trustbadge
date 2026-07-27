@@ -5,7 +5,7 @@ import { LeadCapturePanel } from "@/components/profiles/LeadCapturePanel";
 import { getBusinessProfileBySlug, getPublicBadgeData } from "@/lib/trustbadge";
 import { getSiteUrl, BRAND_NAME } from "@/lib/brand";
 import { schemaTypeFor } from "@/lib/business-types";
-import { getFounderBundleUrl } from "@/components/marketing/urls";
+import { getPaidProfileUrl } from "@/components/marketing/urls";
 import { AiParticles } from "@/components/AiParticles";
 
 export const dynamic = "force-dynamic";
@@ -188,7 +188,7 @@ function VerificationShield({ verified, href, tone }: { verified: boolean; href?
 // ---------------------------------------------------------------------------
 
 function UpgradePreview({ businessName }: { businessName: string }) {
-  const upgradeUrl = getFounderBundleUrl("free_card_upgrade_preview");
+  const upgradeUrl = getPaidProfileUrl("free_card_upgrade_preview");
   return (
     <section className="ai-glass mt-8 overflow-hidden rounded-[2rem] p-5 text-white sm:p-6">
       <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-200">Upgrade preview</p>
@@ -334,7 +334,7 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
                 match the business branding. This one shows an example
                 palette — yours can look completely different.{" "}
                 <a
-                  href={getFounderBundleUrl("sample_profile_colour_banner")}
+                  href={getPaidProfileUrl("sample_profile_colour_banner")}
                   className="font-bold text-emerald-200 underline underline-offset-4 hover:text-emerald-100"
                 >
                   Get yours →

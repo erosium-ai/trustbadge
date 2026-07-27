@@ -9,13 +9,13 @@ import { Faq, faqs } from "@/components/marketing/Faq";
 import { ClosingCta } from "@/components/marketing/ClosingCta";
 import { StickyMobileCta } from "@/components/marketing/StickyMobileCta";
 import { HomepageViewTracker } from "@/components/marketing/HomepageViewTracker";
-import { getFounderBundleUrl, getFreeProfileUrl, getSampleProfileUrl } from "@/components/marketing/urls";
+import { getPaidProfileUrl, getFreeProfileUrl, getSampleProfileUrl } from "@/components/marketing/urls";
 import { AiParticles } from "@/components/AiParticles";
 
 export default function HomePage() {
   const siteUrl = getSiteUrl();
   const freeProfileUrl = getFreeProfileUrl();
-  const founderBundleUrl = getFounderBundleUrl();
+  const paidProfileUrl = getPaidProfileUrl();
   const sampleProfileUrl = getSampleProfileUrl();
 
   const jsonLd = {
@@ -106,7 +106,7 @@ export default function HomePage() {
       <QrCodeSection />
       <PricingSection
         freeProfileUrl={freeProfileUrl}
-        founderBundleUrl={founderBundleUrl}
+        paidProfileUrl={paidProfileUrl}
       />
       <UnderTheHoodSection />
       <Faq freeProfileUrl={freeProfileUrl} />

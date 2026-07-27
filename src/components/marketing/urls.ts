@@ -23,7 +23,7 @@ export function getFreeProfileUrl(campaign = "homepage_free_ai_profile"): string
   });
 }
 
-export function getFounderBundleUrl(campaign = "homepage_founder_bundle"): string {
+export function getPaidProfileUrl(campaign = "homepage_paid_cta"): string {
   return withTracking(getStartUrl(), {
     intent: "verified_lead_engine",
     source: "credentialsai",
@@ -31,7 +31,7 @@ export function getFounderBundleUrl(campaign = "homepage_founder_bundle"): strin
     utm_source: "credentialsai",
     utm_medium: "website",
     utm_campaign: campaign,
-    utm_content: "founder_bundle",
+    utm_content: "paid_profile",
   });
 }
 

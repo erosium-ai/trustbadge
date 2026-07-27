@@ -4,7 +4,7 @@ import { CtaButton } from "./CtaButton";
 
 interface PricingSectionProps {
   freeProfileUrl: string;
-  founderBundleUrl: string;
+  paidProfileUrl: string;
 }
 
 const FREE_TICKS = [
@@ -62,7 +62,7 @@ function PaidPagePreview() {
   );
 }
 
-export function PricingSection({ freeProfileUrl, founderBundleUrl }: PricingSectionProps) {
+export function PricingSection({ freeProfileUrl, paidProfileUrl }: PricingSectionProps) {
   return (
     <section id="pricing" className="ai-money-band relative isolate mt-6 border-y border-white/8 py-14 sm:py-20">
       {/* Top/bottom hairlines make the band read as a distinct place on the page. */}
@@ -158,7 +158,7 @@ export function PricingSection({ freeProfileUrl, founderBundleUrl }: PricingSect
               </ul>
 
               <CtaButton
-                href={founderBundleUrl}
+                href={paidProfileUrl}
                 eventName="credentials_ai_click_pricing_paid"
                 label="Start AI-Ready Page"
                 dataCta="pricing-paid"

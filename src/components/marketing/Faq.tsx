@@ -1,7 +1,7 @@
 // 🔑 Keywords: Credentials AI V2 FAQ, ABN-only verification wording, dark theme
 
 import { CtaButton } from "./CtaButton";
-import { getFounderBundleUrl } from "./urls";
+import { getPaidProfileUrl } from "./urls";
 
 export const faqs = [
   {
@@ -101,7 +101,7 @@ export function Faq({ freeProfileUrl }: { freeProfileUrl: string }) {
               No dashboards to learn, no logins to juggle — everything opens from your payment confirmation.
             </p>
             <CtaButton
-              href={getFounderBundleUrl("homepage_faq_postpay_panel")}
+              href={getPaidProfileUrl("homepage_faq_postpay_panel")}
               eventName="credentials_ai_click_faq_paid"
               label="Get the AI-Ready Business Page"
               dataCta="faq-paid"
