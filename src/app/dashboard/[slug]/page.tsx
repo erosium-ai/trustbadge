@@ -461,14 +461,15 @@ export default async function DashboardOverviewPage({
               </div>
               {record.verification_status === "not_started" ? (
                 <p className="mt-3 text-sm text-slate-600">
-                  No ABN on file yet. Add your ABN and we&rsquo;ll check your
+                  No ABN on file yet. Add your ABN and our system checks your
                   business details against official Australian Business
-                  Register data.
+                  Register data automatically — result in seconds.
                 </p>
               ) : record.verification_status === "in_review" ? (
                 <p className="mt-3 text-sm text-slate-600">
-                  We&rsquo;re checking your ABN against the Australian Business
-                  Register &mdash; usually 1&ndash;2 business days.
+                  Our system is finishing your ABN check against the
+                  Australian Business Register &mdash; this normally
+                  completes shortly.
                 </p>
               ) : record.verification_status === "verified" ? (
                 <p className="mt-3 text-sm text-slate-600">
