@@ -191,6 +191,7 @@ export default async function DashboardOverviewPage({
   ]);
 
   const profileUrl = `https://credentialsai.com.au/b/${record.slug}`;
+  const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=1024x1024&data=${encodeURIComponent(profileUrl)}`;
 
   const checklistSteps = [
     {
@@ -497,6 +498,40 @@ export default async function DashboardOverviewPage({
               </div>
             </Card>
 
+            {/* 5b. QR code — downloadable whenever they want it */}
+            <Card>
+              <h3 className="text-base font-semibold text-slate-900">
+                Your QR code
+              </h3>
+              <p className="mt-2 text-sm text-slate-600">
+                Scanning this takes people straight to your live page. Download
+                it and use it on magnets, flyers, invoices, business cards,
+                vehicle stickers and jobsite signs.
+              </p>
+              <div className="mt-4 flex justify-center">
+                {/* eslint-disable-next-line @next/next/no-img-element -- external QR generator, same source as the builder download */}
+                <img
+                  src={qrImageUrl}
+                  alt={`QR code linking to the ${record.business_name} Credentials AI page`}
+                  width={160}
+                  height={160}
+                  className="h-40 w-40 rounded-xl border border-slate-200 bg-white p-2"
+                />
+              </div>
+              <a
+                href={qrImageUrl}
+                download={`${record.slug}-credentials-ai-qr.png`}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800"
+              >
+                Download QR code (PNG)
+              </a>
+              <p className="mt-2 break-all text-center text-xs text-slate-500">
+                Points to your live page: credentialsai.com.au/b/{record.slug}
+              </p>
+            </Card>
+
             {/* 6. Support + billing */}
             <Card>
               <h3 className="text-base font-semibold text-slate-900">
@@ -555,6 +590,42 @@ export default async function DashboardOverviewPage({
                   </a>
                 ) : null}
               </div>
+            </Card>
+
+            {/* 7. How you log in next time */}
+            <Card>
+              <h3 className="text-base font-semibold text-slate-900">
+                How you log in next time
+              </h3>
+              <ol className="mt-3 space-y-2 text-sm leading-relaxed text-slate-600">
+                <li>
+                  <span className="font-semibold text-slate-900">1.</span> Go to{" "}
+                  <span className="font-medium text-slate-900">
+                    credentialsai.com.au
+                  </span>{" "}
+                  and click <span className="font-medium text-slate-900">Log in</span> (top right).
+                </li>
+                <li>
+                  <span className="font-semibold text-slate-900">2.</span> Enter
+                  the same email you signed up with and press{" "}
+                  <span className="font-medium text-slate-900">Send magic link</span>.
+                </li>
+                <li>
+                  <span className="font-semibold text-slate-900">3.</span> Check
+                  your inbox &mdash; the email comes from{" "}
+                  <span className="font-medium text-slate-900">Supabase</span>, our
+                  login system. That&rsquo;s really us &mdash; it&rsquo;s safe to open.
+                </li>
+                <li>
+                  <span className="font-semibold text-slate-900">4.</span> Click
+                  the link in the email and you&rsquo;ll land straight back here.
+                </li>
+              </ol>
+              <p className="mt-3 text-xs leading-relaxed text-slate-500">
+                No password to remember, ever. Magic links expire &mdash; if
+                yours has, just send yourself a fresh one. Can&rsquo;t find the
+                email? Check junk/spam.
+              </p>
             </Card>
           </aside>
         </div>
