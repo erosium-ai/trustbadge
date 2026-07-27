@@ -1,5 +1,5 @@
-// 🔑 Keywords: Credentials AI dashboard overview, Founding Member overview, setup checklist, proof snapshot, recent enquiries
-// Founding Member dashboard v1 — overview page (Fable Five §5 wireframe).
+// 🔑 Keywords: Credentials AI dashboard overview, paid member overview, setup checklist, proof snapshot, recent enquiries
+// Customer dashboard v1 — overview page (Fable Five §5 wireframe).
 // Modules in top-to-bottom order:
 //   1. Header (business, live dot, founding number chip, profile URL)
 //   2. Setup checklist (the spine)
@@ -160,7 +160,7 @@ export default async function DashboardOverviewPage({
   }
 
   const record = ownership.record;
-  const isFounding = record.plan === "founder" || record.founding_number != null;
+  const isPaidPlan = record.plan !== "free" || record.stripe_customer_id != null;
   const subscriptionStatus = String(record.subscription_status ?? "").toLowerCase();
   const isCanceledSubscription =
     subscriptionStatus === "canceled" || subscriptionStatus === "cancelled";
@@ -276,9 +276,9 @@ export default async function DashboardOverviewPage({
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                 Live
               </span>
-              {isFounding ? (
-                <span className="inline-flex items-center rounded-full border border-amber-300 bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-800">
-                  Founding Member{record.founding_number ? ` #${record.founding_number}` : ""}
+              {isPaidPlan ? (
+                <span className="inline-flex items-center rounded-full border border-cyan-300 bg-cyan-50 px-2.5 py-0.5 text-xs font-semibold text-cyan-800">
+                  AI-Ready Business Page
                 </span>
               ) : null}
             </div>
