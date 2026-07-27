@@ -38,17 +38,17 @@ function statusLabel(status: string): string {
 function statusExplainer(status: string): string {
   switch (status) {
     case "verified":
-      return "Your ABN and business details match the Australian Business Register. We\u2019ll re-check them periodically to keep your trust wording accurate.";
+      return "Your ABN and business details match the Australian Business Register. Our system re-checks them automatically from time to time to keep your trust wording accurate.";
     case "pending_review":
     case "in_review":
-      return "We\u2019re checking your ABN against the Australian Business Register \u2014 usually 1\u20132 business days.";
+      return "Our system is finishing your ABN check against the Australian Business Register — this normally completes shortly.";
     case "rejected":
     case "action_needed":
       return "There\u2019s a mismatch between your details and the Australian Business Register. Email support and we\u2019ll sort it with you.";
     case "suspended":
       return "Your ABN check is paused. Email support and we\u2019ll help you get it back on track.";
     default:
-      return "Once your ABN is on file, we check your business name and details against official Australian Business Register data and show the result here.";
+      return "Once your ABN is in, our system checks your business name and details against official Australian Business Register data automatically — result here in seconds, not days.";
   }
 }
 
@@ -112,10 +112,11 @@ export default async function VerificationPage({ params }: VerificationPageProps
           How your ABN check works
         </h2>
         <p className="mt-2 text-sm leading-relaxed text-slate-600">
-          We check your ABN and business details against official Australian
-          Business Register (ABR) data. When they match, your profile can show
-          ABN-checked trust wording. We&rsquo;re independent &mdash; an ABN
-          check is not a government endorsement.
+          Our system checks your ABN and business details against official
+          Australian Business Register (ABR) data — automatically, the moment
+          you enter it. When they match, your profile can show ABN-checked
+          trust wording. Credentials AI is independent &mdash; an ABN check is
+          not a government endorsement.
         </p>
         <p className="mt-3 text-sm leading-relaxed text-slate-600">
           {statusExplainer(status)}

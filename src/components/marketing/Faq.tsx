@@ -18,7 +18,7 @@ export const faqs = [
   },
   {
     q: "What does 'ABN Verified' actually mean?",
-    a: "It means we check the business ABN and details against the Australian Business Register, then publish what was checked and when. We are independent — a badge is not a government endorsement.",
+    a: "It means our system automatically checks the business ABN and details against the Australian Business Register — the official government database — and publishes what was checked and when. Credentials AI is independent: a badge is not a government endorsement.",
   },
   {
     q: "Do I need to be technical?",

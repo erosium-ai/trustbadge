@@ -107,8 +107,8 @@ export function AbnCheckForm({ slug, currentAbn }: AbnCheckFormProps) {
         </button>
       </div>
       <p className="mt-2 text-xs text-slate-500">
-        11 digits. We check it against the Australian Business Register
-        straight away — no emails, no waiting.
+        11 digits. Our system checks it against the Australian Business
+        Register automatically — result in seconds. No emails, no waiting.
       </p>
 
       {result ? (

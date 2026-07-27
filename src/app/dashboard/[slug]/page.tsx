@@ -207,7 +207,7 @@ export default async function DashboardOverviewPage({
           ? "We're checking your ABN against the Australian Business Register — usually 1–2 business days."
           : checklist.verificationStatus === "action_needed"
             ? "There's a mismatch with the official ABR data — see ABN check for details."
-            : "Pop your ABN in and we'll check it against the official ABR data on the spot — keeps your trust wording accurate.",
+            : "Pop your ABN in — our system checks it against the official ABR database automatically and you get the result in seconds.",
       cta: {
         label: "Check ABN details",
         href: `/dashboard/${record.slug}/verification`,

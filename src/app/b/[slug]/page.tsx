@@ -324,6 +324,24 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
         </div>
         <AiParticles tone="paid" />
         <main className="relative z-10 mx-auto max-w-5xl px-4 pb-28 pt-6 sm:px-6 sm:pt-10 md:pb-14">
+          {samplePaidRequested ? (
+            <div className="mb-5 rounded-2xl border border-emerald-300/30 bg-emerald-300/10 px-5 py-4 text-center backdrop-blur">
+              <p className="text-sm font-black text-emerald-100">
+                🎨 Sample page — and yes, you choose the colours.
+              </p>
+              <p className="mt-1 text-sm leading-relaxed text-emerald-100/80">
+                Every paid AI-Ready Business Page gets its own colour scheme to
+                match the business branding. This one shows an example
+                palette — yours can look completely different.{" "}
+                <a
+                  href={getFounderBundleUrl("sample_profile_colour_banner")}
+                  className="font-bold text-emerald-200 underline underline-offset-4 hover:text-emerald-100"
+                >
+                  Get yours →
+                </a>
+              </p>
+            </div>
+          ) : null}
           <header className="ai-glass-paid overflow-hidden rounded-[2rem]">
             <div className="relative p-6 sm:p-10 lg:p-12">
               <div className="absolute inset-x-0 top-0 h-64 bg-gradient-to-br from-emerald-400/22 via-cyan-400/14 to-transparent" />

@@ -10,7 +10,7 @@ const steps = [
   {
     step: "02",
     title: "Get verified",
-    body: "Send your ABN, licence and insurance details. We check what we can against official sources and publish your verification page.",
+    body: "Add your ABN and our system checks it against the official Australian Business Register automatically — verified status in seconds, no paperwork.",
   },
   {
     step: "03",
