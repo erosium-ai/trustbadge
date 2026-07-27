@@ -59,10 +59,10 @@ export function Hero({ freeProfileUrl, sampleProfileUrl }: HeroProps) {
               eventName="credentials_ai_click_sample_profile"
               label="See a full AI-Ready Business Page"
               dataCta="hero-secondary"
-              variant="secondary"
+              variant="demo"
               className="w-full sm:w-auto"
             >
-              See the paid page demo
+              ▶ See the paid page demo
             </CtaButton>
           </div>
           <p className="mt-4 text-sm font-semibold text-slate-400">

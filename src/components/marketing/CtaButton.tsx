@@ -7,7 +7,7 @@ interface CtaButtonProps {
   eventName: string;
   label: string;
   dataCta: string;
-  variant?: "primary" | "secondary" | "dark" | "amber" | "paid" | "ghost";
+  variant?: "primary" | "secondary" | "dark" | "amber" | "paid" | "ghost" | "demo";
   className?: string;
   target?: string;
   rel?: string;
@@ -28,6 +28,10 @@ const variants = {
   // Recessed CTA for the deliberately secondary free card.
   ghost:
     "border border-white/14 bg-transparent text-slate-300 hover:border-white/28 hover:bg-white/6 hover:text-white focus-visible:ring-slate-300",
+  // Demo CTA — distinct violet/indigo identity so "see the demo" never gets
+  // confused with the paid (emerald) or free (cyan/ghost) actions.
+  demo:
+    "ai-glow-button-demo border border-violet-300/45 bg-gradient-to-r from-violet-400 via-indigo-300 to-violet-400 text-slate-950 shadow-lg shadow-violet-500/25 hover:from-violet-300 hover:via-indigo-200 hover:to-violet-300 focus-visible:ring-violet-300",
 };
 
 export function CtaButton({

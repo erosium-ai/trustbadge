@@ -1,7 +1,7 @@
 // 🔑 Keywords: Credentials AI homepage closing CTA, bottom of page paid button, final conversion band
 
 import { CtaButton } from "./CtaButton";
-import { getFounderBundleUrl, getFreeProfileUrl } from "./urls";
+import { getFounderBundleUrl, getFreeProfileUrl, getSampleProfileUrl } from "./urls";
 
 export function ClosingCta() {
   return (
@@ -31,6 +31,16 @@ export function ClosingCta() {
             className="w-full sm:w-auto"
           >
             Get the AI-Ready Business Page — $12.90/week
+          </CtaButton>
+          <CtaButton
+            href={getSampleProfileUrl()}
+            eventName="credentials_ai_click_closing_demo"
+            label="See the paid page demo"
+            dataCta="closing-demo"
+            variant="demo"
+            className="w-full sm:w-auto"
+          >
+            ▶ See the paid page demo
           </CtaButton>
           <CtaButton
             href={getFreeProfileUrl("homepage_closing_free")}
