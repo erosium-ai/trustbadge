@@ -118,7 +118,7 @@ export default async function WelcomePage({ searchParams }: WelcomePageProps) {
 
   if (!upsert.ok || !upsert.record) {
     // Could not find business_profiles row — this usually means the profile
-    // was created only in the SchemaPage `pages` table and has not been
+    // was created only in the profile-builder `pages` table and has not been
     // mirrored yet. Fall back to the friendly "we've got your payment" page,
     // which alerts the founder for manual provisioning.
     return (

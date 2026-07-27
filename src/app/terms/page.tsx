@@ -4,7 +4,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Terms of Service — Credentials AI",
-  description: "Terms of Service for Credentials AI, SchemaPage, and TrustBadge services.",
+  description: "Terms of Service for Credentials AI, AI Profiles, and TrustBadge services.",
 };
 
 export default function TermsPage() {
@@ -16,7 +16,7 @@ export default function TermsPage() {
 
         <h2>1. Acceptance</h2>
         <p>
-          By using Credentials AI, SchemaPage, or TrustBadge, you agree to these
+          By using Credentials AI, AI Profiles, or TrustBadge, you agree to these
           Terms. If you do not agree, do not use the service.
         </p>
 
@@ -27,7 +27,7 @@ export default function TermsPage() {
           includes:
         </p>
         <ul>
-          <li>Free AI Profile / SchemaPage AI-readable business pages</li>
+          <li>Free AI Profile / AI-readable business pages</li>
           <li>Founding Member Verified Lead Engine subscriptions</li>
           <li>TrustBadge verification profiles and credential display</li>
           <li>Tracked enquiry, source attribution, and proof-reporting features</li>

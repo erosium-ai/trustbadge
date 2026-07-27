@@ -12,7 +12,7 @@ export function getSiteUrl(): string {
   return raw.replace(/\/$/, "");
 }
 
-export function getSchemaPageUrl(): string {
+export function getProfileBuilderUrl(): string {
   const raw =
     process.env.NEXT_PUBLIC_SCHEMAPAGE_URL?.trim() || FALLBACK_SCHEMAPAGE_URL;
   return raw.replace(/\/$/, "");

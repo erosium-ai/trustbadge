@@ -13,7 +13,7 @@ const FEATURES = [
   },
   {
     title: "Verified Trust Signals",
-    body: "ABN checked against the Australian Business Register, with a public badge that shows what was checked and when.",
+    body: "Verified automatically against the Australian Business Register. No paperwork from you — we check government records so your profile shows verified status from day one.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="h-7 w-7" aria-hidden>
         <path d="M12 3l7 3v5c0 4.6-2.9 8.8-7 10-4.1-1.2-7-5.4-7-10V6l7-3Z" stroke="currentColor" strokeWidth="1.8" />

@@ -1,4 +1,4 @@
-import { getSchemaPageUrl } from "@/lib/brand";
+import { getProfileBuilderUrl } from "@/lib/brand";
 
 export function withTracking(baseUrl: string, params: Record<string, string>): string {
   try {
@@ -57,6 +57,6 @@ export function getStartUrl(): string {
   return `${siteUrl}/start`;
 }
 
-export function getDirectSchemaPageUrl(): string {
-  return getSchemaPageUrl();
+export function getDirectProfileBuilderUrl(): string {
+  return getProfileBuilderUrl();
 }

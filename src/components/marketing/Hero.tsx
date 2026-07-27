@@ -1,4 +1,4 @@
-// 🔑 Keywords: Credentials AI V2 hero, Your Business Seen by AI, AI-verified profiles, measured leads, readable by ChatGPT Google Claude Siri, Gold Coast Flow Plumbing preview
+// 🔑 Keywords: Credentials AI V2 hero, Your Business Seen by AI, AI-verified profiles, measured leads, readable by ChatGPT Google Claude Siri, Gold Coast Flow Plumbing sample profile
 
 import { CtaButton } from "./CtaButton";
 import { AiParticles } from "@/components/AiParticles";
@@ -66,7 +66,7 @@ export function Hero({ freeProfileUrl, sampleProfileUrl }: HeroProps) {
             </CtaButton>
           </div>
           <p className="mt-4 text-sm font-semibold text-slate-400">
-            Free AI Business Card, no card needed · Upgrade when you want the full page · Built in Australia
+            Start free — or unlock the full toolkit for $12.90/week · Built in Australia
           </p>
 
           <div className="mt-8 border-t border-white/10 pt-5">
@@ -90,7 +90,7 @@ export function Hero({ freeProfileUrl, sampleProfileUrl }: HeroProps) {
                 <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-br from-cyan-400/22 via-violet-500/18 to-transparent" />
                 <div className="relative flex items-start justify-between gap-3">
                   <div>
-                    <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-200">Example business profile</p>
+                    <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-200">SAMPLE PROFILE — What your page looks like after going live</p>
                     <p className="mt-2 text-2xl font-black text-white">Gold Coast Flow Plumbing</p>
                     <p className="mt-1 text-sm text-slate-300">Burleigh · Varsity Lakes · Mermaid Beach</p>
                   </div>
@@ -121,7 +121,9 @@ export function Hero({ freeProfileUrl, sampleProfileUrl }: HeroProps) {
                 </div>
               </div>
             </div>
-            <p className="mt-3 text-center text-[11px] font-black uppercase tracking-[0.22em] text-slate-500">Sample data</p>
+            <p className="mt-3 text-center text-[11px] font-black uppercase tracking-[0.22em] text-slate-500">
+              Example data shown. Real profiles display your actual enquiry stats.
+            </p>
           </div>
         </div>
       </div>

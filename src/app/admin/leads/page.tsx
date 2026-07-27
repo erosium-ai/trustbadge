@@ -412,7 +412,7 @@ export default function AdminLeadsPage() {
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Lead Dashboard</h1>
           <p className="mt-1 text-sm text-slate-600">
-            SchemaPage creators + Credentials AI tracked lead events.
+            Profile-builder creators + Credentials AI tracked lead events.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -636,11 +636,11 @@ export default function AdminLeadsPage() {
       {!loading && !error && (
         <>
           <section className="mb-8">
-            <h2 className="mb-3 text-lg font-semibold text-slate-900">SchemaPage creator leads</h2>
+            <h2 className="mb-3 text-lg font-semibold text-slate-900">Profile builder creator leads</h2>
 
             {filteredSchemaLeads.length === 0 ? (
               <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-500">
-                No SchemaPage leads match your filters.
+                No profile-builder leads match your filters.
               </div>
             ) : (
               <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
@@ -657,7 +657,7 @@ export default function AdminLeadsPage() {
                   </thead>
                   <tbody className="divide-y divide-slate-100">
                     {filteredSchemaLeads.map((lead) => {
-                      const schemaPageUrl = `https://schemapage-production.up.railway.app/${lead.slug}`;
+                      const schemaPageUrl = `https://credentialsai.com.au/b/${lead.slug}`;
                       return (
                         <tr key={lead.id} className="hover:bg-slate-50/60">
                           <td className="px-4 py-3">

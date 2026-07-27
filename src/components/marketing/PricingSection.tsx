@@ -21,6 +21,7 @@ const PAID_TICKS = [
   "ABN-backed TrustBadge",
   "Services, about, FAQs and contact form",
   "Call, email and quote enquiry tracking",
+  "QR code for magnets, flyers, invoices and vehicles",
   "Weekly enquiry summary",
   "Cancel anytime — no lock-in",
 ];

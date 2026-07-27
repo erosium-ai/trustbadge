@@ -1,5 +1,5 @@
 // 🔑 Keywords: Credentials AI pricing redirect, checkout cancel landing, welcome incomplete landing
-// `/pricing` previously 404'd, but the /welcome flow and the SchemaPage
+// `/pricing` previously 404'd, but the /welcome flow and the profile-builder
 // checkout cancel_url both send customers here. Redirect to the homepage
 // pricing section, preserving the checkout status for potential messaging.
 

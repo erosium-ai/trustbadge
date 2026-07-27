@@ -268,6 +268,9 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
   const meta = profile.metadata && typeof profile.metadata === "object" ? (profile.metadata as Record<string, unknown>) : {};
   const businessType = typeof meta.business_type === "string" ? meta.business_type : null;
   const gbpUrl = typeof meta.google_business_profile_url === "string" && meta.google_business_profile_url ? meta.google_business_profile_url : null;
+  const rawBrandAccent = typeof meta.brand_color === "string" ? meta.brand_color : "#10b981";
+  const brandAccent = /^#[0-9a-fA-F]{6}$/.test(rawBrandAccent) ? rawBrandAccent : "#10b981";
+  const brandAccentSoft = `${brandAccent}22`;
   const faqs = Array.isArray(meta.faqs)
     ? (meta.faqs as Array<{ question?: string; answer?: string }>)
         .map((f) => ({ question: String(f?.question ?? "").trim().slice(0, 180), answer: String(f?.answer ?? "").trim().slice(0, 1000) }))
@@ -336,7 +339,10 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
                 <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_auto] lg:items-start">
                   <div>
                     <div className="flex items-center gap-4">
-                      <div className="flex h-16 w-16 flex-none items-center justify-center rounded-3xl border border-emerald-300/25 bg-emerald-300/10 text-xl font-black text-emerald-100">
+                      <div
+                        className="flex h-16 w-16 flex-none items-center justify-center rounded-3xl border text-xl font-black"
+                        style={{ borderColor: brandAccent, backgroundColor: brandAccentSoft, color: brandAccent }}
+                      >
                         {initialsOf(profile.business_name)}
                       </div>
                       <div>
@@ -354,7 +360,10 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
                     )}
                     <div className="mt-6 flex flex-wrap gap-2 text-xs font-bold">
                       {isVerified && (
-                        <span className="rounded-full border border-emerald-300/30 bg-emerald-300/12 px-3 py-1.5 text-emerald-100">
+                        <span
+                          className="rounded-full border px-3 py-1.5"
+                          style={{ borderColor: brandAccent, backgroundColor: brandAccentSoft, color: brandAccent }}
+                        >
                           ABN Verified by {BRAND_NAME}
                         </span>
                       )}
@@ -382,10 +391,10 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
                 <div className="grid gap-4 sm:grid-cols-2">
                   {services.map((service) => (
                     <article key={`${service.name}-${service.price ?? ""}`} className="ai-glass-soft rounded-[1.5rem] border-emerald-300/12 p-5">
-                      <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-200">Service</p>
+                      <p className="text-xs font-black uppercase tracking-[0.2em]" style={{ color: brandAccent }}>Service</p>
                       <h2 className="mt-2 text-lg font-black text-white">{service.name}</h2>
                       {service.description && <p className="mt-2 text-sm leading-relaxed text-slate-300">{service.description}</p>}
-                      {service.price && <p className="mt-3 text-sm font-bold text-emerald-200">{service.price}</p>}
+                      {service.price && <p className="mt-3 text-sm font-bold" style={{ color: brandAccent }}>{service.price}</p>}
                     </article>
                   ))}
                 </div>

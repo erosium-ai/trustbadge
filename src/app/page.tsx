@@ -1,7 +1,10 @@
 import { BRAND_NAME, getSiteUrl } from "@/lib/brand";
+import { ProblemIntro } from "@/components/marketing/ProblemIntro";
 import { Hero } from "@/components/marketing/Hero";
 import { FeatureCards } from "@/components/marketing/FeatureCards";
 import { PricingSection } from "@/components/marketing/PricingSection";
+import { QrCodeSection } from "@/components/marketing/QrCodeSection";
+import { UnderTheHoodSection } from "@/components/marketing/UnderTheHoodSection";
 import { Faq, faqs } from "@/components/marketing/Faq";
 import { StickyMobileCta } from "@/components/marketing/StickyMobileCta";
 import { HomepageViewTracker } from "@/components/marketing/HomepageViewTracker";
@@ -96,12 +99,15 @@ export default function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <ProblemIntro />
       <Hero freeProfileUrl={freeProfileUrl} sampleProfileUrl={sampleProfileUrl} />
       <FeatureCards />
+      <QrCodeSection />
       <PricingSection
         freeProfileUrl={freeProfileUrl}
         founderBundleUrl={founderBundleUrl}
       />
+      <UnderTheHoodSection />
       <Faq freeProfileUrl={freeProfileUrl} />
       <StickyMobileCta freeProfileUrl={freeProfileUrl} />
     </div>

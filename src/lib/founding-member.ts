@@ -2,7 +2,7 @@
 // Server-side helpers for the /welcome flow and Founding Member membership state.
 //
 // Includes a fallback path: if the business_profiles row does not exist yet for
-// the given slug (because SchemaPage created the profile in the `pages` table
+// the given slug (because the profile builder created the profile in the `pages` table
 // but the mirror never populated business_profiles), we hydrate the row from
 // the `pages` table on the fly so the /welcome + dashboard flow can proceed.
 
@@ -24,7 +24,7 @@ type PagesRow = {
 };
 
 /**
- * Hydrate a business_profiles row from the SchemaPage `pages` table.
+ * Hydrate a business_profiles row from the profile-builder `pages` table.
  * Only used as a fallback when the mirror hasn't populated the row yet.
  * Returns the inserted row id (or existing id if a race-inserted row is found).
  */
@@ -157,7 +157,7 @@ export async function upsertFoundingMember(
     return { ok: false, reason: fetchErr.message };
   }
 
-  // Fallback: hydrate a business_profiles row from the SchemaPage `pages`
+  // Fallback: hydrate a business_profiles row from the profile-builder `pages`
   // table if the mirror hasn't populated it yet. This unblocks the /welcome
   // flow for the very first customers after payment.
   if (!existing) {

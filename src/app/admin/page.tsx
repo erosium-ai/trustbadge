@@ -36,7 +36,7 @@ export default async function AdminLandingPage() {
         >
           <h2 className="text-lg font-semibold text-slate-900">Lead Dashboard</h2>
           <p className="mt-2 text-sm text-slate-600">
-            See SchemaPage free leads, filter, copy emails, and export to CSV for outreach.
+            See profile-builder free leads, filter, copy emails, and export to CSV for outreach.
           </p>
           <span className="mt-4 inline-block text-sm font-medium text-brand-600 hover:text-brand-700">
             Go to leads →

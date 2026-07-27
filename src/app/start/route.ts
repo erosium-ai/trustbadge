@@ -1,7 +1,7 @@
 /* 🔑 Keywords: /start route, branded onboarding URL, query pass-through, Credentials AI attribution */
 
 import { NextResponse } from "next/server";
-import { getSchemaPageUrl } from "@/lib/brand";
+import { getProfileBuilderUrl } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +14,7 @@ function ensureParam(url: URL, key: string, value: string) {
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
-  const target = new URL(getSchemaPageUrl());
+  const target = new URL(getProfileBuilderUrl());
 
   for (const [key, value] of requestUrl.searchParams.entries()) {
     target.searchParams.append(key, value);

@@ -5,7 +5,7 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Privacy Policy — Credentials AI",
   description:
-    "Privacy Policy for Credentials AI, SchemaPage, TrustBadge and the Verified Lead Engine.",
+    "Privacy Policy for Credentials AI, AI Profiles, TrustBadge and the Verified Lead Engine.",
 };
 
 export default function PrivacyPolicyPage() {
@@ -36,7 +36,7 @@ export default function PrivacyPolicyPage() {
         </p>
         <p>
           This policy covers Credentials AI and its connected services,
-          including the SchemaPage / AI Profile builder, public business
+          including the Credentials AI Profile Builder, public business
           profiles, TrustBadge verification, visitor and lead tracking, quote
           requests, customer accounts and dashboards, subscriptions, and
           support.
