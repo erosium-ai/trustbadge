@@ -2,7 +2,7 @@
 
 /* 🔑 Keywords: Credentials AI support link, dashboard support email, email popover, copy email, mailto fallback, Gmail compose fallback */
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const EMAIL = "isaac@erosium.com.au";
 const SUBJECT = "Credentials AI support";
@@ -39,6 +39,30 @@ export function SupportEmailLink({
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [failed, setFailed] = useState(false);
+  const rootRef = useRef<HTMLSpanElement>(null);
+
+  // Dismiss on outside click or Escape so the popover never traps the page.
+  useEffect(() => {
+    if (!open) return;
+
+    function handlePointerDown(event: MouseEvent | TouchEvent) {
+      if (rootRef.current && !rootRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    }
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setOpen(false);
+    }
+
+    document.addEventListener("mousedown", handlePointerDown);
+    document.addEventListener("touchstart", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+      document.removeEventListener("touchstart", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [open]);
 
   async function handleSupportClick() {
     const success = await copyEmail();
@@ -54,6 +78,7 @@ export function SupportEmailLink({
 
   return (
     <span
+      ref={rootRef}
       className={`relative inline-flex flex-col items-center ${fullWidth ? "w-full" : ""}`}
     >
       <button
@@ -71,6 +96,14 @@ export function SupportEmailLink({
           aria-label="Credentials AI support options"
           className="absolute bottom-full z-50 mb-3 w-72 rounded-xl border border-gray-200 bg-white p-4 text-left text-sm leading-5 text-gray-700 shadow-2xl"
         >
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            aria-label="Close support panel"
+            className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-gray-400 hover:bg-gray-100 hover:text-gray-700"
+          >
+            ✕
+          </button>
           <span className="block font-semibold text-gray-950">Email support</span>
           <span className="mt-1 block break-all">{EMAIL}</span>
           <span className="mt-2 block text-xs font-semibold text-emerald-700">
