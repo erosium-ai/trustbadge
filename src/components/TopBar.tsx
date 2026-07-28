@@ -107,7 +107,11 @@ export function TopBar() {
               width={690}
               height={404}
               priority
-              className="h-10 w-auto shrink-0 sm:h-11"
+              // Mobile-only: clip the bottom sliver of the card mark so the
+              // "AI-READABLE PROFILES · 2026" tagline bleed under the card
+              // doesn't render as blurry clutter at small sizes. Desktop
+              // (sm and up) renders the full asset unchanged.
+              className="h-10 w-auto shrink-0 [clip-path:inset(0_0_4%_0)] sm:h-11 sm:[clip-path:none]"
             />
             <span className="flex min-w-0 flex-col leading-none">
               <span className="truncate text-base font-extrabold tracking-tight text-white sm:text-lg">
