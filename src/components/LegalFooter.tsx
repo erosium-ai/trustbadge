@@ -5,14 +5,14 @@ import { SupportEmailLink } from "@/components/SupportEmailLink";
 
 export function LegalFooter() {
   return (
-    <footer className="border-t border-slate-200 bg-white px-4 pb-[calc(7.5rem+env(safe-area-inset-bottom))] pt-8 text-center text-xs leading-6 text-slate-500 md:py-8">
+    <footer className="ai-glass-chrome border-t px-4 pb-[calc(7.5rem+env(safe-area-inset-bottom))] pt-8 text-center text-xs leading-6 text-slate-400 md:py-8">
       <p>
         Credentials AI is a product of{" "}
         <a
           href="https://erosium.com.au"
           target="_blank"
           rel="noopener noreferrer"
-          className="font-medium text-slate-700 underline-offset-4 hover:underline"
+          className="font-medium text-slate-200 underline-offset-4 hover:text-white hover:underline"
         >
           Erosium
         </a>
@@ -20,13 +20,13 @@ export function LegalFooter() {
       </p>
       <p className="mt-1">Credentials AI is operated by Beastly Tech GC Pty Ltd · ABN 52 699 330 553 · Trading as Erosium</p>
       <nav className="mt-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-1" aria-label="Legal">
-        <Link href="/privacy" className="font-medium text-slate-700 underline-offset-4 hover:underline">
+        <Link href="/privacy" className="font-medium text-slate-200 underline-offset-4 hover:text-white hover:underline">
           Privacy
         </Link>
-        <Link href="/terms" className="font-medium text-slate-700 underline-offset-4 hover:underline">
+        <Link href="/terms" className="font-medium text-slate-200 underline-offset-4 hover:text-white hover:underline">
           Terms
         </Link>
-        <SupportEmailLink className="cursor-pointer border-0 bg-transparent p-0 font-medium text-slate-700 underline-offset-4 hover:underline" />
+        <SupportEmailLink className="cursor-pointer border-0 bg-transparent p-0 font-medium text-slate-200 underline-offset-4 hover:text-white hover:underline" />
       </nav>
     </footer>
   );

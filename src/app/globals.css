@@ -153,6 +153,17 @@
 .ai-glow-button {
   box-shadow: 0 0 0 1px rgb(34 211 238 / 0.26), 0 0 28px rgb(34 211 238 / 0.22), 0 12px 28px rgb(20 184 166 / 0.18);
 }
+/* ── Global chrome (TopBar + LegalFooter) — dark glass shell (2026-07-29) ──
+   Continuous cool-blue glass band matching the homepage ai-v2-bg atmosphere
+   instead of the old white slab. Content surfaces stay light; only the
+   header/footer chrome goes dark glass. */
+.ai-glass-chrome {
+  border-color: rgb(255 255 255 / 0.10);
+  background:
+    radial-gradient(ellipse 80% 140% at 18% 0%, rgb(34 211 238 / 0.10), transparent 60%),
+    linear-gradient(180deg, rgb(7 22 47 / 0.92), rgb(5 8 22 / 0.96));
+  backdrop-filter: blur(18px);
+}
 .ai-grid-overlay {
   background-image:
     linear-gradient(rgb(255 255 255 / 0.045) 1px, transparent 1px),

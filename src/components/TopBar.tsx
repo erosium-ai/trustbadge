@@ -93,22 +93,30 @@ export function TopBar() {
   const inDashboard = pathname.startsWith("/dashboard");
 
   return (
-    <header className="border-b border-slate-200 bg-white">
-      <div className="mx-auto max-w-6xl px-3 py-4 sm:px-6">
-        <div className="flex items-end justify-between gap-2 md:items-center md:gap-4">
+    <header className="ai-glass-chrome border-b">
+      <div className="mx-auto max-w-6xl px-3 py-3 sm:px-6">
+        <div className="flex items-center justify-between gap-2 md:gap-4">
           <Link
             href={user ? "/dashboard" : "/"}
-            className="flex min-w-0 items-center"
+            className="flex min-w-0 items-center gap-2.5 sm:gap-3"
             aria-label={`${BRAND_NAME} ${BRAND_BYLINE}`}
           >
             <Image
-              src="/brand/credentials-ai-logo-primary.svg"
-              alt={`${BRAND_NAME} ${BRAND_BYLINE}`}
-              width={980}
-              height={320}
+              src="/brand/credentials-ai-v7-card-mark.svg"
+              alt=""
+              width={690}
+              height={404}
               priority
-              className="h-auto w-[60vw] max-w-[250px] sm:h-24 sm:w-auto sm:max-w-none lg:h-28"
+              className="h-10 w-auto shrink-0 sm:h-11"
             />
+            <span className="flex min-w-0 flex-col leading-none">
+              <span className="truncate text-base font-extrabold tracking-tight text-white sm:text-lg">
+                {BRAND_NAME}
+              </span>
+              <span className="mt-1 hidden text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-400 min-[380px]:block">
+                {BRAND_BYLINE}
+              </span>
+            </span>
           </Link>
 
           <nav className="flex shrink-0 items-center justify-end gap-2 sm:gap-3 md:gap-4">
@@ -122,8 +130,8 @@ export function TopBar() {
                         inDashboard &&
                         (pathname === `/dashboard/${slug}` ||
                           pathname === "/dashboard")
-                          ? "text-slate-900"
-                          : "text-slate-500 hover:text-slate-900"
+                          ? "text-white"
+                          : "text-slate-300 hover:text-white"
                       }`}
                     >
                       Dashboard
@@ -132,8 +140,8 @@ export function TopBar() {
                       href={`/dashboard/${slug}/leads`}
                       className={`hidden text-sm font-medium sm:inline ${
                         pathname === `/dashboard/${slug}/leads`
-                          ? "text-slate-900"
-                          : "text-slate-500 hover:text-slate-900"
+                          ? "text-white"
+                          : "text-slate-300 hover:text-white"
                       }`}
                     >
                       Leads
@@ -142,8 +150,8 @@ export function TopBar() {
                       href={`/dashboard/${slug}/verification`}
                       className={`hidden text-sm font-medium sm:inline ${
                         pathname === `/dashboard/${slug}/verification`
-                          ? "text-slate-900"
-                          : "text-slate-500 hover:text-slate-900"
+                          ? "text-white"
+                          : "text-slate-300 hover:text-white"
                       }`}
                     >
                       ABN check
@@ -151,7 +159,7 @@ export function TopBar() {
                     <Link
                       href={`/b/${slug}`}
                       target="_blank"
-                      className="hidden text-sm font-medium text-slate-500 hover:text-slate-900 sm:inline"
+                      className="hidden text-sm font-medium text-slate-300 hover:text-white sm:inline"
                     >
                       View my profile &rarr;
                     </Link>
@@ -159,7 +167,7 @@ export function TopBar() {
                 ) : (
                   <Link
                     href="/dashboard"
-                    className="hidden text-sm font-medium text-slate-500 hover:text-slate-900 sm:inline"
+                    className="hidden text-sm font-medium text-slate-300 hover:text-white sm:inline"
                   >
                     Dashboard
                   </Link>
@@ -171,7 +179,7 @@ export function TopBar() {
                     onClick={() => setMenuOpen((v) => !v)}
                     aria-haspopup="menu"
                     aria-expanded={menuOpen}
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 bg-white text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-white/10 text-sm font-semibold text-white hover:bg-white/20"
                     title={user.email}
                   >
                     {(user.email?.[0] ?? "?").toUpperCase()}
@@ -179,21 +187,21 @@ export function TopBar() {
                   {menuOpen ? (
                     <div
                       role="menu"
-                      className="absolute right-0 z-30 mt-2 w-64 rounded-xl border border-slate-200 bg-white p-2 shadow-lg"
+                      className="absolute right-0 z-30 mt-2 w-64 rounded-xl border border-white/10 bg-[#0a142e]/95 p-2 shadow-xl backdrop-blur-xl"
                     >
-                      <div className="border-b border-slate-100 px-3 py-2 text-xs text-slate-500">
+                      <div className="border-b border-white/10 px-3 py-2 text-xs text-slate-400">
                         Signed in as
-                        <div className="mt-0.5 truncate text-sm font-medium text-slate-800">
+                        <div className="mt-0.5 truncate text-sm font-medium text-slate-100">
                           {user.email ?? "\u2014"}
                         </div>
                       </div>
                       {/* Nav links — essential on mobile where the inline
                           Dashboard/Leads/ABN check links are hidden. */}
-                      <div className="border-b border-slate-100 pb-1">
+                      <div className="border-b border-white/10 pb-1">
                         <Link
                           href={slug ? `/dashboard/${slug}` : "/dashboard"}
                           onClick={() => setMenuOpen(false)}
-                          className="block rounded-md px-3 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50"
+                          className="block rounded-md px-3 py-2 text-sm font-medium text-slate-100 hover:bg-white/5"
                         >
                           Dashboard
                         </Link>
@@ -202,14 +210,14 @@ export function TopBar() {
                             <Link
                               href={`/dashboard/${slug}/leads`}
                               onClick={() => setMenuOpen(false)}
-                              className="block rounded-md px-3 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50"
+                              className="block rounded-md px-3 py-2 text-sm font-medium text-slate-100 hover:bg-white/5"
                             >
                               Leads
                             </Link>
                             <Link
                               href={`/dashboard/${slug}/verification`}
                               onClick={() => setMenuOpen(false)}
-                              className="block rounded-md px-3 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50"
+                              className="block rounded-md px-3 py-2 text-sm font-medium text-slate-100 hover:bg-white/5"
                             >
                               ABN check
                             </Link>
@@ -217,7 +225,7 @@ export function TopBar() {
                               href={`/b/${slug}`}
                               target="_blank"
                               onClick={() => setMenuOpen(false)}
-                              className="block rounded-md px-3 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50"
+                              className="block rounded-md px-3 py-2 text-sm font-medium text-slate-100 hover:bg-white/5"
                             >
                               View my profile →
                             </Link>
@@ -226,19 +234,19 @@ export function TopBar() {
                       </div>
                       <a
                         href="mailto:support@erosium.ai"
-                        className="block rounded-md px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
+                        className="block rounded-md px-3 py-2 text-sm text-slate-300 hover:bg-white/5"
                       >
                         Billing & support
                       </a>
                       <a
                         href="mailto:support@erosium.ai"
-                        className="block rounded-md px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
+                        className="block rounded-md px-3 py-2 text-sm text-slate-300 hover:bg-white/5"
                       >
                         Help
                       </a>
                       <button
                         onClick={handleLogout}
-                        className="block w-full rounded-md px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-50"
+                        className="block w-full rounded-md px-3 py-2 text-left text-sm text-slate-300 hover:bg-white/5"
                       >
                         Log out
                       </button>
@@ -259,7 +267,7 @@ export function TopBar() {
                       label: "How it works",
                     })
                   }
-                  className="hidden text-sm font-medium text-slate-500 hover:text-slate-900 sm:inline"
+                  className="hidden text-sm font-medium text-slate-300 hover:text-white sm:inline"
                 >
                   How it works
                 </Link>
@@ -274,7 +282,7 @@ export function TopBar() {
                       label: "Pricing",
                     })
                   }
-                  className="hidden text-sm font-medium text-slate-500 hover:text-slate-900 sm:inline"
+                  className="hidden text-sm font-medium text-slate-300 hover:text-white sm:inline"
                 >
                   Pricing
                 </Link>
@@ -289,7 +297,7 @@ export function TopBar() {
                       label: "Log in",
                     })
                   }
-                  className="text-xs font-medium text-slate-600 hover:text-slate-900 sm:text-sm"
+                  className="text-xs font-medium text-slate-200 hover:text-white sm:text-sm"
                 >
                   Log in
                 </Link>
