@@ -28,6 +28,7 @@ export default function HomePage() {
         url: siteUrl,
         description:
           "Credentials AI builds AI-verified business profiles that bring local businesses measured leads — ABN-checked, AI-readable, and enquiry-tracked.",
+        dateModified: "2026-07-28",
         knowsAbout: [
           "AI Business Profiles",
           "ABN Verification",

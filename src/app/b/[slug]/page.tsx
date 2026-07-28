@@ -296,6 +296,17 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
     areaServed: serviceAreas.length > 0 ? serviceAreas : undefined,
     address: profile.suburb ? { "@type": "PostalAddress", addressLocality: profile.suburb, addressRegion: profile.state || undefined, postalCode: profile.postcode || undefined, addressCountry: "AU" } : undefined,
     sameAs: sameAs.length > 0 ? sameAs : undefined,
+    // ABN verified data — injected into JSON-LD for Google E-E-A-T trust signals
+    identifier: profile.abn
+      ? {
+          "@type": "PropertyValue",
+          propertyID: "Australian Business Number",
+          value: profile.abn,
+          ...((profile as { abn_status?: string | null }).abn_status === "verified"
+            ? { description: "ABN verified active via Australian Business Register API" }
+            : {}),
+        }
+      : undefined,
     makesOffer: services.map((service) => ({
       "@type": "Offer",
       itemOffered: { "@type": "Service", name: service.name, description: service.description || undefined },
