@@ -35,10 +35,10 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/brand/credentials-ai-logo-tile.png",
-        width: 1400,
-        height: 900,
-        alt: "Credentials AI — AI visibility. Verified trust.",
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Credentials AI — AI-Ready Business Profiles with ABN Verification, Enquiry Tracking, and QR Codes",
       },
     ],
   },
@@ -47,7 +47,13 @@ export const metadata: Metadata = {
     title: `${BRAND_NAME} — AI-Verified Business Profiles`,
     description:
       "AI-verified profiles that bring you measured leads.",
-    images: ["/brand/credentials-ai-logo-tile.png"],
+    images: ["/og-image.png"],
+  },
+  // Tells Google & AI crawlers content is fresh — Perplexity heavily weights <3mo content
+  other: {
+    "dc.date.modified": "2026-07-28",
+    "last-modified": "2026-07-28",
+    "revised": "2026-07-28",
   },
   icons: {
     icon: [{ url: "/icon.png", type: "image/png" }],

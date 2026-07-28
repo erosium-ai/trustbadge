@@ -28,6 +28,24 @@ export default function HomePage() {
         url: siteUrl,
         description:
           "Credentials AI builds AI-verified business profiles that bring local businesses measured leads — ABN-checked, AI-readable, and enquiry-tracked.",
+        knowsAbout: [
+          "AI Business Profiles",
+          "ABN Verification",
+          "Small Business Marketing",
+          "QR Code Lead Tracking",
+          "Australian Business Registration",
+          "Local SEO for Tradies",
+          "AI Search Visibility",
+          "Structured Data SEO",
+          "Voice Search Optimization",
+          "ChatGPT Local Business Discovery",
+        ],
+        sameAs: [
+          "https://x.com/Ikebuilds",
+          "https://www.linkedin.com/in/isaac-anasson-25b147423/",
+          "https://github.com/erosium-ai",
+          "https://www.youtube.com/@Ikebuilds",
+        ],
       },
       {
         "@type": "WebSite",
