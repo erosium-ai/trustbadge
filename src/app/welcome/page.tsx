@@ -1,17 +1,20 @@
 // 🔑 Keywords: Credentials AI /welcome, Founding Member claim, Stripe session verify, post-checkout landing
 // Post-checkout landing page. Verifies the Stripe Checkout Session server-side,
-// upserts Founding Member state into business_profiles, and either:
-//   - attaches the current logged-in user as owner (if session exists), OR
-//   - renders an account-claim form (email prefilled+locked, password field).
+// upserts Founding Member state into business_profiles, and:
+//   - auto-logs-in the paying user (no password needed), OR
+//   - renders an account-claim form as fallback.
 //
-// Spec: Fable Five §3 + §13 (verbatim copy) in CREDENTIALS_AI_FOUNDER_DASHBOARD_SPEC_FABLE_FIVE_2026-07-09.md
+// Flow:
+//   Stripe checkout → /welcome?session_id=cs_...
+//   → upsert business state
+//   → if user has no auth session: auto-create user + token → callback → dashboard
+//   → if user is logged in + owner: dashboard directly
 
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { getStripeClient } from "@/lib/stripe-server";
 import { getServerClient } from "@/lib/supabase-server";
 import {
-  attachOwnerIfMissing,
-  getFoundingMemberBySlug,
   upsertFoundingMember,
 } from "@/lib/founding-member";
 import { ClaimAccountForm } from "./ClaimAccountForm";
@@ -44,10 +47,128 @@ function toIdString(value: string | { id?: string } | null): string | null {
   return value.id ?? null;
 }
 
+// ---------------------------------------------------------------------------
+// Auto-login: creates/gets a Supabase user for the Stripe email, generates a
+// token via admin API, then redirects to the auth callback which exchanges the
+// token server-side and sets HttpOnly cookies. User lands on dashboard logged
+// in — zero friction.
+// ---------------------------------------------------------------------------
+
+async function autoLogin(
+  email: string,
+  slug: string,
+): Promise<string> {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!serviceKey) {
+    throw new Error("SUPABASE_SERVICE_ROLE_KEY not configured");
+  }
+
+  // Step 1: Look up or create user
+  let userId: string;
+  try {
+    const listResp = await fetch(
+      `${supabaseUrl}/auth/v1/admin/users?per_page=1`,
+      {
+        headers: {
+          apikey: serviceKey,
+          Authorization: `***${serviceKey}`,
+        },
+      }
+    );
+
+    if (!listResp.ok) throw new Error(`List users failed: ${listResp.status}`);
+
+    const listData = await listResp.json();
+    const users = listData.users || [];
+
+    // GoTrue admin list doesn't support email filter in query params.
+    // We need to search manually. For now, always create — GoTrue upserts by email.
+    // Actually we can use the GET with a filter. Let's just always create.
+    // createUser with email_confirm:true will return existing user if email taken.
+  } catch {
+    // fall through to create
+  }
+
+  // Step 2: Create or get user (GoTrue returns 422 if email exists, but we'd
+  // rather not rely on error codes for control flow)
+  // Instead: generate_link directly — it works even if user doesn't exist yet
+  // as long as the email identity exists.
+  
+  // Actually the cleanest path: always create the user. If exists, GoTrue
+  // returns 422 — catch that and proceed with generate_link anyway.
+  try {
+    const createResp = await fetch(`${supabaseUrl}/auth/v1/admin/users`, {
+      method: "POST",
+      headers: {
+        apikey: serviceKey,
+        Authorization: `***${serviceKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        email_confirm: true,
+        user_metadata: { created_via_checkout: true },
+      }),
+    });
+    if (createResp.ok) {
+      const created = await createResp.json();
+      userId = created.id;
+    }
+    // 422 = already exists, that's fine
+  } catch {
+    // best-effort
+  }
+
+  // Step 3: Generate magic link token via admin API (bypasses rate limits)
+  const linkResp = await fetch(`${supabaseUrl}/auth/v1/admin/generate_link`, {
+    method: "POST",
+    headers: {
+      apikey: serviceKey,
+      Authorization: `***${serviceKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      type: "magiclink",
+      email,
+      options: {
+        redirect_to: `https://credentialsai.com.au/auth/callback?next=/dashboard/${slug}%3Fwelcome%3D1`,
+      },
+    }),
+  });
+
+  if (!linkResp.ok) {
+    const errBody = await linkResp.text();
+    throw new Error(`generate_link failed: ${linkResp.status} — ${errBody}`);
+  }
+
+  const linkData = await linkResp.json();
+  const token = linkData.hashed_token;
+
+  if (!token) {
+    throw new Error("No token in generate_link response");
+  }
+
+  // Step 4: Redirect to the verify endpoint which will set the session
+  // and then redirect to our callback → dashboard
+  const verifyUrl =
+    `${supabaseUrl}/auth/v1/verify` +
+    `?token=***{encodeURIComponent(token)}` +
+    `&type=magiclink` +
+    `&redirect_to=${encodeURIComponent(`https://credentialsai.com.au/auth/callback?next=/dashboard/${slug}%3Fwelcome%3D1`)}`;
+
+  return verifyUrl;
+}
+
+// ---------------------------------------------------------------------------
+// Main page component
+// ---------------------------------------------------------------------------
+
 export default async function WelcomePage({ searchParams }: WelcomePageProps) {
   const { session_id } = await searchParams;
 
-  // No session id — hard fail with a friendly page (do not silently redirect).
+  // No session id — hard fail with a friendly page.
   if (!session_id) {
     return <WelcomeFailure reason="missing_session" />;
   }
@@ -67,7 +188,6 @@ export default async function WelcomePage({ searchParams }: WelcomePageProps) {
   }
 
   if (!session || session.payment_status !== "paid") {
-    // Payment did not complete — send them back to pricing but do not error.
     redirect("/pricing?checkout=incomplete");
   }
 
@@ -104,8 +224,7 @@ export default async function WelcomePage({ searchParams }: WelcomePageProps) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Upsert Founding Member state, attaching owner if user is logged in and
-  // the row has no owner yet.
+  // Upsert Founding Member state, attaching owner if user is logged in.
   const upsert = await upsertFoundingMember({
     slug,
     paymentEmail,
@@ -117,10 +236,6 @@ export default async function WelcomePage({ searchParams }: WelcomePageProps) {
   });
 
   if (!upsert.ok || !upsert.record) {
-    // Could not find business_profiles row — this usually means the profile
-    // was created only in the profile-builder `pages` table and has not been
-    // mirrored yet. Fall back to the friendly "we've got your payment" page,
-    // which alerts the founder for manual provisioning.
     return (
       <WelcomeFailure
         reason={upsert.reason === "profile_not_found" ? "profile_not_mirrored" : "upsert_failed"}
@@ -131,6 +246,18 @@ export default async function WelcomePage({ searchParams }: WelcomePageProps) {
   }
 
   const record = upsert.record;
+
+  // ✅ AUTO-LOGIN: User is NOT logged in but we have their Stripe email.
+  // Create/get their Supabase account and log them in automatically.
+  if (!user && paymentEmail) {
+    try {
+      const loginUrl = await autoLogin(paymentEmail, slug);
+      redirect(loginUrl);
+    } catch (err) {
+      console.error("Auto-login failed, falling back to claim form:", err);
+      // Fall through to claim form below
+    }
+  }
 
   // Case 1: Logged in and now the owner → dashboard.
   if (user && record.owner_user_id === user.id) {
@@ -148,9 +275,7 @@ export default async function WelcomePage({ searchParams }: WelcomePageProps) {
     );
   }
 
-  // Case 3: Not logged in → render account-claim form.
-  // If ownership was somehow already attached (e.g. previous visit), still
-  // let them log in normally.
+  // Case 3 (fallback): Not logged in and auto-login failed → render claim form.
   return (
     <WelcomeSuccess
       slug={slug}
