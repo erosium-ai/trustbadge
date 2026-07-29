@@ -14,11 +14,11 @@ export const faqs = [
   },
   {
     q: "Why not just use my website?",
-    a: "Keep your website. Credentials AI adds a structured, AI-readable profile, an ABN-backed trust layer, and enquiry tracking that most websites don't provide out of the box.",
+    a: "Keep your website. Credentials AI adds a structured, AI-readable profile, ABN/business-registration trust wording with source/date where available, and enquiry tracking that most websites don't provide out of the box.",
   },
   {
     q: "What does 'ABN Verified' actually mean?",
-    a: "It means our system automatically checks the business ABN and details against the Australian Business Register — the official government database — and publishes what was checked and when. Credentials AI is independent: a badge is not a government endorsement.",
+    a: "It means our system performs an automated check of the business ABN and available details against Australian Business Register data using ABR API access issued for Credentials AI, then publishes the source, status and checked date. Credentials AI is independent: a badge is not a government endorsement and is not a licence, insurance, quality or general-compliance guarantee.",
   },
   {
     q: "Do I need to be technical?",
@@ -26,11 +26,11 @@ export const faqs = [
   },
   {
     q: "What if I already have Google Business Profile?",
-    a: "Great — keep it. Google helps discovery. Credentials AI adds the verified, AI-readable layer and enquiry proof reporting so you can measure this channel directly.",
+    a: "Great — keep it. Google helps discovery. Credentials AI adds the checked business-detail, AI-readable layer and enquiry proof reporting so you can measure this channel directly.",
   },
   {
     q: "Is the paid page worth it?",
-    a: "If one genuine job comes through and closes, it usually covers the plan many times over. It's $49/month or $12.90/week — same product, cancel anytime. If it doesn't earn its keep, you can leave cleanly.",
+    a: "That depends on whether the fuller page, checked business details and tracked enquiries are worth A$49/month or A$12.90/week for your business. There is no lead guarantee. Same product either cadence; cancel future renewals anytime.",
   },
 ];
 
@@ -45,7 +45,7 @@ export function Faq({ freeProfileUrl }: { freeProfileUrl: string }) {
           </h2>
           <p className="mt-4 text-base leading-relaxed text-slate-300">
             Start with a free AI Business Card. Upgrade to the full AI-Ready Business Page when you want the
-            premium design, ABN-backed trust and enquiry tracking.
+            premium design, checked ABN/business-registration wording and enquiry tracking.
           </p>
           <CtaButton
             href={freeProfileUrl}
@@ -111,7 +111,7 @@ export function Faq({ freeProfileUrl }: { freeProfileUrl: string }) {
               Get the AI-Ready Business Page — $12.90/week
             </CtaButton>
             <p className="mt-3 text-center text-xs font-semibold text-slate-500">
-              Cancel anytime. Same product monthly if you prefer.
+              Cancel future renewals anytime. Same product monthly if you prefer.
             </p>
           </div>
         </div>

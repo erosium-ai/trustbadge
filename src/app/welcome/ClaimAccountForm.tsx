@@ -14,13 +14,13 @@ import { getBrowserClient } from "@/lib/supabase-browser";
 function claimErrorMessage(code: unknown): string {
   switch (code) {
     case "email_mismatch":
-      return "That email doesn't match the one used for payment. Use your payment email, or contact support@erosium.ai.";
+      return "That email doesn't match the one used for payment. Use your payment email, or contact isaac@erosium.com.au.";
     case "password_too_short":
       return "Password must be at least 8 characters.";
     case "invalid_email":
       return "Please enter a valid email address.";
     case "profile_not_found":
-      return "We couldn't find your business profile — email support@erosium.ai and we'll sort it.";
+      return "We couldn't find your business profile — email isaac@erosium.com.au and we'll sort it.";
     default:
       return typeof code === "string" ? code : "Could not create your account";
   }

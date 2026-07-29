@@ -30,8 +30,8 @@ const TECH_ITEMS = [
     body: "Google indexes mobile first, so every profile is built to work cleanly on the phone in your customer's hand.",
   },
   {
-    title: "Automatic Google indexing",
-    body: "Every profile sits on the Credentials AI sitemap and is built to be submitted for Google indexing — no SEO wizardry needed from you.",
+    title: "Google indexing-ready",
+    body: "Eligible public profiles sit on the Credentials AI sitemap and can be submitted for Google indexing. Indexing and ranking are controlled by Google and are not guaranteed.",
   },
 ];
 
@@ -48,16 +48,16 @@ export function UnderTheHoodSection() {
               Built for how the internet actually works now
             </h2>
             <p className="mt-4 text-pretty text-base leading-relaxed text-slate-300 sm:text-lg">
-              Google reads it. ChatGPT reads it. Siri reads it. Claude reads it. Every Credentials AI profile ships
-              with a full structured-data layer so AI tools and search engines can see your business clearly — not just
-              guess from a screenshot of your website.
+              Every Credentials AI profile ships with a structured-data layer built so search engines and AI systems
+              can parse your business clearly if they crawl the page — not just guess from a screenshot of your
+              website.
             </p>
             <pre className="mt-6 overflow-x-auto rounded-2xl border border-cyan-300/15 bg-slate-950/80 p-4 text-[11px] leading-relaxed text-cyan-100/90 shadow-inner">
 {`{
   "@type": "LocalBusiness",
   "areaServed": "Gold Coast",
   "hasOfferCatalog": "Services",
-  "identifier": "ABN checked"
+  "identifier": "ABN check source/date"
 }`}
             </pre>
             <p className="mt-3 text-xs font-semibold text-slate-500">

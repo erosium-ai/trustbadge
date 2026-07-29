@@ -15,11 +15,11 @@ export function ClosingCta() {
           Ready when you are
         </p>
         <h2 className="relative mx-auto mt-3 max-w-2xl text-balance text-3xl font-black tracking-tight text-white sm:text-4xl">
-          Get your business into the AI answer.
+          Make your business easier for AI and customers to understand.
         </h2>
         <p className="relative mx-auto mt-4 max-w-xl text-pretty text-base leading-relaxed text-slate-300">
-          ABN-checked trust wording, tracked calls and quote enquiries, and a
-          page AI tools can actually read — live in about 15 minutes.
+          ABN/business-registration trust wording with source/date, tracked
+          calls and quote enquiries, and a page built for AI tools to read.
         </p>
         <div className="relative mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <CtaButton
@@ -54,7 +54,7 @@ export function ClosingCta() {
           </CtaButton>
         </div>
         <p className="relative mt-4 text-sm font-semibold text-slate-500">
-          Cancel anytime · Built in Australia 🇦🇺
+          Cancel future renewals anytime · Built in Australia 🇦🇺
         </p>
       </div>
     </section>

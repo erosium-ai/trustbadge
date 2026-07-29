@@ -1,11 +1,11 @@
-/* 🔑 Keywords: privacy policy, Credentials AI privacy, data handling, APP-style privacy, erosium.ai privacy */
+/* 🔑 Keywords: privacy policy V2, Credentials AI privacy, data handling, APP-style privacy, privacy-2026-07-29.v2, isaac@erosium.com.au */
 
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Privacy Policy — Credentials AI",
   description:
-    "Privacy Policy for Credentials AI, AI Profiles, TrustBadge and the Verified Lead Engine.",
+    "Privacy Policy for Credentials AI AI Business Card and AI-Ready Business Page.",
 };
 
 export default function PrivacyPolicyPage() {
@@ -14,16 +14,15 @@ export default function PrivacyPolicyPage() {
       <article className="prose prose-sm mx-auto max-w-3xl rounded-2xl border bg-white p-8 shadow-sm md:prose-base md:p-12">
         <h1>Privacy Policy</h1>
         <p className="text-slate-500">
-          Version 1.0 · Effective date: 10 July 2026 · Last updated: 10 July 2026
+          Version 2.0 · Policy ID privacy-2026-07-29.v2 · Effective date: 10 July 2026 · Last updated: 29 July 2026
         </p>
 
         <p>
           <strong>Operator:</strong> Beastly Tech GC Pty Ltd (ABN 52 699 330
           553), trading as Erosium. For privacy questions, requests or
           complaints, email{" "}
-          <a href="mailto:privacy@erosium.ai">privacy@erosium.ai</a>. For
-          general support, email{" "}
-          <a href="mailto:support@erosium.ai">support@erosium.ai</a>.
+          <a href="mailto:isaac@erosium.com.au">isaac@erosium.com.au</a>. This
+          monitored founder inbox is also the current general support contact.
         </p>
 
         <h2>1. Who we are and what this policy covers</h2>
@@ -168,20 +167,21 @@ export default function PrivacyPolicyPage() {
 
         <h3>Verification information</h3>
         <p>
-          If a business seeks verification, we may collect:
+          If a business seeks a business-detail check, we may collect:
         </p>
         <ul>
           <li>
-            ABN, licence, registration, insurance or certificate details;
+            ABN or business-registration details;
           </li>
           <li>
-            reference numbers;
+            reference numbers or check identifiers;
           </li>
           <li>
-            uploaded PDFs or images;
+            uploaded PDFs or images where we separately request supporting
+            material;
           </li>
           <li>
-            verification status, review notes, confidence information and
+            check status, review notes, confidence information and
             timestamps;
           </li>
           <li>
@@ -587,7 +587,7 @@ export default function PrivacyPolicyPage() {
           </li>
         </ul>
         <p>
-          Email <a href="mailto:privacy@erosium.ai">privacy@erosium.ai</a>. Describe
+          Email <a href="mailto:isaac@erosium.com.au">isaac@erosium.com.au</a>. Describe
           your request and the relevant account, profile or enquiry. We may need
           to verify your identity or authority before acting. We aim to acknowledge
           your request within five business days and provide a substantive
@@ -624,7 +624,7 @@ export default function PrivacyPolicyPage() {
         <h2>13. Privacy questions and complaints</h2>
         <p>
           Send privacy questions, requests or complaints to{" "}
-          <a href="mailto:privacy@erosium.ai">privacy@erosium.ai</a>.
+          <a href="mailto:isaac@erosium.com.au">isaac@erosium.com.au</a>.
         </p>
         <p>
           Please include enough detail for us to understand the issue. We aim
@@ -671,10 +671,10 @@ export default function PrivacyPolicyPage() {
         <h2>15. Contact details</h2>
         <p>
           <strong>Privacy:</strong>{" "}
-          <a href="mailto:privacy@erosium.ai">privacy@erosium.ai</a>
+          <a href="mailto:isaac@erosium.com.au">isaac@erosium.com.au</a>
           <br />
           <strong>Support:</strong>{" "}
-          <a href="mailto:support@erosium.ai">support@erosium.ai</a>
+          <a href="mailto:isaac@erosium.com.au">isaac@erosium.com.au</a>
         </p>
         <p>
           <strong>Beastly Tech GC Pty Ltd</strong>

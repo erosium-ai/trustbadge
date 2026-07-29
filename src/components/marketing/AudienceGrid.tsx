@@ -11,7 +11,7 @@ export function AudienceGrid() {
           Built for the businesses that keep Australia running.
         </h2>
         <p className="mx-auto mt-4 max-w-3xl text-lg leading-relaxed text-[#5B6472]">
-          Plumbers, sparkies, roofers, cafes, bookkeepers, cleaners, mechanics — if you're licensed, insured, or just good at what you do, make it easier to prove.
+          Plumbers, sparkies, roofers, cafes, bookkeepers, cleaners, mechanics — make the business details you can actually support easier for customers to check.
         </p>
       </div>
       <div className="mt-10 flex flex-wrap justify-center gap-3">

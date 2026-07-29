@@ -1,4 +1,4 @@
-/* 🔑 Keywords: online credential verification, business credential verification, verified business credentials, ABN verification, licence verification, insurance verification, TrustBadge, customer-facing verification */
+/* 🔑 Keywords: online business detail verification, ABN verification, business registration check, source and checked date, Credentials AI, customer-facing trust wording */
 
 import { Metadata } from "next";
 import Link from "next/link";
@@ -6,7 +6,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Online Credential Verification for Businesses",
   description:
-    "Credentials AI helps businesses show online credential verification with ABN checks, licences, insurance, compliance documents, and TrustBadge proof customers can review before they call.",
+    "Credentials AI helps businesses show conservative online business-detail trust wording with ABN/business-registration checks, source and date customers can review before they call.",
   alternates: {
     canonical: "/online-credential-verification",
   },
@@ -14,33 +14,33 @@ export const metadata: Metadata = {
 
 const CREDENTIALS = [
   "ABN and business registration details",
-  "Trade licences and registrations",
-  "Insurance certificates",
-  "Compliance documents",
-  "First aid certificates",
-  "Safety tickets and site-readiness proof",
+  "Check source and checked date",
+  "Current check status",
+  "Public business contact details",
+  "Services and service areas",
+  "Clear wording about what was not checked",
 ];
 
 const FAQS = [
   {
     question: "What is online credential verification?",
     answer:
-      "Online credential verification is a way to show customers and other systems that business details or documents have been checked, such as ABN details, licences, insurance, compliance documents, or safety credentials.",
+      "Online business-detail verification is a way to show customers and other systems the specific business detail that was checked, such as ABN/business-registration status, together with the source and checked date.",
   },
   {
     question: "What credentials can a local business verify?",
     answer:
-      "Common examples include ABN or business registration, trade licences, insurance certificates, compliance documents, first aid certificates, safety tickets, and other proof relevant to the service being offered.",
+      "Current V2 wording is limited to the specific business detail checked, such as ABN/business-registration status, with the source and checked date shown. It does not verify licences, insurance, qualifications, safety or general legal compliance.",
   },
   {
     question: "Is TrustBadge the same as a background check platform?",
     answer:
-      "No. Background check platforms are usually built for hiring and internal compliance. TrustBadge is customer-facing proof designed to help local businesses show verified business credentials before a customer contacts or books them.",
+      "No. Background check platforms are usually built for hiring and internal compliance. Credentials AI is customer-facing business-detail wording designed to show the specific check source, status and date before a customer contacts or books a business.",
   },
   {
     question: "Does Credentials AI verify everything automatically?",
     answer:
-      "Some checks, such as ABN validation, can be automated. Other credentials may require document upload, review, and clear verification states so customers can see what is verified, pending, uploaded, or expired.",
+      "ABN/business-registration checks can be automated where the source is available. The current V2 profile does not claim licence, insurance, qualification, safety or general-compliance verification.",
   },
 ];
 
@@ -75,15 +75,15 @@ export default function OnlineCredentialVerificationPage() {
           <p className="mt-5 text-lg leading-relaxed text-slate-700">
             Customers want proof before they call, quote, or book. Credentials
             AI TrustBadge gives businesses a customer-facing way to show online
-            credential verification for ABN details, licences, insurance,
-            compliance documents, and other trust proof.
+            business-detail trust wording for ABN/business-registration details,
+            with the source and checked date shown.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <Link
               href="/auth/register?intent=trustbadge&utm_source=seo&utm_medium=online_credential_verification_page&utm_campaign=trustbadge_cta"
               className="rounded-xl bg-violet-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-violet-700"
             >
-              Start TrustBadge verification
+              Start a business profile
             </Link>
             <Link
               href="/ai-readable-websites"
@@ -100,22 +100,22 @@ export default function OnlineCredentialVerificationPage() {
           </h2>
           <p className="mt-3 leading-relaxed text-slate-700">
             Online credential verification gives customers a clear place to
-            review business proof. Instead of hiding licences, insurance, ABN
-            details, and compliance documents across emails, PDFs, or old web
-            pages, a TrustBadge profile can show what has been checked and what
-            is still pending.
+            review business details. Instead of hiding ABN and registration
+            details across emails, PDFs, or old web pages, a Credentials AI
+            profile can show the specific check source, status and date.
           </p>
           <p className="mt-3 leading-relaxed text-slate-700">
             For local services like plumbers, electricians, builders, cleaners,
-            pest control, HVAC, maintenance, and mobile trades, verified proof is
-            a trust signal. Customers are letting someone into their home or
-            business. Clear credentials help reduce doubt before contact.
+            pest control, HVAC, maintenance, and mobile trades, clear checked
+            business details are a trust signal. Customers are letting someone
+            into their home or business. Honest scope wording helps reduce doubt
+            before contact.
           </p>
         </section>
 
         <section className="mt-8 rounded-3xl border border-violet-200 bg-violet-50 p-8">
           <h2 className="text-2xl font-extrabold text-slate-950">
-            Credential types a business can show
+            Business-detail trust items a profile can show
           </h2>
           <div className="mt-5 grid gap-3 md:grid-cols-2">
             {CREDENTIALS.map((credential) => (
@@ -146,10 +146,10 @@ export default function OnlineCredentialVerificationPage() {
               Verification states matter
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-slate-700">
-              Good verification should not overclaim. A credential should be
-              labelled clearly as verified, pending, uploaded, expired, or not
-              supplied. That protects the business and gives customers a more
-              honest trust signal.
+              Good business-detail wording should not overclaim. A check should
+              be labelled clearly with its source, status and date. That
+              protects the business and gives customers a more honest trust
+              signal.
             </p>
           </div>
         </section>
@@ -163,10 +163,10 @@ export default function OnlineCredentialVerificationPage() {
               <strong>1. Register your business.</strong> Add business details and contact information.
             </li>
             <li>
-              <strong>2. Verify business identity.</strong> ABN or business registration details can be checked where available.
+              <strong>2. Check business identity details.</strong> ABN or business registration details can be checked where available.
             </li>
             <li>
-              <strong>3. Upload credentials.</strong> Add licences, insurance, compliance documents, or other relevant proof.
+              <strong>3. Add business details.</strong> Add your ABN and public business details. The profile shows only the specific check source, status and date.
             </li>
             <li>
               <strong>4. Show your TrustBadge.</strong> Share your verification page with customers, on your website, in quotes, and in your AI-readable profile.
@@ -191,14 +191,14 @@ export default function OnlineCredentialVerificationPage() {
             Give customers proof before they call.
           </h2>
           <p className="mt-3 leading-relaxed text-violet-50">
-            Start TrustBadge verification and show clear business credential
-            proof alongside your AI-readable business profile.
+            Start a Credentials AI profile and show clear checked business
+            details alongside your AI-readable business profile.
           </p>
           <Link
             href="/auth/register?intent=trustbadge&utm_source=seo&utm_medium=online_credential_verification_page&utm_campaign=bottom_cta"
             className="mt-5 inline-flex rounded-xl bg-white px-5 py-3 text-sm font-semibold text-violet-800 transition hover:bg-violet-50"
           >
-            Start TrustBadge verification
+            Start a business profile
           </Link>
         </section>
       </article>

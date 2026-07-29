@@ -237,13 +237,13 @@ export function TopBar() {
                         ) : null}
                       </div>
                       <a
-                        href="mailto:support@erosium.ai"
+                        href="mailto:isaac@erosium.com.au"
                         className="block rounded-md px-3 py-2 text-sm text-slate-300 hover:bg-white/5"
                       >
                         Billing & support
                       </a>
                       <a
-                        href="mailto:support@erosium.ai"
+                        href="mailto:isaac@erosium.com.au"
                         className="block rounded-md px-3 py-2 text-sm text-slate-300 hover:bg-white/5"
                       >
                         Help

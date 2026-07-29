@@ -164,6 +164,18 @@ export default async function DashboardOverviewPage({
   const subscriptionStatus = String(record.subscription_status ?? "").toLowerCase();
   const isCanceledSubscription =
     subscriptionStatus === "canceled" || subscriptionStatus === "cancelled";
+  const isCancellationScheduled = [
+    "canceling",
+    "cancelling",
+    "cancellation_scheduled",
+  ].includes(subscriptionStatus);
+  const paidThroughLabel = record.next_payment_at
+    ? new Date(record.next_payment_at).toLocaleDateString("en-AU", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })
+    : "the end of the current paid period";
   const canManageCancellation = ["active", "trialing", "past_due"].includes(
     subscriptionStatus
   );
@@ -249,7 +261,19 @@ export default async function DashboardOverviewPage({
               {requestedSlug && requestedSlug !== record.slug
                 ? `You requested “${requestedSlug}”, so we opened your current business dashboard instead.`
                 : "Billing may still be syncing or the selected page may not belong to this account."}{" "}
-              Check the business name and try again, or email support@erosium.ai.
+              Check the business name and try again, or email isaac@erosium.com.au.
+            </p>
+          </div>
+        ) : null}
+
+        {isCancellationScheduled ? (
+          <div className="mb-6 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+            <p className="font-semibold">
+              Cancellation scheduled — no future renewal.
+            </p>
+            <p className="mt-1">
+              Paid access remains active until {paidThroughLabel}. Your
+              dashboard stays available for records, invoices and support.
             </p>
           </div>
         ) : null}
@@ -565,9 +589,11 @@ export default async function DashboardOverviewPage({
                   AI-Ready Business Page
                 </p>
                 <p className="mt-1 text-sm text-slate-600">
-                  {isCanceledSubscription
-                    ? "Subscription canceled. No future charges. You can still view invoices and payment details."
-                    : "$49/month or $12.90/week, depending on the option you chose. Same product. Cancel anytime."}
+                  {isCancellationScheduled
+                    ? `Cancellation scheduled. Paid access remains active until ${paidThroughLabel}. No future renewal.`
+                    : isCanceledSubscription
+                      ? "Subscription canceled. No future charges. You can still view invoices and payment details."
+                      : "A$49/month or A$12.90/week, depending on the option you chose. Same product. Cancel future renewals anytime."}
                 </p>
                 {record.next_payment_at ? (
                   <p className="mt-2 text-sm text-slate-600">
@@ -584,7 +610,7 @@ export default async function DashboardOverviewPage({
                   >
                     {canManageCancellation
                       ? "Manage billing / cancel plan"
-                      : isCanceledSubscription
+                      : isCancellationScheduled || isCanceledSubscription
                         ? "View invoices / payment details"
                         : "Manage billing"}
                   </a>
@@ -662,4 +688,3 @@ function ProofTile({ label, value }: { label: string; value: number }) {
     </div>
   );
 }
-

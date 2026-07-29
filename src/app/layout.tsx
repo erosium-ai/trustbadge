@@ -7,16 +7,16 @@ import { BRAND_NAME } from "@/lib/brand";
 export const metadata: Metadata = {
   metadataBase: new URL("https://credentialsai.com.au"),
   title: {
-    default: `${BRAND_NAME} — AI-Verified Business Profiles`,
+    default: `${BRAND_NAME} — AI-Readable Business Profiles`,
     template: `%s — ${BRAND_NAME}`,
   },
   description:
-    "Credentials AI builds AI-verified business profiles that bring local businesses measured leads — ABN-checked, AI-readable, and enquiry-tracked.",
+    "Credentials AI builds AI-readable business profiles with best-effort ABN/business-registration check wording, source/date details, and enquiry tracking for Australian local businesses.",
   keywords: [
     "AI Business Card",
     "AI-Ready Business Page",
     "AI-readable business profile",
-    "ABN verified business profile",
+    "ABN business registration check",
     "trust badge for local business",
     "AI visibility",
     "tracked enquiries",
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `${BRAND_NAME} — Your Business, Seen by AI`,
     description:
-      "AI-verified profiles that bring you measured leads. ABN-checked, AI-readable, enquiry-tracked.",
+      "AI-readable profiles with checked business details and measured enquiries.",
     url: "https://credentialsai.com.au",
     siteName: BRAND_NAME,
     locale: "en_AU",
@@ -38,22 +38,22 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Credentials AI — AI-Ready Business Profiles with ABN Verification, Enquiry Tracking, and QR Codes",
+        alt: "Credentials AI — AI-Ready Business Profiles with ABN Check Wording, Enquiry Tracking, and QR Codes",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${BRAND_NAME} — AI-Verified Business Profiles`,
+    title: `${BRAND_NAME} — AI-Readable Business Profiles`,
     description:
-      "AI-verified profiles that bring you measured leads.",
+      "AI-readable profiles with checked business details and measured enquiries.",
     images: ["/og-image.png"],
   },
   // Tells Google & AI crawlers content is fresh — Perplexity heavily weights <3mo content
   other: {
-    "dc.date.modified": "2026-07-28",
-    "last-modified": "2026-07-28",
-    "revised": "2026-07-28",
+    "dc.date.modified": "2026-07-29",
+    "last-modified": "2026-07-29",
+    "revised": "2026-07-29",
   },
   icons: {
     icon: [{ url: "/icon.png", type: "image/png" }],

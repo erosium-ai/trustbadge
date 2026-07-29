@@ -10,7 +10,7 @@ const problems = [
   {
     marker: "02",
     title: "Unproven",
-    body: "Anyone can write 'licensed and insured'. Almost nobody proves it. When customers compare two quotes, visible proof wins.",
+    body: "Anyone can write 'licensed and insured'. Customers still need clear business details they can check before they call.",
   },
   {
     marker: "03",
@@ -28,7 +28,7 @@ export function ProblemCards({ freeProfileUrl }: { freeProfileUrl: string }) {
           People already check you out online. You just can&apos;t see it — or prove you&apos;re legit.
         </h2>
         <p className="mt-4 text-lg leading-relaxed text-[#5B6472]">
-          This is where most local businesses lose ground: unreadable details, unproven credentials, and zero proof on
+          This is where most local businesses lose ground: unreadable details, unclear business-detail checks, and zero proof on
           what enquiries actually came through.
         </p>
       </div>

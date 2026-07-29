@@ -82,9 +82,9 @@ export function AiReadableSection() {
           <div className="rounded-2xl border border-[#F97316]/30 bg-[#FFF7ED] p-5">
             <p className="text-sm font-bold uppercase tracking-wide text-[#EA580C]">Straight up</p>
             <p className="mt-2 text-sm leading-relaxed text-[#7C2D12]">
-              Nobody can guarantee AI will recommend you — anyone who says otherwise is having a lend. What we
-              guarantee: your business will be in the formats AI systems actually read.{" "}
-              <span className="font-semibold">Most of your competitors aren&rsquo;t.</span>
+              Nobody can guarantee AI will recommend you — anyone who says otherwise is having a lend. What we do:
+              put your business details into structured formats built for AI systems to read.{" "}
+              <span className="font-semibold">No ranking or citation promise.</span>
             </p>
           </div>
         </div>

@@ -12,8 +12,8 @@ const FEATURES = [
     ),
   },
   {
-    title: "Verified Trust Signals",
-    body: "Verified automatically against the Australian Business Register — the official government database. No paperwork from you: our system checks it for you, so your profile shows verified status from day one.",
+    title: "Checked Business Details",
+    body: "Where available, we check ABN/business-registration details against Australian Business Register data and show the exact source, status and checked date. This is not a licence, insurance, quality or general-compliance guarantee.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="h-7 w-7" aria-hidden>
         <path d="M12 3l7 3v5c0 4.6-2.9 8.8-7 10-4.1-1.2-7-5.4-7-10V6l7-3Z" stroke="currentColor" strokeWidth="1.8" />

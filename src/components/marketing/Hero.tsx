@@ -1,4 +1,4 @@
-// 🔑 Keywords: Credentials AI V2 hero, Your Business Seen by AI, AI-verified profiles, measured leads, readable by ChatGPT Google Claude Siri, Gold Coast Flow Plumbing sample profile
+// 🔑 Keywords: Credentials AI V2 hero, Your Business Seen by AI, AI-readable profiles, checked business details, measured enquiries, readable by ChatGPT Google Claude Siri, Gold Coast Flow Plumbing sample profile
 
 import { CtaButton } from "./CtaButton";
 import { AiParticles } from "@/components/AiParticles";
@@ -8,7 +8,7 @@ interface HeroProps {
   sampleProfileUrl: string;
 }
 
-const TRUST_PILLS = ["AI-Optimised", "ABN Verified", "Performance Measured"];
+const TRUST_PILLS = ["AI-Optimised", "ABN Check Shown", "Performance Measured"];
 const READABLE_BY = ["ChatGPT", "Google", "Claude", "Siri"];
 
 export function Hero({ freeProfileUrl, sampleProfileUrl }: HeroProps) {
@@ -42,7 +42,7 @@ export function Hero({ freeProfileUrl, sampleProfileUrl }: HeroProps) {
             Your Business, Seen by AI
           </h1>
           <p className="mt-5 max-w-2xl text-pretty text-lg leading-relaxed text-slate-300 sm:text-xl">
-            AI-verified profiles that bring you measured leads.
+            AI-readable profiles with checked business details and measured enquiries.
           </p>
           <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
             <CtaButton

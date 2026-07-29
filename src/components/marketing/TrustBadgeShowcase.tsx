@@ -16,7 +16,7 @@ export function TrustBadgeShowcase({ freeProfileUrl }: TrustBadgeShowcaseProps) 
             The tick that answers “are these guys legit?”
           </h2>
           <p className="mt-4 text-lg leading-relaxed text-[#5B6472]">
-            TrustBadge gives customers proof they can click and check: ABN/business details, licence, insurance, and
+            Credentials AI gives customers clear business-detail trust wording they can click and check: ABN/business details with the recorded source and date, and
             verification timestamps where available.
           </p>
           <p className="mt-4 text-base leading-relaxed text-[#5B6472]">
@@ -58,8 +58,8 @@ export function TrustBadgeShowcase({ freeProfileUrl }: TrustBadgeShowcaseProps) 
               <div className="rounded-2xl bg-white p-5 shadow-sm">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                      <p className="text-sm font-black text-[#0F1B2D]">Need a licensed electrician?</p>
-                      <p className="mt-1 text-sm text-slate-600">Fast quotes, tidy work, credentials customers can verify.</p>
+                      <p className="text-sm font-black text-[#0F1B2D]">Need a local electrician?</p>
+                      <p className="mt-1 text-sm text-slate-600">Fast quotes, tidy work, clear business details customers can check.</p>
                   </div>
                   <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-3 text-center transition-colors group-hover:bg-emerald-100">
                     <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">Verified by</p>
@@ -73,11 +73,11 @@ export function TrustBadgeShowcase({ freeProfileUrl }: TrustBadgeShowcaseProps) 
                 <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">Live verification page</p>
                 <h4 className="mt-2 text-xl font-black text-[#0F1B2D]">Coastal Spark Electrical</h4>
                 <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                  {['ABN checked', 'Licence uploaded', 'Insurance checked'].map((item) => (
+                  {['ABN checked', 'Business details reviewed', 'Source/date shown'].map((item) => (
                     <div key={item} className="rounded-xl bg-emerald-50 p-3 text-sm font-bold text-emerald-800">✓ {item}</div>
                   ))}
                 </div>
-                <p className="mt-4 text-xs text-slate-500">Sample data only. Real pages show submitted credentials and current review status.</p>
+                <p className="mt-4 text-xs text-slate-500">Sample data only. Real pages show the specific check source, status and date.</p>
               </div>
             </div>
           </div>

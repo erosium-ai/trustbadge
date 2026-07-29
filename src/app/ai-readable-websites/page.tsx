@@ -18,7 +18,7 @@ const CHECKLIST = [
   "Plain-language service descriptions",
   "Frequently asked questions with direct answers",
   "Contact details that are easy to find",
-  "ABN, licence, insurance, and trust proof where relevant",
+  "ABN/business-registration trust wording where checked, with source and date",
   "Structured data that search engines and AI systems can parse",
   "A stable URL that can be shared, cited, and crawled",
 ];
@@ -42,7 +42,7 @@ const FAQS = [
   {
     question: "Can Credentials AI guarantee AI search rankings?",
     answer:
-      "No. Credentials AI does not guarantee rankings. It gives local businesses a stronger foundation by making their services, areas, credentials, and trust proof easier for AI systems and customers to understand.",
+      "No. Credentials AI does not guarantee rankings. It gives local businesses a stronger foundation by making their services, areas, ABN/business-registration trust wording, and business details easier for AI systems and customers to understand.",
   },
 ];
 
@@ -125,7 +125,7 @@ export default function AIReadableWebsitesPage() {
             <ul className="mt-4 space-y-2 text-sm leading-relaxed text-slate-700">
               <li>• Services are vague or buried across multiple pages.</li>
               <li>• Locations and service areas are unclear.</li>
-              <li>• Credentials, licences, and insurance are not visible.</li>
+              <li>• ABN/business-registration trust wording is not visible.</li>
               <li>• Important text is locked inside images or design elements.</li>
               <li>• FAQ answers are missing or too thin.</li>
             </ul>
@@ -138,7 +138,7 @@ export default function AIReadableWebsitesPage() {
               <li>• Business identity and category.</li>
               <li>• Service list and plain-English explanations.</li>
               <li>• Service areas and contact pathways.</li>
-              <li>• Proof signals such as ABN, licence, and insurance.</li>
+              <li>• Specific checked business details such as ABN status, source and date.</li>
               <li>• Structured, crawlable, stable page content.</li>
             </ul>
           </div>
@@ -165,14 +165,15 @@ export default function AIReadableWebsitesPage() {
             Credentials AI gives your business an AI-readable profile with your
             services, service areas, FAQs, contact details, and trust proof in a
             format built for customers and AI systems to understand quickly.
-            Upgrade to the Founding Member Verified Lead Engine for TrustBadge
-            verification, tracked calls, quote requests, source attribution, and
+            Upgrade to the AI-Ready Business Page for conservative
+            business-detail trust wording, best-effort ABN/business-registration
+            checks, tracked calls, quote requests, source attribution, and
             weekly proof reporting.
           </p>
           <p className="mt-3 leading-relaxed text-slate-700">
-            Add TrustBadge verification when you want to show proof like ABN,
-            licences, insurance, compliance documents, first aid, or safety
-            credentials.
+            The current V2 check shows ABN/business-registration wording with
+            the source and checked date. It does not claim licence, insurance,
+            qualification, safety or general-compliance verification.
           </p>
         </section>
 
@@ -193,8 +194,8 @@ export default function AIReadableWebsitesPage() {
             Make your business easier for AI and customers to understand.
           </h2>
           <p className="mt-3 leading-relaxed text-teal-50">
-            Start with a free AI Profile, then upgrade when you want verified trust,
-            tracked enquiries, and weekly proof reporting.
+            Start with a free AI Profile, then upgrade when you want checked
+            business details, tracked enquiries, and weekly proof reporting.
           </p>
           <Link
             href={bottomCtaUrl}

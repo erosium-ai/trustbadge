@@ -9,8 +9,8 @@ const steps = [
   },
   {
     step: "02",
-    title: "Get verified",
-    body: "Add your ABN and our system checks it against the official Australian Business Register automatically — verified status in seconds, no paperwork.",
+    title: "Check business details",
+    body: "Add your ABN and our system makes a best-effort check against available Australian Business Register data, then shows the source, status and checked date.",
   },
   {
     step: "03",

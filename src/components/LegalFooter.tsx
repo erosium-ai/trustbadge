@@ -26,6 +26,9 @@ export function LegalFooter() {
         <Link href="/terms" className="font-medium text-slate-200 underline-offset-4 hover:text-white hover:underline">
           Terms
         </Link>
+        <Link href="/refunds" className="font-medium text-slate-200 underline-offset-4 hover:text-white hover:underline">
+          Refunds &amp; Cancellation
+        </Link>
         <SupportEmailLink className="cursor-pointer border-0 bg-transparent p-0 font-medium text-slate-200 underline-offset-4 hover:text-white hover:underline" />
       </nav>
     </footer>

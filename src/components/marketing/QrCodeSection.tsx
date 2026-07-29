@@ -4,7 +4,7 @@ const QR_USES = ["Fridge magnets", "Flyers", "Invoices", "Business cards", "Vehi
 const QR_BENEFITS = [
   "Downloadable QR code included",
   "Put it on magnets, flyers, vehicles, invoices and cards",
-  "Sends customers to your verified profile",
+  "Sends customers to your profile with checked business details",
   "Track quote requests, calls and email clicks from the page",
   "Makes offline marketing measurable",
 ];
@@ -33,8 +33,8 @@ function QrMockup() {
         </div>
         <div className="mt-4 rounded-2xl border border-emerald-300/20 bg-emerald-300/10 p-4 text-center">
           <p className="text-[11px] font-black uppercase tracking-[0.18em] text-emerald-200">Scan to open</p>
-          <p className="mt-1 text-lg font-black text-white">Verified AI-Ready Profile</p>
-          <p className="mt-1 text-xs font-semibold text-slate-400">Services · TrustBadge · Quote form</p>
+          <p className="mt-1 text-lg font-black text-white">AI-Ready Business Page</p>
+          <p className="mt-1 text-xs font-semibold text-slate-400">Services · Checked details · Quote form</p>
         </div>
       </div>
     </div>
@@ -59,8 +59,8 @@ export function QrCodeSection() {
             flyers, invoices, quote forms, business cards, jobsite signs, counter displays, or even your work vehicle.
           </p>
           <p className="mt-4 text-pretty text-base leading-relaxed text-slate-300 sm:text-lg">
-            Someone sees your business in the real world, scans the code, and lands on a proper verified page with your
-            services, contact details, ABN-backed trust badge, and enquiry form.
+            Someone sees your business in the real world, scans the code, and lands on a proper profile page with your
+            services, contact details, ABN/business-registration trust wording, and enquiry form.
           </p>
           <p className="mt-5 text-lg font-black text-white">
             That means your offline marketing finally connects back to something measurable.

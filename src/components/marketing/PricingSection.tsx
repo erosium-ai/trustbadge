@@ -11,19 +11,19 @@ const FREE_TICKS = [
   "Business name, location and services",
   "Contact button",
   "AI-readable structure",
-  "ABN checked — ABN Verified where applicable",
+  "ABN/business-registration check wording where available",
   "Public business card link",
 ];
 
 const PAID_TICKS = [
   "Everything in AI Business Card",
   "Premium AI-style business page",
-  "ABN-backed TrustBadge",
+  "ABN/business-registration trust wording with source/date",
   "Services, about, FAQs and contact form",
   "Call, email and quote enquiry tracking",
   "QR code for magnets, flyers, invoices and vehicles",
   "Weekly enquiry summary",
-  "Cancel anytime — no lock-in",
+  "Cancel future renewals anytime — no lock-in",
 ];
 
 function PaidPagePreview() {
@@ -82,8 +82,8 @@ export function PricingSection({ freeProfileUrl, paidProfileUrl }: PricingSectio
             Choose how AI-ready you want your business to be.
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-slate-300">
-            Start free with a clean AI Business Card. Upgrade when you want the full page, ABN-backed trust, and
-            enquiry tracking.
+            Start free with a clean AI Business Card. Upgrade when you want the full page, checked
+            ABN/business-registration wording, and enquiry tracking.
           </p>
         </div>
 
@@ -118,8 +118,8 @@ export function PricingSection({ freeProfileUrl, paidProfileUrl }: PricingSectio
             {/* Quiet upgrade nudge — fills the height gap and points at the paid
                 card without pressure language. */}
             <p className="mt-6 border-t border-white/8 pt-5 text-sm leading-relaxed text-slate-500">
-              Want the full page, ABN-backed TrustBadge and tracked enquiries? That&apos;s the AI-Ready Business Page
-              — you can upgrade any time.
+              Want the full page, checked ABN/business-registration wording and tracked enquiries? That&apos;s the
+              AI-Ready Business Page — you can upgrade any time.
             </p>
           </div>
 
@@ -145,7 +145,7 @@ export function PricingSection({ freeProfileUrl, paidProfileUrl }: PricingSectio
                 <span className="pb-1.5 text-xl font-black text-emerald-200">/week</span>
               </div>
               <p className="mt-2 text-sm font-semibold text-slate-400">
-                Billed as $49/month if you prefer. Same product, cancel anytime.
+                Billed as $49/month if you prefer. Same product, cancel future renewals anytime.
               </p>
 
               <ul className="mt-6 space-y-2.5 text-sm leading-relaxed text-slate-200">
@@ -176,7 +176,7 @@ export function PricingSection({ freeProfileUrl, paidProfileUrl }: PricingSectio
         </div>
 
         <p className="mt-10 text-center text-sm font-semibold text-slate-400">
-          Same product. Choose weekly or monthly. Cancel anytime.
+          Same product. Choose weekly or monthly. Cancel future renewals anytime.
         </p>
       </div>
     </section>
