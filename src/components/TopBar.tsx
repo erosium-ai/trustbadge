@@ -260,36 +260,38 @@ export function TopBar() {
               </>
             ) : (
               <>
-                <Link
-                  href="/#how-it-works"
-                  onClick={() =>
+                <button
+                  type="button"
+                  onClick={() => {
                     trackCtaClick({
                       eventName: "credentials_ai_click_how_it_works_nav",
                       source: "credentialsai",
                       campaign: "topbar_nav",
                       targetUrl: "/#how-it-works",
                       label: "How it works",
-                    })
-                  }
-                  className="hidden text-sm font-medium text-slate-300 hover:text-white sm:inline"
+                    });
+                    document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" });
+                  }}
+                  className="hidden text-sm font-medium text-slate-300 hover:text-white sm:inline cursor-pointer bg-transparent border-none p-0"
                 >
                   How it works
-                </Link>
-                <Link
-                  href="/#pricing"
-                  onClick={() =>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
                     trackCtaClick({
                       eventName: "credentials_ai_click_pricing_nav",
                       source: "credentialsai",
                       campaign: "topbar_nav",
                       targetUrl: "/#pricing",
                       label: "Pricing",
-                    })
-                  }
-                  className="hidden text-sm font-medium text-slate-300 hover:text-white sm:inline"
+                    });
+                    document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
+                  }}
+                  className="hidden text-sm font-medium text-slate-300 hover:text-white sm:inline cursor-pointer bg-transparent border-none p-0"
                 >
                   Pricing
-                </Link>
+                </button>
                 <Link
                   href="/auth/login"
                   onClick={() =>
