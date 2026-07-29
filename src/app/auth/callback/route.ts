@@ -22,7 +22,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   }
 
-  const response = NextResponse.redirect(new URL(next ?? "/auth/register", request.url));
+  const destination = next ?? "/dashboard";
+  const finalUrl = new URL(destination, request.url);
+  const finalResponse = NextResponse.redirect(finalUrl);
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -39,7 +41,7 @@ export async function GET(request: NextRequest) {
       },
       setAll(cookiesToSet: { name: string; value: string; options?: CookieOptions }[]) {
         cookiesToSet.forEach(({ name, value, options }) => {
-          response.cookies.set(name, value, options);
+          finalResponse.cookies.set(name, value, options);
         });
       },
     },
@@ -51,17 +53,6 @@ export async function GET(request: NextRequest) {
     redirectUrl.searchParams.set("error", "auth_callback_failed");
     return NextResponse.redirect(redirectUrl);
   }
-
-  // Redirect to /dashboard (or the explicit next param). The dashboard
-  // resolver page handles user → business mapping across both trustbadges
-  // and business_profiles tables — no need to duplicate that logic here.
-  const destination = next ?? "/dashboard";
-  const finalUrl = new URL(destination, request.url);
-  const finalResponse = NextResponse.redirect(finalUrl);
-
-  response.cookies.getAll().forEach((cookie) => {
-    finalResponse.cookies.set(cookie);
-  });
 
   return finalResponse;
 }
