@@ -556,6 +556,43 @@ export default async function DashboardOverviewPage({
               </p>
             </Card>
 
+            {/* 5c. TrustBadge embed snippet */}
+            <Card>
+              <h3 className="text-base font-semibold text-slate-900">
+                Your TrustBadge
+              </h3>
+              <p className="mt-2 text-sm text-slate-600">
+                Display a live verification badge on your own website. Copy the
+                code below and paste it anywhere in your site&rsquo;s HTML. The
+                badge updates automatically when your verification status
+                changes.
+              </p>
+              <div className="mt-4 flex justify-center rounded-xl border border-slate-200 bg-slate-50 p-3">
+                <iframe
+                  src={`/b/${record.slug}/badge`}
+                  width={280}
+                  height={140}
+                  style={{ border: "none", borderRadius: "8px" }}
+                  title={`${record.business_name} verification badge preview`}
+                />
+              </div>
+              <textarea
+                readOnly
+                rows={3}
+                className="mt-3 w-full rounded-lg border border-slate-300 bg-slate-50 p-2 font-mono text-xs text-slate-700"
+                value={`<iframe src="https://credentialsai.com.au/b/${record.slug}/badge" width="280" height="140" style="border:none;border-radius:12px;" title="Verified by Credentials AI"></iframe>`}
+              />
+              <div className="mt-3 flex items-center justify-between">
+                <span className="text-xs text-slate-500">
+                  Paste this into your website&rsquo;s HTML
+                </span>
+                <CopyLinkButton
+                  url={`<iframe src="https://credentialsai.com.au/b/${record.slug}/badge" width="280" height="140" style="border:none;border-radius:12px;" title="Verified by Credentials AI"></iframe>`}
+                  className="!text-xs"
+                />
+              </div>
+            </Card>
+
             {/* 6. Support + billing */}
             <Card>
               <h3 className="text-base font-semibold text-slate-900">
