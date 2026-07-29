@@ -2,13 +2,47 @@
 
 /* 🔑 Keywords: lead capture panel, tracked call click, tracked email click, quote form, sticky mobile CTA */
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+
+/** Inline demo-guard button — shown on sample profiles instead of live contact actions. */
+function SampleDemoButton({ label, compact }: { label: string; compact?: boolean }) {
+  const [showToast, setShowToast] = useState(false);
+
+  const handleClick = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3500);
+  }, []);
+
+  const buttonClass = compact
+    ? "inline-flex items-center justify-center relative rounded-2xl border border-white/15 bg-white/8 px-3 py-2 text-xs font-black text-white cursor-pointer"
+    : "inline-flex items-center justify-center relative rounded-2xl border border-cyan-300/30 bg-cyan-300/12 px-4 py-3 text-sm font-black text-cyan-100 transition hover:bg-cyan-300/20 cursor-pointer";
+
+  return (
+    <div className="relative">
+      <button type="button" onClick={handleClick} className={buttonClass}>
+        {label}
+      </button>
+      {showToast && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 whitespace-nowrap rounded-xl border border-white/15 bg-slate-900/95 px-4 py-2.5 text-xs font-semibold text-white shadow-lg backdrop-blur-md"
+        >
+          This is a demo — {label.toLowerCase()} is for display only.
+          <span className="ml-2 text-cyan-300">Claim your free profile →</span>
+        </div>
+      )}
+    </div>
+  );
+}
 
 interface LeadCapturePanelProps {
   profileSlug: string;
   businessName: string;
   phone?: string | null;
   email?: string | null;
+  isSample?: boolean;
 }
 
 type LeadType = "call_click" | "email_click" | "quote_form_open";
@@ -101,6 +135,7 @@ export function LeadCapturePanel({
   businessName,
   phone,
   email,
+  isSample = false,
 }: LeadCapturePanelProps) {
   const [quoteOpen, setQuoteOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -205,17 +240,21 @@ export function LeadCapturePanel({
 
         <div className="mt-4 grid gap-3 sm:grid-cols-3">
           {canCall ? (
-            <a
-              href={`tel:${phone}`}
-              onClick={() => {
-                if (phone) {
-                  void handleLeadTypeClick("call_click", "Call now", `tel:${phone}`);
-                }
-              }}
-              className="inline-flex items-center justify-center rounded-2xl px-4 py-3 text-sm font-black transition ai-glow-button-paid bg-gradient-to-r from-emerald-400 to-cyan-300 text-slate-950 hover:-translate-y-0.5"
-            >
-              Call now
-            </a>
+            isSample ? (
+              <SampleDemoButton label="Call now" />
+            ) : (
+              <a
+                href={`tel:${phone}`}
+                onClick={() => {
+                  if (phone) {
+                    void handleLeadTypeClick("call_click", "Call now", `tel:${phone}`);
+                  }
+                }}
+                className="inline-flex items-center justify-center rounded-2xl px-4 py-3 text-sm font-black transition ai-glow-button-paid bg-gradient-to-r from-emerald-400 to-cyan-300 text-slate-950 hover:-translate-y-0.5"
+              >
+                Call now
+              </a>
+            )
           ) : (
             <span
               className="inline-flex cursor-not-allowed items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-black text-slate-500"
@@ -227,17 +266,21 @@ export function LeadCapturePanel({
           )}
 
           {canEmail ? (
-            <a
-              href={`mailto:${email}`}
-              onClick={() => {
-                if (email) {
-                  void handleLeadTypeClick("email_click", "Email business", `mailto:${email}`);
-                }
-              }}
-              className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/8 px-4 py-3 text-sm font-black text-white transition hover:bg-white/14"
-            >
-              Email business
-            </a>
+            isSample ? (
+              <SampleDemoButton label="Email business" />
+            ) : (
+              <a
+                href={`mailto:${email}`}
+                onClick={() => {
+                  if (email) {
+                    void handleLeadTypeClick("email_click", "Email business", `mailto:${email}`);
+                  }
+                }}
+                className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/8 px-4 py-3 text-sm font-black text-white transition hover:bg-white/14"
+              >
+                Email business
+              </a>
+            )
           ) : (
             <span
               className="inline-flex cursor-not-allowed items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-black text-slate-500"
@@ -248,13 +291,17 @@ export function LeadCapturePanel({
             </span>
           )}
 
-          <button
-            type="button"
-            onClick={() => void openQuote()}
-            className="inline-flex items-center justify-center rounded-2xl border border-cyan-300/30 bg-cyan-300/12 px-4 py-3 text-sm font-black text-cyan-100 transition hover:bg-cyan-300/20"
-          >
-            Request quote
-          </button>
+          {isSample ? (
+            <SampleDemoButton label="Request quote" />
+          ) : (
+            <button
+              type="button"
+              onClick={() => void openQuote()}
+              className="inline-flex items-center justify-center rounded-2xl border border-cyan-300/30 bg-cyan-300/12 px-4 py-3 text-sm font-black text-cyan-100 transition hover:bg-cyan-300/20"
+            >
+              Request quote
+            </button>
+          )}
         </div>
       </div>
 
@@ -362,17 +409,21 @@ export function LeadCapturePanel({
       <div className="fixed inset-x-0 bottom-0 z-50 border-t border-white/10 bg-slate-950/92 p-3 shadow-2xl backdrop-blur md:hidden">
         <div className="grid grid-cols-3 gap-2">
           {canCall ? (
-            <a
-              href={`tel:${phone}`}
-              onClick={() => {
-                if (phone) {
-                  void handleLeadTypeClick("call_click", "Sticky mobile call", `tel:${phone}`);
-                }
-              }}
-              className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-300 px-3 py-2 text-xs font-black text-slate-950"
-            >
-              Call
-            </a>
+            isSample ? (
+              <SampleDemoButton label="Call" compact />
+            ) : (
+              <a
+                href={`tel:${phone}`}
+                onClick={() => {
+                  if (phone) {
+                    void handleLeadTypeClick("call_click", "Sticky mobile call", `tel:${phone}`);
+                  }
+                }}
+                className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-emerald-400 to-cyan-300 px-3 py-2 text-xs font-black text-slate-950"
+              >
+                Call
+              </a>
+            )
           ) : (
             <span
               className="inline-flex cursor-not-allowed items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-black text-slate-500"
@@ -382,17 +433,21 @@ export function LeadCapturePanel({
             </span>
           )}
           {canEmail ? (
-            <a
-              href={`mailto:${email}`}
-              onClick={() => {
-                if (email) {
-                  void handleLeadTypeClick("email_click", "Sticky mobile email", `mailto:${email}`);
-                }
-              }}
-              className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/8 px-3 py-2 text-xs font-black text-white"
-            >
-              Email
-            </a>
+            isSample ? (
+              <SampleDemoButton label="Email" compact />
+            ) : (
+              <a
+                href={`mailto:${email}`}
+                onClick={() => {
+                  if (email) {
+                    void handleLeadTypeClick("email_click", "Sticky mobile email", `mailto:${email}`);
+                  }
+                }}
+                className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/8 px-3 py-2 text-xs font-black text-white"
+              >
+                Email
+              </a>
+            )
           ) : (
             <span
               className="inline-flex cursor-not-allowed items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-black text-slate-500"
@@ -401,13 +456,17 @@ export function LeadCapturePanel({
               Email
             </span>
           )}
-          <button
-            type="button"
-            onClick={() => void openQuote()}
-            className="inline-flex items-center justify-center rounded-2xl border border-cyan-300/30 bg-cyan-300/12 px-3 py-2 text-xs font-black text-cyan-100"
-          >
-            Quote
-          </button>
+          {isSample ? (
+            <SampleDemoButton label="Quote" compact />
+          ) : (
+            <button
+              type="button"
+              onClick={() => void openQuote()}
+              className="inline-flex items-center justify-center rounded-2xl border border-cyan-300/30 bg-cyan-300/12 px-3 py-2 text-xs font-black text-cyan-100"
+            >
+              Quote
+            </button>
+          )}
         </div>
       </div>
     </>

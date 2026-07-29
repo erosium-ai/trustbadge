@@ -2,6 +2,7 @@
 
 import { notFound } from "next/navigation";
 import { LeadCapturePanel } from "@/components/profiles/LeadCapturePanel";
+import { SampleGuard } from "@/components/profiles/SampleGuard";
 import { getBusinessProfileBySlug, getPublicBadgeData } from "@/lib/trustbadge";
 import { getSiteUrl, BRAND_NAME } from "@/lib/brand";
 import { schemaTypeFor } from "@/lib/business-types";
@@ -414,7 +415,7 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
 
           <section className="mt-6 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
             <div className="space-y-6">
-              <LeadCapturePanel profileSlug={profile.slug} businessName={profile.business_name} phone={profile.phone} email={profile.email} />
+              <LeadCapturePanel profileSlug={profile.slug} businessName={profile.business_name} phone={profile.phone} email={profile.email} isSample={isSample} />
 
               {services.length > 0 && (
                 <div className="grid gap-4 sm:grid-cols-2">
@@ -565,14 +566,18 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
 
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               {profile.phone && (
-                <a href={`tel:${profile.phone}`} className="ai-glow-button rounded-2xl bg-gradient-to-r from-cyan-400 to-teal-300 px-5 py-3 text-center text-sm font-black text-slate-950 transition hover:-translate-y-0.5">
-                  Call now
-                </a>
+                <SampleGuard isSample={isSample} label="call & email">
+                  <a href={isSample ? undefined : `tel:${profile.phone}`} className="ai-glow-button rounded-2xl bg-gradient-to-r from-cyan-400 to-teal-300 px-5 py-3 text-center text-sm font-black text-slate-950 transition hover:-translate-y-0.5">
+                    Call now
+                  </a>
+                </SampleGuard>
               )}
               {profile.email && (
-                <a href={`mailto:${profile.email}`} className="rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-center text-sm font-black text-white transition hover:bg-white/14">
-                  Email
-                </a>
+                <SampleGuard isSample={isSample} label="call & email">
+                  <a href={isSample ? undefined : `mailto:${profile.email}`} className="rounded-2xl border border-white/15 bg-white/8 px-5 py-3 text-center text-sm font-black text-white transition hover:bg-white/14">
+                    Email
+                  </a>
+                </SampleGuard>
               )}
             </div>
 
