@@ -22,6 +22,7 @@ const PAID_TICKS = [
   "Services, about, FAQs and contact form",
   "Call, email and quote enquiry tracking",
   "QR code for magnets, flyers, invoices and vehicles",
+  "Live badge you can embed on your own website",
   "Weekly enquiry summary",
   "Cancel future renewals anytime — no lock-in",
 ];

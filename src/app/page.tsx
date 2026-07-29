@@ -141,6 +141,25 @@ export default function HomePage() {
         freeProfileUrl={freeProfileUrl}
         paidProfileUrl={paidProfileUrl}
       />
+
+      {/* TrustBadge embed section */}
+      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+        <div className="ai-glass-soft overflow-hidden rounded-[2rem]">
+          <div className="p-6 sm:p-8 lg:p-10">
+            <h2 className="text-balance text-3xl font-black tracking-tight text-white sm:text-4xl">
+              Put your badge on your own website
+            </h2>
+            <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/80 sm:text-lg">
+              Your Credentials AI profile comes with a snippet you can paste into
+              your existing website. A live verification badge that sits on your
+              current pages — updating automatically as your status changes. It
+              proves you&rsquo;re verified wherever customers find you, without
+              changing a thing about your current site.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <UnderTheHoodSection />
       <Faq freeProfileUrl={freeProfileUrl} />
       <ClosingCta />
