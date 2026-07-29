@@ -260,25 +260,24 @@ export function TopBar() {
               </>
             ) : (
               <>
-                <button
-                  type="button"
-                  onClick={() => {
+                <Link
+                  href="/#how-it-works"
+                  onClick={() =>
                     trackCtaClick({
                       eventName: "credentials_ai_click_how_it_works_nav",
                       source: "credentialsai",
                       campaign: "topbar_nav",
                       targetUrl: "/#how-it-works",
                       label: "How it works",
-                    });
-                    document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" });
-                  }}
-                  className="hidden text-sm font-medium text-slate-300 hover:text-white sm:inline cursor-pointer bg-transparent border-none p-0"
+                    })
+                  }
+                  className="hidden text-sm font-medium text-slate-300 hover:text-white sm:inline"
                 >
                   How it works
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
+                </Link>
+                <Link
+                  href="/#pricing"
+                  onClick={(e) => {
                     trackCtaClick({
                       eventName: "credentials_ai_click_pricing_nav",
                       source: "credentialsai",
@@ -286,12 +285,20 @@ export function TopBar() {
                       targetUrl: "/#pricing",
                       label: "Pricing",
                     });
-                    document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
+                    // If already on the homepage, intercept and scroll manually
+                    if (window.location.pathname === "/") {
+                      e.preventDefault();
+                      const el = document.getElementById("pricing");
+                      if (el) {
+                        const top = el.getBoundingClientRect().top + window.scrollY - 80;
+                        window.scrollTo({ top, behavior: "smooth" });
+                      }
+                    }
                   }}
-                  className="hidden text-sm font-medium text-slate-300 hover:text-white sm:inline cursor-pointer bg-transparent border-none p-0"
+                  className="hidden text-sm font-medium text-slate-300 hover:text-white sm:inline"
                 >
                   Pricing
-                </button>
+                </Link>
                 <Link
                   href="/auth/login"
                   onClick={() =>
