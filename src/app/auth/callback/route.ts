@@ -52,22 +52,16 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   }
 
-  if (next) {
-    return response;
-  }
-
-  const { data: badge } = await supabase
-    .from("trustbadges")
-    .select("slug")
-    .eq("user_id", data.user.id)
-    .maybeSingle<{ slug: string }>();
-
-  const destination = new URL(badge?.slug ? `/dashboard/${badge.slug}` : "/auth/register", request.url);
-  const dashboardResponse = NextResponse.redirect(destination);
+  // Redirect to /dashboard (or the explicit next param). The dashboard
+  // resolver page handles user → business mapping across both trustbadges
+  // and business_profiles tables — no need to duplicate that logic here.
+  const destination = next ?? "/dashboard";
+  const finalUrl = new URL(destination, request.url);
+  const finalResponse = NextResponse.redirect(finalUrl);
 
   response.cookies.getAll().forEach((cookie) => {
-    dashboardResponse.cookies.set(cookie);
+    finalResponse.cookies.set(cookie);
   });
 
-  return dashboardResponse;
+  return finalResponse;
 }
