@@ -24,7 +24,7 @@ export default async function DashboardResolver({ searchParams }: DashboardResol
 
   const primary = await getPrimaryBusinessForUser(user.id);
   if (!primary) {
-    redirect("/welcome?reason=no_business");
+    redirect("/dashboard/no-business");
   }
 
   const search = await searchParams;

@@ -19,6 +19,7 @@ import { getServiceClient } from "@/lib/supabase";
 import {
   attachOwnerIfMissing,
   getFoundingMemberBySlug,
+  normalizeEmail,
 } from "@/lib/founding-member";
 
 export const runtime = "nodejs";
@@ -33,7 +34,7 @@ export async function POST(req: NextRequest) {
   }
 
   const slug = body.slug?.trim().toLowerCase();
-  const email = body.email?.trim().toLowerCase();
+  const email = normalizeEmail(body.email ?? null);
   const password = body.password ?? "";
 
   if (!slug) {
@@ -56,7 +57,7 @@ export async function POST(req: NextRequest) {
   }
   if (
     record.payment_email &&
-    record.payment_email.trim().toLowerCase() !== email
+    normalizeEmail(record.payment_email) !== email
   ) {
     return NextResponse.json({ error: "email_mismatch" }, { status: 403 });
   }
@@ -86,8 +87,14 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const attach = await attachOwnerIfMissing(record.id, created.user.id);
+  const attach = await attachOwnerIfMissing(record.id, created.user.id, email);
   if (!attach.ok) {
+    if (attach.reason === "email_mismatch") {
+      return NextResponse.json({ error: "email_mismatch" }, { status: 403 });
+    }
+    if (attach.reason === "different_owner") {
+      return NextResponse.json({ error: "already_owned" }, { status: 409 });
+    }
     return NextResponse.json(
       { error: attach.reason ?? "attach_failed" },
       { status: 500 }

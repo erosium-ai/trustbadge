@@ -8,6 +8,12 @@
 
 import { getServiceClient } from "./supabase";
 
+export function normalizeEmail(email?: string | null): string | null {
+  if (typeof email !== "string") return null;
+  const normalized = email.trim().toLowerCase();
+  return normalized.length > 0 ? normalized : null;
+}
+
 type PagesRow = {
   id: string;
   slug: string;
@@ -115,6 +121,8 @@ export interface FoundingMemberUpsertInput {
   subscriptionId?: string | null;
   subscriptionStatus?: string | null;
   nextPaymentAt?: string | null; // ISO
+  // Ownership attachment is intentionally NOT performed in this upsert helper.
+  // Use attachOwnerIfMissing() for atomic owner claim semantics.
   ownerUserId?: string | null;
 }
 
@@ -137,13 +145,14 @@ export interface FoundingMemberRecord {
 /**
  * Idempotent Founding Member upsert. Marks plan='founder', mirrors Stripe IDs
  * and next_payment_at, and (via RPC) assigns a founding_number exactly once.
- * If ownerUserId is provided and the row has no owner yet, it attaches.
+ * Ownership attachment is handled separately via attachOwnerIfMissing().
  */
 export async function upsertFoundingMember(
   input: FoundingMemberUpsertInput
 ): Promise<{ ok: boolean; reason?: string; record?: FoundingMemberRecord }> {
   const client = getServiceClient();
   const slug = input.slug.trim().toLowerCase();
+  const normalizedPaymentEmail = normalizeEmail(input.paymentEmail ?? null);
 
   let { data: existing, error: fetchErr } = await client
     .from("business_profiles")
@@ -185,14 +194,9 @@ export async function upsertFoundingMember(
     stripe_subscription_id:
       input.subscriptionId ?? existing.stripe_subscription_id ?? null,
     next_payment_at: input.nextPaymentAt ?? existing.next_payment_at ?? null,
-    payment_email: input.paymentEmail ?? existing.payment_email ?? null,
+    payment_email: normalizedPaymentEmail ?? existing.payment_email ?? null,
     updated_at: new Date().toISOString(),
   };
-
-  // Only claim ownership if there isn't one yet — never overwrite an owner.
-  if (input.ownerUserId && !existing.owner_user_id) {
-    update.owner_user_id = input.ownerUserId;
-  }
 
   const { error: updErr } = await client
     .from("business_profiles")
@@ -227,7 +231,7 @@ export async function upsertFoundingMember(
     id: existing.id as string,
     slug: existing.slug as string,
     business_name: existing.business_name as string,
-    owner_user_id: (input.ownerUserId ?? existing.owner_user_id) as string | null,
+    owner_user_id: (existing.owner_user_id as string | null) ?? null,
     plan: "founder",
     stripe_customer_id: (update.stripe_customer_id as string | null) ?? null,
     stripe_subscription_id: (update.stripe_subscription_id as string | null) ?? null,
@@ -265,26 +269,103 @@ export async function getFoundingMemberBySlug(
  */
 export async function attachOwnerIfMissing(
   businessProfileId: string,
-  userId: string
-): Promise<{ ok: boolean; wasAttached: boolean; reason?: string }> {
+  userId: string,
+  userEmail?: string | null
+): Promise<{
+  ok: boolean;
+  wasAttached: boolean;
+  ownerUserId: string | null;
+  reason?: "not_found" | "email_mismatch" | "different_owner" | "owner_not_attached" | string;
+}> {
   const client = getServiceClient();
+  const normalizedUserEmail = normalizeEmail(userEmail ?? null);
+
   const { data: existing, error: fetchErr } = await client
     .from("business_profiles")
-    .select("id, owner_user_id")
+    .select("id, owner_user_id, payment_email")
     .eq("id", businessProfileId)
     .maybeSingle();
+
   if (fetchErr || !existing) {
-    return { ok: false, wasAttached: false, reason: fetchErr?.message ?? "not_found" };
+    return {
+      ok: false,
+      wasAttached: false,
+      ownerUserId: null,
+      reason: fetchErr?.message ?? "not_found",
+    };
   }
-  if (existing.owner_user_id) {
-    return { ok: true, wasAttached: false };
+
+  const normalizedPaymentEmail = normalizeEmail(existing.payment_email ?? null);
+  if (normalizedPaymentEmail && normalizedPaymentEmail !== normalizedUserEmail) {
+    return {
+      ok: false,
+      wasAttached: false,
+      ownerUserId: existing.owner_user_id ?? null,
+      reason: "email_mismatch",
+    };
   }
+
+  if (existing.owner_user_id && existing.owner_user_id !== userId) {
+    return {
+      ok: false,
+      wasAttached: false,
+      ownerUserId: existing.owner_user_id,
+      reason: "different_owner",
+    };
+  }
+
+  if (existing.owner_user_id === userId) {
+    return { ok: true, wasAttached: false, ownerUserId: userId };
+  }
+
   const { error: updErr } = await client
     .from("business_profiles")
     .update({ owner_user_id: userId, updated_at: new Date().toISOString() })
-    .eq("id", businessProfileId);
+    .eq("id", businessProfileId)
+    .is("owner_user_id", null);
+
   if (updErr) {
-    return { ok: false, wasAttached: false, reason: updErr.message };
+    return {
+      ok: false,
+      wasAttached: false,
+      ownerUserId: null,
+      reason: updErr.message,
+    };
   }
-  return { ok: true, wasAttached: true };
+
+  const { data: verified, error: verifyErr } = await client
+    .from("business_profiles")
+    .select("owner_user_id, payment_email")
+    .eq("id", businessProfileId)
+    .maybeSingle();
+
+  if (verifyErr || !verified) {
+    return {
+      ok: false,
+      wasAttached: false,
+      ownerUserId: null,
+      reason: verifyErr?.message ?? "not_found",
+    };
+  }
+
+  const verifiedPaymentEmail = normalizeEmail(verified.payment_email ?? null);
+  if (verifiedPaymentEmail && verifiedPaymentEmail !== normalizedUserEmail) {
+    return {
+      ok: false,
+      wasAttached: false,
+      ownerUserId: verified.owner_user_id ?? null,
+      reason: "email_mismatch",
+    };
+  }
+
+  if (verified.owner_user_id !== userId) {
+    return {
+      ok: false,
+      wasAttached: false,
+      ownerUserId: verified.owner_user_id ?? null,
+      reason: verified.owner_user_id ? "different_owner" : "owner_not_attached",
+    };
+  }
+
+  return { ok: true, wasAttached: true, ownerUserId: userId };
 }

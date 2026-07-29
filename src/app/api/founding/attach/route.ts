@@ -5,7 +5,11 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { getServerClient } from "@/lib/supabase-server";
-import { attachOwnerIfMissing, getFoundingMemberBySlug } from "@/lib/founding-member";
+import {
+  attachOwnerIfMissing,
+  getFoundingMemberBySlug,
+  normalizeEmail,
+} from "@/lib/founding-member";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -34,6 +38,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "not_authenticated" }, { status: 401 });
   }
 
+  const authedEmail = normalizeEmail(user.email ?? null);
+  if (!authedEmail) {
+    return NextResponse.json({ error: "missing_user_email" }, { status: 403 });
+  }
+
   if (body.userId && body.userId !== user.id) {
     return NextResponse.json({ error: "user_mismatch" }, { status: 403 });
   }
@@ -47,8 +56,24 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "different_owner" }, { status: 409 });
   }
 
-  const result = await attachOwnerIfMissing(record.id, user.id);
+  if (
+    record.payment_email &&
+    normalizeEmail(record.payment_email) !== authedEmail
+  ) {
+    return NextResponse.json({ error: "email_mismatch" }, { status: 403 });
+  }
+
+  const result = await attachOwnerIfMissing(record.id, user.id, authedEmail);
   if (!result.ok) {
+    if (result.reason === "email_mismatch") {
+      return NextResponse.json({ error: "email_mismatch" }, { status: 403 });
+    }
+    if (result.reason === "different_owner") {
+      return NextResponse.json({ error: "different_owner" }, { status: 409 });
+    }
+    if (result.reason === "not_found") {
+      return NextResponse.json({ error: "profile_not_found" }, { status: 404 });
+    }
     return NextResponse.json(
       { error: result.reason ?? "attach_failed" },
       { status: 500 }

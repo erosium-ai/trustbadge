@@ -132,6 +132,19 @@ export interface OwnershipCheck {
   reason?: "not_found" | "not_owner";
 }
 
+function hasPaidOrStripeState(record: FoundingMemberRecord): boolean {
+  const subscriptionStatus = String(record.subscription_status ?? "").toLowerCase();
+  return Boolean(
+    record.stripe_customer_id ||
+      record.stripe_subscription_id ||
+      record.payment_email ||
+      record.plan === "founder" ||
+      ["active", "trialing", "past_due", "unpaid", "canceled", "cancelled", "incomplete"].includes(
+        subscriptionStatus
+      )
+  );
+}
+
 export async function assertOwnership(
   slug: string,
   userId: string
@@ -146,8 +159,25 @@ export async function assertOwnership(
     .maybeSingle();
   if (error || !data) return { ok: false, record: null, reason: "not_found" };
   const record = data as unknown as FoundingMemberRecord;
+
+  if (record.owner_user_id === userId) {
+    return { ok: true, record };
+  }
+
+  // Hard block: if the business profile is already owned by someone else,
+  // trustbadge fallback must never grant access.
+  if (record.owner_user_id && record.owner_user_id !== userId) {
+    return { ok: false, record, reason: "not_owner" };
+  }
+
+  // Hard block: paid/Stripe-backed rows must not be claimed via legacy
+  // trustbadge ownership fallback.
+  if (hasPaidOrStripeState(record)) {
+    return { ok: false, record, reason: "not_owner" };
+  }
+
   if (record.owner_user_id !== userId) {
-    // Fallback: allow if the user also owns the trustbadge record (legacy TrustBadge-only owners).
+    // Safe fallback: only for ownerless, non-paid legacy rows.
     const { data: bg } = await client
       .from("trustbadges")
       .select("user_id")

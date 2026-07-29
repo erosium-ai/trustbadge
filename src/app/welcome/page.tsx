@@ -11,10 +11,13 @@
 //   → if user is logged in + owner: dashboard directly
 
 import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
 import { getStripeClient } from "@/lib/stripe-server";
 import { getServerClient } from "@/lib/supabase-server";
+import { getServiceClient } from "@/lib/supabase";
+import { getSiteUrl } from "@/lib/brand";
 import {
+  attachOwnerIfMissing,
+  normalizeEmail,
   upsertFoundingMember,
 } from "@/lib/founding-member";
 import { ClaimAccountForm } from "./ClaimAccountForm";
@@ -49,116 +52,126 @@ function toIdString(value: string | { id?: string } | null): string | null {
 
 // ---------------------------------------------------------------------------
 // Auto-login: creates/gets a Supabase user for the Stripe email, generates a
-// token via admin API, then redirects to the auth callback which exchanges the
-// token server-side and sets HttpOnly cookies. User lands on dashboard logged
-// in — zero friction.
+// hashed one-time token via the admin API, then redirects to our server-side
+// confirm route. The confirm route verifies the token and sets HttpOnly auth
+// cookies. User lands on dashboard logged in — zero friction.
 // ---------------------------------------------------------------------------
+
+function isDuplicateEmailError(message?: string): boolean {
+  const lowered = (message ?? "").toLowerCase();
+  return (
+    lowered.includes("already") &&
+    (lowered.includes("registered") || lowered.includes("exists"))
+  );
+}
+
+async function findAuthUserByEmail(
+  email: string
+): Promise<{ id: string; email: string } | null> {
+  const client = getServiceClient();
+
+  let page = 1;
+  const perPage = 200;
+
+  // Supabase admin API does not support server-side email filtering here.
+  for (let i = 0; i < 25; i++) {
+    const { data, error } = await client.auth.admin.listUsers({
+      page,
+      perPage,
+    });
+
+    if (error) {
+      throw new Error(`list_users_failed: ${error.message}`);
+    }
+
+    const users = data.users ?? [];
+    const matched = users.find(
+      (candidate) => normalizeEmail(candidate.email ?? null) === email
+    );
+    if (matched?.id) {
+      return { id: matched.id, email };
+    }
+
+    if (users.length < perPage || !data.nextPage) {
+      break;
+    }
+
+    page = data.nextPage;
+  }
+
+  return null;
+}
+
+async function resolveOrCreateAuthUserByEmail(
+  email: string
+): Promise<{ id: string; email: string }> {
+  const client = getServiceClient();
+
+  const existing = await findAuthUserByEmail(email);
+  if (existing) return existing;
+
+  const { data, error } = await client.auth.admin.createUser({
+    email,
+    email_confirm: true,
+    user_metadata: { created_via_checkout: true },
+  });
+
+  if (!error && data.user?.id) {
+    return { id: data.user.id, email };
+  }
+
+  if (isDuplicateEmailError(error?.message)) {
+    const raced = await findAuthUserByEmail(email);
+    if (raced) return raced;
+  }
+
+  throw new Error(error?.message ?? "create_user_failed");
+}
 
 async function autoLogin(
   email: string,
   slug: string,
+  businessProfileId: string,
 ): Promise<string> {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!serviceKey) {
-    throw new Error("SUPABASE_SERVICE_ROLE_KEY not configured");
+  const normalizedEmail = normalizeEmail(email);
+  if (!normalizedEmail) {
+    throw new Error("invalid_payment_email");
   }
 
-  // Step 1: Look up or create user
-  let userId: string;
-  try {
-    const listResp = await fetch(
-      `${supabaseUrl}/auth/v1/admin/users?per_page=1`,
-      {
-        headers: {
-          apikey: serviceKey,
-          Authorization: `***${serviceKey}`,
-        },
-      }
-    );
+  const client = getServiceClient();
+  const authUser = await resolveOrCreateAuthUserByEmail(normalizedEmail);
 
-    if (!listResp.ok) throw new Error(`List users failed: ${listResp.status}`);
-
-    const listData = await listResp.json();
-    const users = listData.users || [];
-
-    // GoTrue admin list doesn't support email filter in query params.
-    // We need to search manually. For now, always create — GoTrue upserts by email.
-    // Actually we can use the GET with a filter. Let's just always create.
-    // createUser with email_confirm:true will return existing user if email taken.
-  } catch {
-    // fall through to create
-  }
-
-  // Step 2: Create or get user (GoTrue returns 422 if email exists, but we'd
-  // rather not rely on error codes for control flow)
-  // Instead: generate_link directly — it works even if user doesn't exist yet
-  // as long as the email identity exists.
-  
-  // Actually the cleanest path: always create the user. If exists, GoTrue
-  // returns 422 — catch that and proceed with generate_link anyway.
-  try {
-    const createResp = await fetch(`${supabaseUrl}/auth/v1/admin/users`, {
-      method: "POST",
-      headers: {
-        apikey: serviceKey,
-        Authorization: `***${serviceKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        email_confirm: true,
-        user_metadata: { created_via_checkout: true },
-      }),
-    });
-    if (createResp.ok) {
-      const created = await createResp.json();
-      userId = created.id;
-    }
-    // 422 = already exists, that's fine
-  } catch {
-    // best-effort
-  }
-
-  // Step 3: Generate magic link token via admin API (bypasses rate limits)
-  const linkResp = await fetch(`${supabaseUrl}/auth/v1/admin/generate_link`, {
-    method: "POST",
-    headers: {
-      apikey: serviceKey,
-      Authorization: `***${serviceKey}`,
-      "Content-Type": "application/json",
+  const nextPath = `/dashboard/${slug}?welcome=1`;
+  const { data: linkData, error: linkErr } = await client.auth.admin.generateLink({
+    type: "magiclink",
+    email: normalizedEmail,
+    options: {
+      data: { created_via_checkout: true, slug },
     },
-    body: JSON.stringify({
-      type: "magiclink",
-      email,
-      options: {
-        redirect_to: `https://credentialsai.com.au/auth/callback?next=/dashboard/${slug}%3Fwelcome%3D1`,
-      },
-    }),
   });
 
-  if (!linkResp.ok) {
-    const errBody = await linkResp.text();
-    throw new Error(`generate_link failed: ${linkResp.status} — ${errBody}`);
+  if (linkErr) {
+    throw new Error(`generate_link_failed:${linkErr.message}`);
   }
 
-  const linkData = await linkResp.json();
-  const token = linkData.hashed_token;
-
-  if (!token) {
-    throw new Error("No token in generate_link response");
+  const tokenHash = linkData.properties?.hashed_token;
+  if (!tokenHash) {
+    throw new Error("missing_magiclink_token_hash");
   }
 
-  // Step 4: Redirect to the verify endpoint which will set the session
-  // and then redirect to our callback → dashboard
-  const verifyUrl =
-    `${supabaseUrl}/auth/v1/verify` +
-    `?token=***{encodeURIComponent(token)}` +
-    `&type=magiclink` +
-    `&redirect_to=${encodeURIComponent(`https://credentialsai.com.au/auth/callback?next=/dashboard/${slug}%3Fwelcome%3D1`)}`;
+  const attach = await attachOwnerIfMissing(
+    businessProfileId,
+    authUser.id,
+    normalizedEmail
+  );
+  if (!attach.ok) {
+    throw new Error(`owner_attach_failed:${attach.reason ?? "unknown"}`);
+  }
 
-  return verifyUrl;
+  const confirmUrl = new URL("/auth/confirm", getSiteUrl());
+  confirmUrl.searchParams.set("token_hash", tokenHash);
+  confirmUrl.searchParams.set("next", nextPath);
+  return confirmUrl.toString();
 }
 
 // ---------------------------------------------------------------------------
@@ -196,8 +209,9 @@ export default async function WelcomePage({ searchParams }: WelcomePageProps) {
     return <WelcomeFailure reason="missing_slug" />;
   }
 
-  const paymentEmail =
-    session.customer_details?.email || session.customer_email || null;
+  const paymentEmail = normalizeEmail(
+    session.customer_details?.email || session.customer_email || null
+  );
   const customerId = toIdString(session.customer);
   const subscriptionId = toIdString(session.subscription);
 
@@ -224,7 +238,15 @@ export default async function WelcomePage({ searchParams }: WelcomePageProps) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Upsert Founding Member state, attaching owner if user is logged in.
+  const authedEmail = normalizeEmail(user?.email ?? null);
+  const canAttachAuthedUser =
+    Boolean(user?.id) &&
+    Boolean(paymentEmail) &&
+    Boolean(authedEmail) &&
+    paymentEmail === authedEmail;
+
+  // Upsert paid membership state first. Ownership is attached separately via
+  // the conditional helper so a concurrent claimant cannot be overwritten.
   const upsert = await upsertFoundingMember({
     slug,
     paymentEmail,
@@ -232,26 +254,41 @@ export default async function WelcomePage({ searchParams }: WelcomePageProps) {
     subscriptionId,
     subscriptionStatus,
     nextPaymentAt,
-    ownerUserId: user?.id ?? null,
+    ownerUserId: null,
   });
 
   if (!upsert.ok || !upsert.record) {
     return (
       <WelcomeFailure
-        reason={upsert.reason === "profile_not_found" ? "profile_not_mirrored" : "upsert_failed"}
+        reason={(upsert.reason ?? "").includes("profile_not_found") ? "profile_not_mirrored" : "upsert_failed"}
         paymentEmail={paymentEmail}
         slug={slug}
       />
     );
   }
 
-  const record = upsert.record;
+  let record = upsert.record;
+
+  if (canAttachAuthedUser && user) {
+    const attach = await attachOwnerIfMissing(record.id, user.id, authedEmail);
+    if (!attach.ok) {
+      return (
+        <WelcomeFailure
+          reason={attach.reason === "different_owner" ? "different_owner" : "upsert_failed"}
+          paymentEmail={paymentEmail}
+          slug={slug}
+        />
+      );
+    }
+    record = { ...record, owner_user_id: user.id };
+  }
 
   // ✅ AUTO-LOGIN: User is NOT logged in but we have their Stripe email.
-  // Create/get their Supabase account and log them in automatically.
+  // Create/get their Supabase account, atomically attach owner, then route
+  // through a one-time auth link callback.
   if (!user && paymentEmail) {
     try {
-      const loginUrl = await autoLogin(paymentEmail, slug);
+      const loginUrl = await autoLogin(paymentEmail, slug, record.id);
       redirect(loginUrl);
     } catch (err) {
       console.error("Auto-login failed, falling back to claim form:", err);
