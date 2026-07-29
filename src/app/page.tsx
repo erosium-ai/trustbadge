@@ -145,7 +145,7 @@ export default function HomePage() {
       {/* TrustBadge embed section */}
       <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
         <div className="ai-glass-soft overflow-hidden rounded-[2rem]">
-          <div className="p-6 sm:p-8 lg:p-10">
+          <div className="p-6 sm:p-8 lg:p-10 text-center">
             <h2 className="text-balance text-3xl font-black tracking-tight text-white sm:text-4xl">
               Put your badge on your own website
             </h2>
