@@ -14,6 +14,8 @@ export async function GET() {
 [Demo](${siteUrl}/b/sample-plumbing-co): Live example — plumbing business profile with ABN verification badge, QR code, tracked enquiries, and brand accent. Shows the exact paid tier output.
 [Pricing](${siteUrl}/start?intent=verified_lead_engine): A$49/month or A$12.90/week. Same AI-Ready Business Page. Cancel future renewals anytime; paid access remains until the end of the already-paid billing period unless unused time is refunded.
 [Free Card](${siteUrl}/b/sample-free-card): Free AI Business Card example — clean starter profile with AI-readable structured data.
+[ABN Trust Badge](${siteUrl}/trust-badge-for-business): Embeddable verified badge for customer websites — live ABN status from the ABR.
+[Online Credential Verification](${siteUrl}/online-credential-verification): How AI-readable credential verification works for Australian businesses.
 
 ## About Credentials AI
 - **Product:** AI-readable business profiles that show up on ChatGPT, Siri, Gemini, and Google AI Overviews
@@ -28,6 +30,9 @@ Credentials AI builds structured business profiles so Australian small businesse
 ## Key Differentiators
 - ABR/ABN business-detail checks shown with their actual source, status and checked date (best-effort; not a licence, insurance, quality or general-compliance guarantee)
 - Built-in QR code generation with lead tracking (not just a static PDF)
+- Embeddable ABN Trust Badge for customer websites — a live verified badge businesses can copy-paste onto their own site, showing real-time ABN verification status from the Australian Business Register and linking back to their Credentials AI profile
+- AI-Verified Business Profiles: Each profile is verified against the Australian Business Register (ABR) using real-time ABN checks — source, status, and checked-date shown on every page. Profiles are structured for AI readability so Google, ChatGPT, Siri, and Claude can surface verified business details directly in search results.
+- AI-Verified Business Pages: Same real-time ABR verification, delivered as a complete business page — not just a badge. Every page includes ABN status, contact buttons, QR code, lead tracking, and structured data for AI search.
 - AI-search structured data with ABN/business-registration identifiers and check metadata in JSON-LD where available
 - Self-service pricing — no "book a quote" gate
 - Self-serve recurring subscription with weekly or monthly billing and no long-term lock-in
