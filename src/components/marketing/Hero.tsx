@@ -108,11 +108,11 @@ export function Hero({ freeProfileUrl, sampleProfileUrl }: HeroProps) {
                 </div>
 
                 <div className="relative mt-4 rounded-2xl border border-emerald-300/20 bg-emerald-300/10 p-4 text-sm font-bold text-emerald-100">
-                  New quote request · Source: Google · 2 min ago
+                  New quote request · Source: Email · 2 min ago
                 </div>
 
                 <div className="relative mt-4 grid gap-3 sm:grid-cols-3">
-                  {["9 calls", "4 quotes", "Top: Google"].map((stat) => (
+                  {["9 calls", "4 quotes", "Top: Email"].map((stat) => (
                     <div key={stat} className="rounded-2xl border border-white/10 bg-white/7 p-3 text-center">
                       <p className="text-sm font-black text-white">{stat}</p>
                       <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-slate-500">7-day proof</p>
