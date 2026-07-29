@@ -65,7 +65,7 @@ function PaidPagePreview() {
 
 export function PricingSection({ freeProfileUrl, paidProfileUrl }: PricingSectionProps) {
   return (
-    <section id="pricing" className="ai-money-band relative isolate mt-6 border-y border-white/8 py-14 sm:py-20">
+    <section id="pricing" className="ai-money-band relative isolate mt-6 border-y border-white/8 py-14 sm:py-20 scroll-mt-20">
       {/* Top/bottom hairlines make the band read as a distinct place on the page. */}
       <div className="ai-money-band-edge pointer-events-none absolute inset-x-0 top-0 h-px" />
       <div className="ai-money-band-edge pointer-events-none absolute inset-x-0 bottom-0 h-px" />
