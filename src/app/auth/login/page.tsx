@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getBrowserClient } from "@/lib/supabase-browser";
 import Link from "next/link";
@@ -13,6 +13,21 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const prefillEmail = params.get("email");
+    if (prefillEmail) {
+      setEmail(prefillEmail);
+    }
+
+    const source = params.get("source");
+    if (source?.startsWith("welcome_")) {
+      setMessage(
+        "We couldn’t complete automatic sign-in. Use the magic link below to get straight into your dashboard."
+      );
+    }
+  }, []);
 
   function safeNextPath(): string | null {
     if (typeof window === "undefined") return null;

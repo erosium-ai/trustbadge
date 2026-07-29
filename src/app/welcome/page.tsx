@@ -73,8 +73,14 @@ async function findAuthUserByEmail(
   let page = 1;
   const perPage = 200;
 
-  // Supabase admin API does not support server-side email filtering here.
-  for (let i = 0; i < 25; i++) {
+  // Supabase admin API does not currently provide an exact server-side email
+  // lookup in this SDK, so we paginate until exhaustion. Keep a very high
+  // defensive guard against broken nextPage loops without truncating normal
+  // datasets.
+  const MAX_PAGE_SCANS = 1_000_000;
+  const visitedPages = new Set<number>();
+
+  for (let scans = 0; scans < MAX_PAGE_SCANS; scans++) {
     const { data, error } = await client.auth.admin.listUsers({
       page,
       perPage,
@@ -92,11 +98,27 @@ async function findAuthUserByEmail(
       return { id: matched.id, email };
     }
 
-    if (users.length < perPage || !data.nextPage) {
+    const nextPage =
+      typeof data.nextPage === "number" && Number.isFinite(data.nextPage)
+        ? data.nextPage
+        : null;
+
+    if (users.length < perPage || !nextPage) {
       break;
     }
 
-    page = data.nextPage;
+    if (nextPage === page || visitedPages.has(nextPage)) {
+      throw new Error(
+        `list_users_no_progress: page=${page} nextPage=${String(nextPage)}`
+      );
+    }
+
+    visitedPages.add(page);
+    page = nextPage;
+  }
+
+  if (visitedPages.size >= MAX_PAGE_SCANS) {
+    throw new Error("list_users_guard_exceeded");
   }
 
   return null;
@@ -159,6 +181,9 @@ async function autoLogin(
     throw new Error("missing_magiclink_token_hash");
   }
 
+  // Secure login material must exist before ownership is attached. If link
+  // generation fails, recovery can retry without leaving a newly owned row
+  // whose customer has no usable sign-in route.
   const attach = await attachOwnerIfMissing(
     businessProfileId,
     authUser.id,
@@ -172,6 +197,16 @@ async function autoLogin(
   confirmUrl.searchParams.set("token_hash", tokenHash);
   confirmUrl.searchParams.set("next", nextPath);
   return confirmUrl.toString();
+}
+
+function buildExistingLoginUrl(slug: string, paymentEmail?: string | null): string {
+  const params = new URLSearchParams();
+  params.set("next", `/dashboard/${slug}`);
+  params.set("source", "welcome_auto_login_failed");
+  if (paymentEmail) {
+    params.set("email", paymentEmail);
+  }
+  return `/auth/login?${params.toString()}`;
 }
 
 // ---------------------------------------------------------------------------
@@ -292,7 +327,18 @@ export default async function WelcomePage({ searchParams }: WelcomePageProps) {
       redirect(loginUrl);
     } catch (err) {
       console.error("Auto-login failed, falling back to claim form:", err);
-      // Fall through to claim form below
+      const message = err instanceof Error ? err.message : "";
+      if (message.includes("owner_attach_failed:different_owner")) {
+        return (
+          <WelcomeFailure
+            reason="different_owner"
+            paymentEmail={paymentEmail}
+            slug={slug}
+          />
+        );
+      }
+      // Recovery path: direct customer to login where magic-link is available.
+      redirect(buildExistingLoginUrl(slug, paymentEmail));
     }
   }
 
@@ -360,7 +406,9 @@ function WelcomeSuccess({
             <span className="font-semibold text-slate-900">{businessName}</span>.
           </p>
           <p className="mt-2 text-slate-700">
-            One last step: set a password so you can get into your dashboard.
+            {hasExistingOwner
+              ? "One last step: we’ll send a secure magic link so you can open your dashboard instantly."
+              : "One last step: set a password so you can get into your dashboard."}
           </p>
 
           <div className="mt-6">
@@ -410,12 +458,12 @@ function WelcomeFailure({
           <h1 className="text-2xl font-bold text-slate-900">
             {isDifferentOwner
               ? "Almost there"
-              : "We\u2019ve got your payment"}
+              : "We’ve got your payment"}
           </h1>
           <p className="mt-3 text-slate-700">
             {isDifferentOwner
               ? `This business (${slug}) already has an owner on Credentials AI. Email `
-              : "Check your inbox within the hour \u2014 you should have a welcome from the founder. If not, email "}
+              : "Check your inbox within the hour — you should have a welcome from the founder. If not, email "}
             <a
               href="mailto:isaac@erosium.com.au"
               className="font-medium text-[#F97316] hover:underline"
