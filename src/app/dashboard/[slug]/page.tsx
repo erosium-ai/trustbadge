@@ -687,13 +687,16 @@ export default async function DashboardOverviewPage({
                 </li>
                 <li>
                   <span className="font-semibold text-slate-900">3.</span> Check
-                  your inbox &mdash; the email comes from{" "}
-                  <span className="font-medium text-slate-900">Supabase</span>, our
-                  login system. That&rsquo;s really us &mdash; it&rsquo;s safe to open.
+                  your inbox for an email from{" "}
+                  <span className="font-medium text-slate-900">Credentials AI</span>{" "}
+                  with the{" "}
+                  <span className="font-medium text-slate-900">Open my dashboard</span>{" "}
+                  button. That&rsquo;s really us &mdash; it&rsquo;s safe to open.
                 </li>
                 <li>
-                  <span className="font-semibold text-slate-900">4.</span> Click
-                  the link in the email and you&rsquo;ll land straight back here.
+                  <span className="font-semibold text-slate-900">4.</span> Tap
+                  <span className="font-medium text-slate-900"> Open my dashboard</span>{" "}
+                  and you&rsquo;ll land straight back here.
                 </li>
               </ol>
               <p className="mt-3 text-xs leading-relaxed text-slate-500">

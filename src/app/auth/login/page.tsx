@@ -189,7 +189,8 @@ export default function LoginPage() {
         </button>
 
         <p className="text-center text-xs leading-relaxed text-slate-500">
-          Secure login powered by Supabase — check your inbox for a magic link email from Supabase.
+          Secure login powered by Credentials AI — check your inbox for the newest
+          email and tap <span className="font-medium text-slate-700">Open my dashboard</span>.
         </p>
       </form>
 
