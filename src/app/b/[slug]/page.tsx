@@ -272,6 +272,8 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
   const rawBrandAccent = typeof meta.brand_color === "string" ? meta.brand_color : "#10b981";
   const brandAccent = /^#[0-9a-fA-F]{6}$/.test(rawBrandAccent) ? rawBrandAccent : "#10b981";
   const brandAccentSoft = `${brandAccent}22`;
+  const brandAccentWash = `${brandAccent}14`;
+  const brandAccentBorder = `${brandAccent}55`;
   const faqs = Array.isArray(meta.faqs)
     ? (meta.faqs as Array<{ question?: string; answer?: string }>)
         .map((f) => ({ question: String(f?.question ?? "").trim().slice(0, 180), answer: String(f?.answer ?? "").trim().slice(0, 1000) }))
@@ -354,12 +356,16 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
               </p>
             </div>
           ) : null}
-          <header className="ai-glass-paid overflow-hidden rounded-[2rem]">
+          <header className="ai-glass-paid overflow-hidden rounded-[2rem]" style={{ borderColor: brandAccentBorder }}>
             <div className="relative p-6 sm:p-10 lg:p-12">
               <div className="absolute inset-x-0 top-0 h-64 bg-gradient-to-br from-emerald-400/22 via-cyan-400/14 to-transparent" />
+              <div
+                className="absolute inset-x-0 top-0 h-72 opacity-90 blur-3xl"
+                style={{ background: `radial-gradient(circle at 20% 0%, ${brandAccentWash}, transparent 62%)` }}
+              />
               <div className="relative">
                 <div className="flex items-center justify-between gap-4">
-                  <p className="text-[11px] font-black uppercase tracking-[0.24em] text-emerald-200">
+                  <p className="text-[11px] font-black uppercase tracking-[0.24em]" style={{ color: brandAccent }}>
                     AI-Ready Business Page{isSample ? " · Sample data" : ""}
                   </p>
                   <p className="hidden text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500 sm:block">
@@ -376,7 +382,10 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
                         {initialsOf(profile.business_name)}
                       </div>
                       <div>
-                        <h1 className="break-words text-4xl font-black tracking-tight text-white sm:text-5xl">
+                        <h1
+                          className="break-words text-4xl font-black tracking-tight sm:text-5xl"
+                          style={{ color: brandAccent, textShadow: `0 0 28px ${brandAccentSoft}` }}
+                        >
                           {profile.business_name}
                         </h1>
                         <p className="mt-2 text-sm font-semibold text-slate-300">
@@ -420,7 +429,11 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
               {services.length > 0 && (
                 <div className="grid gap-4 sm:grid-cols-2">
                   {services.map((service) => (
-                    <article key={`${service.name}-${service.price ?? ""}`} className="ai-glass-soft rounded-[1.5rem] border-emerald-300/12 p-5">
+                    <article
+                      key={`${service.name}-${service.price ?? ""}`}
+                      className="ai-glass-soft rounded-[1.5rem] p-5"
+                      style={{ borderColor: brandAccentBorder, boxShadow: `0 18px 60px ${brandAccentWash}` }}
+                    >
                       <p className="text-xs font-black uppercase tracking-[0.2em]" style={{ color: brandAccent }}>Service</p>
                       <h2 className="mt-2 text-lg font-black text-white">{service.name}</h2>
                       {service.description && <p className="mt-2 text-sm leading-relaxed text-slate-300">{service.description}</p>}
@@ -432,13 +445,13 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
             </div>
 
             <aside className="space-y-6">
-              <div className="ai-glass-soft rounded-[2rem] border-emerald-300/12 p-5 sm:p-6">
-                <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-200">Lead proof</p>
+              <div className="ai-glass-soft rounded-[2rem] p-5 sm:p-6" style={{ borderColor: brandAccentBorder, boxShadow: `0 20px 70px ${brandAccentWash}` }}>
+                <p className="text-xs font-black uppercase tracking-[0.22em]" style={{ color: brandAccent }}>Lead proof</p>
                 <h2 className="mt-3 text-2xl font-black">This page is measured.</h2>
                 <div className="mt-5 grid grid-cols-3 gap-3">
                   {["Calls", "Quotes", "Sources"].map((label) => (
-                    <div key={label} className="rounded-2xl border border-emerald-300/15 bg-white/7 p-3 text-center">
-                      <p className="text-lg font-black text-emerald-200">✓</p>
+                    <div key={label} className="rounded-2xl border bg-white/7 p-3 text-center" style={{ borderColor: brandAccentBorder, backgroundColor: brandAccentWash }}>
+                      <p className="text-lg font-black" style={{ color: brandAccent }}>✓</p>
                       <p className="mt-1 text-[10px] font-black uppercase tracking-widest text-slate-500">{label}</p>
                     </div>
                   ))}
@@ -448,8 +461,8 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
                 </p>
               </div>
 
-              <div className="ai-glass-soft rounded-[2rem] p-5 sm:p-6">
-                <h3 className="text-xs font-black uppercase tracking-[0.22em] text-slate-400">Business details</h3>
+              <div className="ai-glass-soft rounded-[2rem] p-5 sm:p-6" style={{ borderColor: brandAccentBorder }}>
+                <h3 className="text-xs font-black uppercase tracking-[0.22em]" style={{ color: brandAccent }}>Business details</h3>
                 <dl className="mt-4 space-y-3 text-sm">
                   {profile.phone && <div><dt className="text-slate-500">Phone</dt><dd className="font-bold text-white">{profile.phone}</dd></div>}
                   {profile.email && <div><dt className="text-slate-500">Email</dt><dd className="break-words font-bold text-white">{profile.email}</dd></div>}
@@ -458,11 +471,11 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
               </div>
 
               {serviceAreas.length > 0 && (
-                <div className="ai-glass-soft rounded-[2rem] p-5 sm:p-6">
-                  <h3 className="text-xs font-black uppercase tracking-[0.22em] text-slate-400">Service areas</h3>
+                <div className="ai-glass-soft rounded-[2rem] p-5 sm:p-6" style={{ borderColor: brandAccentBorder }}>
+                  <h3 className="text-xs font-black uppercase tracking-[0.22em]" style={{ color: brandAccent }}>Service areas</h3>
                   <ul className="mt-4 flex flex-wrap gap-2">
                     {serviceAreas.map((area) => (
-                      <li key={area} className="rounded-full border border-emerald-300/15 bg-white/8 px-3 py-1.5 text-xs font-bold text-slate-200">{area}</li>
+                      <li key={area} className="rounded-full border bg-white/8 px-3 py-1.5 text-xs font-bold text-slate-200" style={{ borderColor: brandAccentBorder }}>{area}</li>
                     ))}
                   </ul>
                 </div>
@@ -471,9 +484,10 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
           </section>
 
           {faqs.length > 0 && (
-            <section className="ai-glass-soft mt-6 rounded-[2rem] p-5 sm:p-6">
+            <section className="ai-glass-soft mt-6 rounded-[2rem] p-5 sm:p-6" style={{ borderColor: brandAccentBorder }}>
               <script dangerouslySetInnerHTML={{ __html: safeJsonLd({ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faqs.map((f) => ({ "@type": "Question", name: f.question, acceptedAnswer: { "@type": "Answer", text: f.answer } })) }) }} type="application/ld+json" />
-              <h2 className="text-2xl font-black">Common questions</h2>
+              <p className="text-xs font-black uppercase tracking-[0.22em]" style={{ color: brandAccent }}>FAQ</p>
+              <h2 className="mt-3 text-2xl font-black">Common questions</h2>
               <dl className="mt-5 grid gap-4 md:grid-cols-2">
                 {faqs.map((f) => (
                   <div key={f.question} className="rounded-2xl border border-white/10 bg-white/7 p-4">
