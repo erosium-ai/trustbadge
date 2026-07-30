@@ -33,10 +33,23 @@ export default function LoginPage() {
     if (typeof window === "undefined") return null;
 
     const next = new URLSearchParams(window.location.search).get("next");
-    if (!next) return null;
-    if (!next.startsWith("/")) return null;
-    if (next.startsWith("//")) return null;
-    return next;
+    if (
+      !next ||
+      !next.startsWith("/") ||
+      next.startsWith("//") ||
+      next.includes("\\") ||
+      /%(?:2f|5c)/i.test(next)
+    ) {
+      return null;
+    }
+
+    try {
+      const destination = new URL(next, window.location.origin);
+      if (destination.origin !== window.location.origin) return null;
+      return `${destination.pathname}${destination.search}${destination.hash}`;
+    } catch {
+      return null;
+    }
   }
 
   async function handleMagicLink(e: React.FormEvent) {
@@ -44,29 +57,32 @@ export default function LoginPage() {
     setError(null);
     setLoading(true);
 
-    const supabase = getBrowserClient();
-
-    const callbackUrl = new URL(`${window.location.origin}/auth/callback`);
     const nextPath = safeNextPath();
-    if (nextPath) {
-      callbackUrl.searchParams.set("next", nextPath);
+    try {
+      const response = await fetch("/api/auth/magic-link", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ email, next: nextPath }),
+      });
+      const body = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        setError(
+          typeof body?.error === "string"
+            ? body.error
+            : "Failed to send magic link"
+        );
+        setLoading(false);
+        return;
+      }
+
+      setError(null);
+      setMessage(
+        "Secure dashboard link sent! Check your inbox and use the newest Credentials AI email."
+      );
+    } catch {
+      setError("Failed to send magic link");
     }
-
-    const { error: linkError } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: callbackUrl.toString(),
-      },
-    });
-
-    if (linkError) {
-      setError(linkError?.message ?? "Failed to send magic link");
-      setLoading(false);
-      return;
-    }
-
-    setError(null);
-    setMessage("Magic link sent! Check your inbox and click the link to log in.");
     setLoading(false);
   }
 
