@@ -170,7 +170,10 @@ export async function POST(request: NextRequest) {
       throw new Error(`generate_link_failed:${error?.message ?? "missing_token"}`);
     }
 
-    const recoveryUrl = new URL("/auth/confirm", origin);
+    // Email security scanners prefetch GET links. Land on a non-redeeming
+    // confirmation page first; the token is exchanged only after the customer
+    // presses the POST button on that page.
+    const recoveryUrl = new URL("/auth/continue", origin);
     recoveryUrl.searchParams.set("token_hash", tokenHash);
     recoveryUrl.searchParams.set("next", next);
 

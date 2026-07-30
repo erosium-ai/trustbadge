@@ -26,11 +26,13 @@ function safeNextPath(value: string | null, origin: string): string {
   }
 }
 
-export async function GET(request: NextRequest) {
-  const requestUrl = new URL(request.url);
+async function confirmMagicLink(
+  request: NextRequest,
+  tokenHash: string | null,
+  requestedNext: string | null
+) {
   const canonicalOrigin = new URL(getSiteUrl()).origin;
-  const tokenHash = requestUrl.searchParams.get("token_hash");
-  const next = safeNextPath(requestUrl.searchParams.get("next"), canonicalOrigin);
+  const next = safeNextPath(requestedNext, canonicalOrigin);
 
   // Railway terminates TLS at the proxy and can present request.url as
   // http://localhost:8080 internally. Every customer-facing redirect must be
@@ -50,7 +52,7 @@ export async function GET(request: NextRequest) {
   }
 
   const destination = new URL(next, canonicalOrigin);
-  const redirectResponse = NextResponse.redirect(destination);
+  const redirectResponse = NextResponse.redirect(destination, 303);
   const supabase = createServerClient(supabaseUrl, supabaseKey, {
     cookies: {
       getAll() {
@@ -76,8 +78,29 @@ export async function GET(request: NextRequest) {
   if (error || !data.user) {
     loginUrl.searchParams.set("error", "auth_confirm_failed");
     loginUrl.searchParams.set("next", next);
-    return NextResponse.redirect(loginUrl);
+    return NextResponse.redirect(loginUrl, 303);
   }
 
   return redirectResponse;
+}
+
+export async function GET(request: NextRequest) {
+  const requestUrl = new URL(request.url);
+  return confirmMagicLink(
+    request,
+    requestUrl.searchParams.get("token_hash"),
+    requestUrl.searchParams.get("next")
+  );
+}
+
+export async function POST(request: NextRequest) {
+  const formData = await request.formData().catch(() => null);
+  const tokenHash = formData?.get("token_hash");
+  const next = formData?.get("next");
+
+  return confirmMagicLink(
+    request,
+    typeof tokenHash === "string" ? tokenHash : null,
+    typeof next === "string" ? next : null
+  );
 }
