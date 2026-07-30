@@ -322,9 +322,9 @@ export default async function WelcomePage({ searchParams }: WelcomePageProps) {
   // Create/get their Supabase account, atomically attach owner, then route
   // through a one-time auth link callback.
   if (!user && paymentEmail) {
+    let loginUrl: string;
     try {
-      const loginUrl = await autoLogin(paymentEmail, slug, record.id);
-      redirect(loginUrl);
+      loginUrl = await autoLogin(paymentEmail, slug, record.id);
     } catch (err) {
       console.error("Auto-login failed, falling back to claim form:", err);
       const message = err instanceof Error ? err.message : "";
@@ -340,6 +340,9 @@ export default async function WelcomePage({ searchParams }: WelcomePageProps) {
       // Recovery path: direct customer to login where magic-link is available.
       redirect(buildExistingLoginUrl(slug, paymentEmail));
     }
+
+    // Keep Next.js redirect control-flow outside the error boundary above.
+    redirect(loginUrl);
   }
 
   // Case 1: Logged in and now the owner → dashboard.

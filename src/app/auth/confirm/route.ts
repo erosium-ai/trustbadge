@@ -5,17 +5,30 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 
-function safeNextPath(value: string | null): string {
-  if (!value || !value.startsWith("/") || value.startsWith("//")) {
+function safeNextPath(value: string | null, origin: string): string {
+  if (
+    !value ||
+    !value.startsWith("/") ||
+    value.startsWith("//") ||
+    value.includes("\\") ||
+    /%(?:2f|5c)/i.test(value)
+  ) {
     return "/dashboard";
   }
-  return value;
+
+  try {
+    const destination = new URL(value, origin);
+    if (destination.origin !== origin) return "/dashboard";
+    return `${destination.pathname}${destination.search}${destination.hash}`;
+  } catch {
+    return "/dashboard";
+  }
 }
 
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
   const tokenHash = requestUrl.searchParams.get("token_hash");
-  const next = safeNextPath(requestUrl.searchParams.get("next"));
+  const next = safeNextPath(requestUrl.searchParams.get("next"), requestUrl.origin);
 
   const loginUrl = new URL("/auth/login", request.url);
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -31,7 +44,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  const destination = new URL(next, request.url);
+  const destination = new URL(next, requestUrl.origin);
   const redirectResponse = NextResponse.redirect(destination);
   const supabase = createServerClient(supabaseUrl, supabaseKey, {
     cookies: {
