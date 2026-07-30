@@ -4,6 +4,7 @@
 
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { getSiteUrl } from "@/lib/brand";
 
 function safeNextPath(value: string | null, origin: string): string {
   if (
@@ -27,10 +28,14 @@ function safeNextPath(value: string | null, origin: string): string {
 
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
+  const canonicalOrigin = new URL(getSiteUrl()).origin;
   const tokenHash = requestUrl.searchParams.get("token_hash");
-  const next = safeNextPath(requestUrl.searchParams.get("next"), requestUrl.origin);
+  const next = safeNextPath(requestUrl.searchParams.get("next"), canonicalOrigin);
 
-  const loginUrl = new URL("/auth/login", request.url);
+  // Railway terminates TLS at the proxy and can present request.url as
+  // http://localhost:8080 internally. Every customer-facing redirect must be
+  // built from the configured public origin instead.
+  const loginUrl = new URL("/auth/login", canonicalOrigin);
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
@@ -44,7 +49,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  const destination = new URL(next, requestUrl.origin);
+  const destination = new URL(next, canonicalOrigin);
   const redirectResponse = NextResponse.redirect(destination);
   const supabase = createServerClient(supabaseUrl, supabaseKey, {
     cookies: {

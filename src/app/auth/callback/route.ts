@@ -1,21 +1,35 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { getSiteUrl } from "@/lib/brand";
 
-function safeNextPath(value: string | null): string | null {
-  if (!value) return null;
-  if (!value.startsWith("/")) return null;
-  if (value.startsWith("//")) return null;
-  return value;
+function safeNextPath(value: string | null, origin: string): string | null {
+  if (
+    !value ||
+    !value.startsWith("/") ||
+    value.startsWith("//") ||
+    value.includes("\\") ||
+    /%(?:2f|5c)/i.test(value)
+  ) {
+    return null;
+  }
+
+  try {
+    const destination = new URL(value, origin);
+    if (destination.origin !== origin) return null;
+    return `${destination.pathname}${destination.search}${destination.hash}`;
+  } catch {
+    return null;
+  }
 }
 
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
+  const canonicalOrigin = new URL(getSiteUrl()).origin;
   const code = requestUrl.searchParams.get("code");
-  const next = safeNextPath(requestUrl.searchParams.get("next"));
+  const next = safeNextPath(requestUrl.searchParams.get("next"), canonicalOrigin);
 
-  const redirectUrl = request.nextUrl.clone();
-  redirectUrl.pathname = "/auth/login";
-  redirectUrl.search = "";
+  // Never derive public redirects from Railway's internal request origin.
+  const redirectUrl = new URL("/auth/login", canonicalOrigin);
 
   if (!code) {
     redirectUrl.searchParams.set("error", "missing_code");
@@ -23,7 +37,7 @@ export async function GET(request: NextRequest) {
   }
 
   const destination = next ?? "/dashboard";
-  const finalUrl = new URL(destination, request.url);
+  const finalUrl = new URL(destination, canonicalOrigin);
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
