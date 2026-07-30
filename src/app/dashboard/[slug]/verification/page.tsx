@@ -130,8 +130,8 @@ export default async function VerificationPage({ params }: VerificationPageProps
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-slate-600">
             Changed ABN, or the details above look wrong? Enter the correct
-            ABN below and we&rsquo;ll re-check it against the Australian Business
-            Register immediately.
+            ABN below and our system will re-check it against the Australian
+            Business Register immediately.
           </p>
           <AbnCheckForm slug={record.slug} currentAbn={abn} />
         </div>
@@ -141,7 +141,7 @@ export default async function VerificationPage({ params }: VerificationPageProps
             Add your ABN
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-slate-600">
-            Pop your ABN in below and we&rsquo;ll check it against the Australian
+            Pop your ABN in below and our system checks it against the Australian
             Business Register straight away &mdash; no emails, no paperwork,
             no waiting.
           </p>
