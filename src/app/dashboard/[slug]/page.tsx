@@ -641,16 +641,28 @@ export default async function DashboardOverviewPage({
                   </p>
                 ) : null}
                 {record.stripe_customer_id ? (
-                  <a
-                    href={`/api/billing-portal?slug=${record.slug}`}
-                    className="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800"
-                  >
-                    {canManageCancellation
-                      ? "Manage billing / cancel plan"
-                      : isCancellationScheduled || isCanceledSubscription
-                        ? "View invoices / payment details"
-                        : "Manage billing"}
-                  </a>
+                  <>
+                    <a
+                      href={`/api/billing-portal?slug=${record.slug}`}
+                      className="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800"
+                    >
+                      {canManageCancellation
+                        ? "Manage billing / cancel plan"
+                        : isCancellationScheduled || isCanceledSubscription
+                          ? "View invoices / payment details"
+                          : "Manage billing"}
+                    </a>
+                    <p className="mt-3 text-center text-xs text-slate-500">
+                      Refunds and cancellations are handled under our{" "}
+                      <Link
+                        href="/refunds"
+                        className="font-medium text-slate-700 underline underline-offset-4 hover:text-slate-900"
+                      >
+                        Refund &amp; Cancellation Policy
+                      </Link>
+                      .
+                    </p>
+                  </>
                 ) : null}
               </div>
             </Card>
