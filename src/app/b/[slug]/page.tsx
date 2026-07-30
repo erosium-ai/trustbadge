@@ -128,7 +128,7 @@ function initialsOf(name: string): string {
 
 function isPremiumPlan(plan?: string | null): boolean {
   const normalized = String(plan ?? "").toLowerCase();
-  return ["founding_member", "founding", "pro", "paid", "verified_lead_engine"].includes(normalized);
+  return ["founding_member", "founding", "founder", "pro", "paid", "verified_lead_engine"].includes(normalized);
 }
 
 function hasActivePaidEntitlement(profile: { plan?: string | null; subscription_status?: string | null }): boolean {
