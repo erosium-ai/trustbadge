@@ -142,6 +142,7 @@ export default async function DashboardOverviewPage({
   const { slug } = await params;
   const search = await searchParams;
   const justWelcomed = search?.welcome === "1";
+  const justWelcomedPromo = search?.welcome === "promo";
   const billingIssue = search?.billing;
   const requestedSlug = search?.requested_slug;
 
@@ -160,7 +161,12 @@ export default async function DashboardOverviewPage({
   }
 
   const record = ownership.record;
-  const isPaidPlan = record.plan !== "free" || record.stripe_customer_id != null;
+  const isComplimentaryLifetime =
+    record.access_grant_type === "complimentary_lifetime";
+  const isPaidPlan =
+    record.plan !== "free" ||
+    record.stripe_customer_id != null ||
+    isComplimentaryLifetime;
   const subscriptionStatus = String(record.subscription_status ?? "").toLowerCase();
   const isCanceledSubscription =
     subscriptionStatus === "canceled" || subscriptionStatus === "cancelled";
@@ -251,6 +257,12 @@ export default async function DashboardOverviewPage({
         {justWelcomed ? (
           <div className="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
             You&rsquo;re in. Payment received &mdash; your AI-Ready Business Page is switched on.
+          </div>
+        ) : null}
+
+        {justWelcomedPromo ? (
+          <div className="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+            You&rsquo;re in. Your AI-Ready Business Page is switched on.
           </div>
         ) : null}
 
@@ -625,45 +637,59 @@ export default async function DashboardOverviewPage({
                 <p className="mt-2 text-sm font-medium text-slate-900">
                   AI-Ready Business Page
                 </p>
-                <p className="mt-1 text-sm text-slate-600">
-                  {isCancellationScheduled
-                    ? `Cancellation scheduled. Paid access remains active until ${paidThroughLabel}. No future renewal.`
-                    : isCanceledSubscription
-                      ? "Subscription canceled. No future charges. You can still view invoices and payment details."
-                      : "A$49/month or A$12.90/week, depending on the option you chose. Same product. Cancel future renewals anytime."}
-                </p>
-                {record.next_payment_at ? (
-                  <p className="mt-2 text-sm text-slate-600">
-                    Next payment:{" "}
-                    <span className="font-medium text-slate-900">
-                      {formatAuDate(record.next_payment_at)}
-                    </span>
-                  </p>
-                ) : null}
-                {record.stripe_customer_id ? (
+                {isComplimentaryLifetime ? (
                   <>
-                    <a
-                      href={`/api/billing-portal?slug=${record.slug}`}
-                      className="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800"
-                    >
-                      {canManageCancellation
-                        ? "Manage billing / cancel plan"
-                        : isCancellationScheduled || isCanceledSubscription
-                          ? "View invoices / payment details"
-                          : "Manage billing"}
-                    </a>
-                    <p className="mt-3 text-center text-xs text-slate-500">
-                      Refunds and cancellations are handled under our{" "}
-                      <Link
-                        href="/refunds"
-                        className="font-medium text-slate-700 underline underline-offset-4 hover:text-slate-900"
-                      >
-                        Refund &amp; Cancellation Policy
-                      </Link>
-                      .
+                    <p className="mt-1 text-sm font-medium text-slate-900">
+                      Complimentary lifetime access
+                    </p>
+                    <p className="mt-1 text-sm text-slate-600">
+                      No payment method, renewal or recurring charge is attached
+                      to this profile.
                     </p>
                   </>
-                ) : null}
+                ) : (
+                  <>
+                    <p className="mt-1 text-sm text-slate-600">
+                      {isCancellationScheduled
+                        ? `Cancellation scheduled. Paid access remains active until ${paidThroughLabel}. No future renewal.`
+                        : isCanceledSubscription
+                          ? "Subscription canceled. No future charges. You can still view invoices and payment details."
+                          : "A$49/month or A$12.90/week, depending on the option you chose. Same product. Cancel future renewals anytime."}
+                    </p>
+                    {record.next_payment_at ? (
+                      <p className="mt-2 text-sm text-slate-600">
+                        Next payment:{" "}
+                        <span className="font-medium text-slate-900">
+                          {formatAuDate(record.next_payment_at)}
+                        </span>
+                      </p>
+                    ) : null}
+                    {record.stripe_customer_id ? (
+                      <>
+                        <a
+                          href={`/api/billing-portal?slug=${record.slug}`}
+                          className="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800"
+                        >
+                          {canManageCancellation
+                            ? "Manage billing / cancel plan"
+                            : isCancellationScheduled || isCanceledSubscription
+                              ? "View invoices / payment details"
+                              : "Manage billing"}
+                        </a>
+                        <p className="mt-3 text-center text-xs text-slate-500">
+                          Refunds and cancellations are handled under our{" "}
+                          <Link
+                            href="/refunds"
+                            className="font-medium text-slate-700 underline underline-offset-4 hover:text-slate-900"
+                          >
+                            Refund &amp; Cancellation Policy
+                          </Link>
+                          .
+                        </p>
+                      </>
+                    ) : null}
+                  </>
+                )}
               </div>
             </Card>
 

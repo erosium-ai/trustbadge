@@ -140,6 +140,12 @@ export interface FoundingMemberRecord {
   next_payment_at: string | null;
   payment_email: string | null;
   abn?: string | null;
+  // Optional access-grant fields (Family GTM complimentary lifetime).
+  // Paid Stripe rows leave these NULL.
+  access_grant_type?: string | null;
+  access_granted_at?: string | null;
+  access_expires_at?: string | null;
+  access_grant_redemption_id?: string | null;
 }
 
 /**

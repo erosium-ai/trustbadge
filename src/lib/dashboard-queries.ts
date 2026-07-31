@@ -153,7 +153,7 @@ export async function assertOwnership(
   const { data, error } = await client
     .from("business_profiles")
     .select(
-      "id, slug, business_name, owner_user_id, plan, stripe_customer_id, stripe_subscription_id, subscription_status, founding_number, verification_status, next_payment_at, payment_email, abn"
+      "id, slug, business_name, owner_user_id, plan, stripe_customer_id, stripe_subscription_id, subscription_status, founding_number, verification_status, next_payment_at, payment_email, abn, access_grant_type, access_granted_at, access_expires_at, access_grant_redemption_id"
     )
     .eq("slug", slug.trim().toLowerCase())
     .maybeSingle();
@@ -208,7 +208,7 @@ export async function getPrimaryBusinessForUser(
   const { data: paidBp } = await client
     .from("business_profiles")
     .select(
-      "id, slug, business_name, owner_user_id, plan, stripe_customer_id, stripe_subscription_id, subscription_status, founding_number, verification_status, next_payment_at, payment_email"
+      "id, slug, business_name, owner_user_id, plan, stripe_customer_id, stripe_subscription_id, subscription_status, founding_number, verification_status, next_payment_at, payment_email, access_grant_type, access_granted_at, access_expires_at, access_grant_redemption_id"
     )
     .eq("owner_user_id", userId)
     .not("stripe_customer_id", "is", null)
@@ -217,12 +217,26 @@ export async function getPrimaryBusinessForUser(
     .maybeSingle();
   if (paidBp) return paidBp as unknown as FoundingMemberRecord;
 
+  // Prefer complimentary lifetime grants (Family GTM) over legacy free rows
+  // when the user has no Stripe-backed profile.
+  const { data: grantBp } = await client
+    .from("business_profiles")
+    .select(
+      "id, slug, business_name, owner_user_id, plan, stripe_customer_id, stripe_subscription_id, subscription_status, founding_number, verification_status, next_payment_at, payment_email, access_grant_type, access_granted_at, access_expires_at, access_grant_redemption_id"
+    )
+    .eq("owner_user_id", userId)
+    .eq("access_grant_type", "complimentary_lifetime")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (grantBp) return grantBp as unknown as FoundingMemberRecord;
+
   // Otherwise use the newest owned business profile, not the oldest test or
   // legacy record.
   const { data: bp } = await client
     .from("business_profiles")
     .select(
-      "id, slug, business_name, owner_user_id, plan, stripe_customer_id, stripe_subscription_id, subscription_status, founding_number, verification_status, next_payment_at, payment_email"
+      "id, slug, business_name, owner_user_id, plan, stripe_customer_id, stripe_subscription_id, subscription_status, founding_number, verification_status, next_payment_at, payment_email, access_grant_type, access_granted_at, access_expires_at, access_grant_redemption_id"
     )
     .eq("owner_user_id", userId)
     .order("created_at", { ascending: false })
