@@ -93,7 +93,7 @@ export function TopBar() {
   const inDashboard = pathname.startsWith("/dashboard");
 
   return (
-    <header className="ai-glass-chrome border-b">
+    <header className="ai-glass-chrome relative z-50 border-b">
       <div className="mx-auto max-w-6xl px-3 py-3 sm:px-6">
         <div className="flex items-center justify-between gap-2 md:gap-4">
           <Link
