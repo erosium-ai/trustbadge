@@ -132,13 +132,18 @@ export interface OwnershipCheck {
   reason?: "not_found" | "not_owner";
 }
 
-function hasPaidOrStripeState(record: FoundingMemberRecord): boolean {
+function hasProtectedAccessState(record: FoundingMemberRecord): boolean {
   const subscriptionStatus = String(record.subscription_status ?? "").toLowerCase();
+  const hasComplimentaryGrant =
+    String(record.access_grant_type ?? "").toLowerCase() ===
+      "complimentary_lifetime" ||
+    Boolean(record.access_grant_redemption_id);
+
   return Boolean(
     record.stripe_customer_id ||
       record.stripe_subscription_id ||
       record.payment_email ||
-      record.plan === "founder" ||
+      hasComplimentaryGrant ||
       ["active", "trialing", "past_due", "unpaid", "canceled", "cancelled", "incomplete"].includes(
         subscriptionStatus
       )
@@ -172,7 +177,7 @@ export async function assertOwnership(
 
   // Hard block: paid/Stripe-backed rows must not be claimed via legacy
   // trustbadge ownership fallback.
-  if (hasPaidOrStripeState(record)) {
+  if (hasProtectedAccessState(record)) {
     return { ok: false, record, reason: "not_owner" };
   }
 
