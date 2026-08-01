@@ -106,8 +106,8 @@ function getSampleProfile() {
           answer: "Credentials AI tracks call taps, email clicks and quote requests so business owners can see proof-based enquiry activity.",
         },
         {
-          question: "What does ABN Verified mean on this demo?",
-          answer: "This page is a sample design. Tap the ABN Verified shield to open a live verification example showing what was checked and when.",
+          question: "What does verification preview mean on this demo?",
+          answer: "This page is sample design data only. Use the shield link to view a real verified example (Beastly Tech GC Pty Ltd) showing what was checked and when.",
         },
       ],
     },
