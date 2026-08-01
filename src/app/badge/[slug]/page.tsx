@@ -12,6 +12,8 @@ interface BadgePageProps {
   params: Promise<{ slug: string }>;
 }
 
+const DEMO_BADGE_SLUG = "sample-plumbing-co";
+
 function statusLabel(status: string): string {
   switch (status) {
     case "verified":
@@ -42,14 +44,58 @@ function confidenceLabel(level?: string | null): string {
 
 export default async function BadgePage({ params }: BadgePageProps) {
   const { slug } = await params;
-  const { trustbadge, credentials } = await getPublicBadgeData(slug);
+  const normalizedSlug = slug.trim().toLowerCase();
+  const isDemoBadge = normalizedSlug === DEMO_BADGE_SLUG;
 
-  if (!trustbadge) {
-    notFound();
+  let trustbadge: Awaited<ReturnType<typeof getPublicBadgeData>>["trustbadge"] | null = null;
+  let credentials: Awaited<ReturnType<typeof getPublicBadgeData>>["credentials"] = [];
+
+  if (!isDemoBadge) {
+    const live = await getPublicBadgeData(slug);
+    trustbadge = live.trustbadge;
+    credentials = live.credentials;
+    if (!trustbadge) {
+      notFound();
+    }
   }
 
-  const verified = credentials.filter((c: Credential) => c.status === "verified");
-  const structured = buildTrustBadgeSchema(trustbadge, verified);
+  const demoBusinessName = "Coastal Plumbing Co";
+  const demoLastChecked = "Demo timestamp";
+
+  const effectiveTrustbadge = isDemoBadge
+    ? {
+        id: "demo-trustbadge-sample-plumbing-co",
+        slug: DEMO_BADGE_SLUG,
+        business_name: demoBusinessName,
+        abn: null,
+        status: "verified" as const,
+        verification_confidence: "high" as const,
+        verification_summary:
+          "This is a demonstration preview only. No real ABN or live registry result is displayed on this page.",
+        last_verified_at: null,
+      }
+    : trustbadge!;
+
+  const effectiveVerified = isDemoBadge
+    ? [
+        {
+          id: "demo-credential-abn",
+          trustbadge_id: "demo-trustbadge-sample-plumbing-co",
+          type: "abn",
+          reference_number: "DEMO-ABN-CHECK",
+          status: "verified" as const,
+        },
+        {
+          id: "demo-credential-trade",
+          trustbadge_id: "demo-trustbadge-sample-plumbing-co",
+          type: "trade_license",
+          reference_number: "DEMO-TRADE-CHECK",
+          status: "verified" as const,
+        },
+      ]
+    : credentials.filter((c: Credential) => c.status === "verified");
+
+  const structured = buildTrustBadgeSchema(effectiveTrustbadge, effectiveVerified);
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-16">
@@ -60,38 +106,49 @@ export default async function BadgePage({ params }: BadgePageProps) {
 
       <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
         <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
-          <TrustSeal status={trustbadge.status} size="lg" />
+          <TrustSeal status={effectiveTrustbadge.status} size="lg" />
 
           <div className="text-center sm:text-left">
             <h1 className="text-2xl font-bold text-slate-900">
-              {trustbadge.business_name}
+              {effectiveTrustbadge.business_name}
             </h1>
             <p className="mt-1 text-lg font-medium text-brand-700">
-              {statusLabel(trustbadge.status)}
+              {isDemoBadge ? "Demo verification preview" : statusLabel(effectiveTrustbadge.status)}
             </p>
-            {trustbadge.abn && (
-              <p className="mt-1 text-slate-600">ABN: {trustbadge.abn}</p>
-            )}
+            {isDemoBadge ? (
+              <p className="mt-1 text-slate-600">ABN: Demo data only (not a real ABN record)</p>
+            ) : effectiveTrustbadge.abn ? (
+              <p className="mt-1 text-slate-600">ABN: {effectiveTrustbadge.abn}</p>
+            ) : null}
           </div>
         </div>
 
         <div className="mt-8 border-t border-slate-100 pt-8">
-          {(trustbadge.verification_confidence || trustbadge.verification_summary || trustbadge.last_verified_at) && (
+          {(effectiveTrustbadge.verification_confidence || effectiveTrustbadge.verification_summary || effectiveTrustbadge.last_verified_at || isDemoBadge) && (
             <div className="mb-6 rounded-xl border border-slate-200 bg-slate-50 p-4">
               <p className="text-xs uppercase tracking-wide text-slate-500">Verification confidence</p>
-              {trustbadge.verification_confidence && (
+              {effectiveTrustbadge.verification_confidence && (
                 <p className="mt-1 text-sm font-semibold text-slate-900">
-                  {confidenceLabel(trustbadge.verification_confidence)}
+                  {confidenceLabel(effectiveTrustbadge.verification_confidence)}
                 </p>
               )}
-              {trustbadge.verification_summary && (
-                <p className="mt-1 text-sm text-slate-600">{trustbadge.verification_summary}</p>
+              {effectiveTrustbadge.verification_summary && (
+                <p className="mt-1 text-sm text-slate-600">{effectiveTrustbadge.verification_summary}</p>
               )}
-              {trustbadge.last_verified_at && (
+              {isDemoBadge ? (
                 <p className="mt-1 text-xs text-slate-500">
-                  Last checked: {formatAuDateTime(trustbadge.last_verified_at)}
+                  Last checked: {demoLastChecked}
                 </p>
-              )}
+              ) : effectiveTrustbadge.last_verified_at ? (
+                <p className="mt-1 text-xs text-slate-500">
+                  Last checked: {formatAuDateTime(effectiveTrustbadge.last_verified_at)}
+                </p>
+              ) : null}
+              {isDemoBadge ? (
+                <p className="mt-2 text-xs text-slate-500">
+                  Your live verified badge will look like this, with your own ABN verification details below.
+                </p>
+              ) : null}
             </div>
           )}
 
@@ -99,13 +156,13 @@ export default async function BadgePage({ params }: BadgePageProps) {
             Verified credentials
           </h2>
 
-          {verified.length === 0 ? (
+          {effectiveVerified.length === 0 ? (
             <p className="mt-2 text-slate-600">
               No verified credentials yet. Check back soon.
             </p>
           ) : (
             <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-              {verified.map((c: Credential) => (
+              {effectiveVerified.map((c: Credential) => (
                 <li
                   key={c.id}
                   className="flex flex-col gap-1 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3"
@@ -141,8 +198,11 @@ export default async function BadgePage({ params }: BadgePageProps) {
 
         <div className="mt-8 text-center">
           <p className="text-xs text-slate-400">
-            Verified by {BRAND_NAME} · {BADGE_FEATURE_NAME}
+            {isDemoBadge ? `Demo page by ${BRAND_NAME} · ${BADGE_FEATURE_NAME}` : `Verified by ${BRAND_NAME} · ${BADGE_FEATURE_NAME}`}
           </p>
+          {isDemoBadge ? (
+            <p className="mt-1 text-xs text-slate-400">Live customer pages show real verified business data.</p>
+          ) : null}
         </div>
       </div>
     </div>

@@ -30,17 +30,9 @@ export async function generateMetadata({ params }: ProfilePageProps): Promise<Me
     return {
       title: `Sample profile demo | ${BRAND_NAME}`,
       description:
-        "Demo profile preview for Credentials AI. Contains illustrative sample business details and links to a live verification example.",
+        "Demo profile preview for Credentials AI. Contains illustrative sample business details and links to a live demo verification preview.",
       alternates: {
         canonical: `${siteUrl}/b/${normalizedSlug}`,
-      },
-      robots: {
-        index: false,
-        follow: false,
-        googleBot: {
-          index: false,
-          follow: false,
-        },
       },
     };
   }
@@ -107,7 +99,7 @@ function getSampleProfile() {
         },
         {
           question: "What does verification preview mean on this demo?",
-          answer: "This page is sample design data only. Use the shield link to view a real verified example (Beastly Tech GC Pty Ltd) showing what was checked and when.",
+          answer: "This page is sample design data only. Use the shield link to open a demo verification preview. Live customer pages show real ABN verification details in the same layout.",
         },
       ],
     },
@@ -314,7 +306,7 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
   const normalizedSlug = slug.trim().toLowerCase();
   const samplePaidRequested = normalizedSlug === "sample-plumbing-co";
   const sampleFreeRequested = normalizedSlug === "sample-free-card";
-  const sampleProofBadgeSlug = "beastly-tech-gc";
+  const sampleProofBadgeSlug = "sample-plumbing-co";
   const sampleProofBadgeHref = `/badge/${sampleProofBadgeSlug}`;
   const profile =
     (await getBusinessProfileBySlug(slug)) ??
@@ -486,7 +478,7 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
                       )}
                       {samplePaidRequested && (
                         <span className="rounded-full border border-orange-300/30 bg-orange-300/10 px-3 py-1.5 text-orange-200">
-                          Verification preview · live example linked on shield
+                          Verification preview · demo badge linked on shield
                         </span>
                       )}
                       {profile.abn && (
@@ -508,9 +500,9 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
                     />
                     {samplePaidRequested ? (
                       <p className="mt-3 text-[11px] font-semibold leading-relaxed text-slate-300">
-                        Demo page. View live verified example:
+                        Demo page. Open verification preview:
                         <a href={sampleProofBadgeHref} className="text-orange-300 hover:underline">
-                          {" "}Beastly Tech GC Pty Ltd
+                          {" "}Coastal Plumbing Co demo badge
                         </a>
                       </p>
                     ) : null}
@@ -601,7 +593,7 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
             {isSample ? (
               <>
                 Demo page by <a href={siteUrl} className="text-emerald-200 hover:underline">{BRAND_NAME}</a>
-                <span className="mx-2 text-slate-600">·</span>For live ABN proof, use the linked verification example
+                <span className="mx-2 text-slate-600">·</span>Live customer pages use the same layout with real verified business data
               </>
             ) : isVerified ? (
               <>
