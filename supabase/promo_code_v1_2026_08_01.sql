@@ -461,10 +461,10 @@ BEGIN
   RETURNING id INTO v_redemption_id;
 
   -- 10. Mark page pro
-  UPDATE public.pages
+  UPDATE public.pages p
      SET is_pro = true,
          updated_at = v_now
-   WHERE slug = v_slug;
+   WHERE p.slug = v_slug;
 
   -- 11. Grant profile entitlement (no Stripe fields, no founding_number, no payment_email)
   UPDATE public.business_profiles
@@ -581,7 +581,7 @@ BEGIN
   SELECT *
     INTO v_profile
     FROM public.business_profiles
-   WHERE slug = v_redemption.slug
+   WHERE public.business_profiles.slug = v_redemption.slug
    FOR UPDATE;
 
   IF NOT FOUND THEN
