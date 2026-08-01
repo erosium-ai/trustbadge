@@ -3,8 +3,9 @@ import { getSiteUrl } from "@/lib/brand";
 import { getServiceClient } from "@/lib/supabase";
 
 // 🔑 Keywords: sitemap, profile URLs, /b/ slugs, findability, GSC submission
-// v1.1: dynamic /b/[slug] entries for ACTIVE business profiles so Google/GSC
-// can enumerate customer profiles. Test/demo slugs are excluded.
+// v1.2: dynamic /b/[slug] entries for ACTIVE business profiles so Google/GSC
+// can enumerate customer profiles. Test slugs are excluded; the curated
+// sample paid demo page is intentionally indexable for product discovery.
 
 const staticRoutes = [
   "",
@@ -12,13 +13,17 @@ const staticRoutes = [
   "/ai-readable-websites",
   "/online-credential-verification",
   "/trust-badge-for-business",
+  "/b/sample-plumbing-co",
+  "/badge/sample-plumbing-co",
   "/terms",
   "/refunds",
   "/privacy",
 ];
 
 function isExcludedSlug(slug: string): boolean {
-  return /(^|-)test(-|$)|^sample-|demo/.test(slug);
+  const normalized = slug.trim().toLowerCase();
+  if (normalized === "sample-plumbing-co") return false;
+  return /(^|-)test(-|$)|^sample-|demo/.test(normalized);
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
