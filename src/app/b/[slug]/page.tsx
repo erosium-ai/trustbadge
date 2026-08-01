@@ -20,34 +20,57 @@ function getSampleProfile() {
     slug: "sample-plumbing-co",
     business_name: "Coastal Plumbing Co",
     description:
-      "Proudly servicing the Gold Coast. Emergency repairs, hot water systems and gas fitting — fast, tidy and measured.",
+      "Family-owned Gold Coast plumbing team for emergency repairs, hot water and gas fitting. Clear pricing, tidy work and tracked enquiry follow-up so customers know exactly what happens next.",
     phone: "0400 000 000",
     email: "hello@coastalplumbingco.com.au",
     website: "https://credentialsai.com.au",
     suburb: "Burleigh Heads",
     state: "QLD",
     postcode: "4220",
-    service_areas: ["Burleigh Heads", "Varsity Lakes", "Mermaid Beach", "Robina"],
+    service_areas: [
+      "Burleigh Heads",
+      "Varsity Lakes",
+      "Mermaid Beach",
+      "Robina",
+      "Palm Beach",
+      "Miami",
+      "Broadbeach",
+    ],
     services: [
       { name: "Emergency Repairs", description: "Burst pipes, leaks and urgent callouts — same-day where possible." },
       { name: "Hot Water", description: "Electric and gas hot water troubleshooting, repairs and replacement." },
       { name: "Gas Fitting", description: "Safe gas installs and repairs for homes and small business." },
+      { name: "Blocked Drain Clearing", description: "Camera inspection + root-cause fixes for recurring drain issues." },
+      { name: "Renovation Plumbing", description: "Bathroom and kitchen rough-in/fit-off support for builders and owner-builders." },
     ],
     plan: "founding_member",
-    abn: "12 345 678 901",
+    abn: null,
     status: "active",
     verification_status: "verified",
     metadata: {
       sample_profile: true,
       business_type: "plumber",
+      brand_color: "#f97316",
       faqs: [
         {
           question: "Which areas do you service?",
-          answer: "Burleigh Heads, Varsity Lakes, Mermaid Beach and Robina — same-day where possible.",
+          answer: "We cover Burleigh Heads, Varsity Lakes, Mermaid Beach, Robina, Palm Beach, Miami and Broadbeach, with same-day options where possible.",
         },
         {
-          question: "What does ABN Verified mean here?",
-          answer: "Sample wording only. Real Credentials AI pages show the ABN check against the Australian Business Register and when it was done.",
+          question: "How fast can someone get help for an urgent leak?",
+          answer: "Urgent jobs are triaged first. In this demo profile, emergency requests are shown as same-day where possible.",
+        },
+        {
+          question: "Do you handle both residential and small commercial work?",
+          answer: "Yes — this sample page demonstrates mixed residential and small commercial plumbing coverage.",
+        },
+        {
+          question: "How are enquiries tracked?",
+          answer: "Credentials AI tracks call taps, email clicks and quote requests so business owners can see proof-based enquiry activity.",
+        },
+        {
+          question: "What does ABN Verified mean on this demo?",
+          answer: "This page is a sample design. Tap the ABN Verified shield to open a live verification example showing what was checked and when.",
         },
       ],
     },
@@ -244,6 +267,8 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
   const normalizedSlug = slug.trim().toLowerCase();
   const samplePaidRequested = normalizedSlug === "sample-plumbing-co";
   const sampleFreeRequested = normalizedSlug === "sample-free-card";
+  const sampleProofBadgeSlug = "beastly-tech-gc";
+  const sampleProofBadgeHref = `/badge/${sampleProofBadgeSlug}`;
   const profile =
     (await getBusinessProfileBySlug(slug)) ??
     (samplePaidRequested ? getSampleProfile() : sampleFreeRequested ? getSampleFreeProfile() : null);
@@ -264,6 +289,9 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
     if (badge.trustbadge) badgeUrl = `/badge/${profile.slug}`;
   } catch {
     badgeUrl = null;
+  }
+  if (samplePaidRequested) {
+    badgeUrl = sampleProofBadgeHref;
   }
 
   const meta = profile.metadata && typeof profile.metadata === "object" ? (profile.metadata as Record<string, unknown>) : {};
@@ -416,7 +444,15 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
                       </span>
                     </div>
                   </div>
-                  <VerificationShield verified={isVerified} href={badgeUrl} tone="paid" />
+                  <div className="max-w-[210px] text-center">
+                    <VerificationShield verified={isVerified} href={badgeUrl} tone="paid" />
+                    {samplePaidRequested ? (
+                      <p className="mt-3 text-[11px] font-semibold leading-relaxed text-slate-300">
+                        Tap the ABN Verified shield to see what was checked
+                        <span className="text-orange-300"> (live example)</span>.
+                      </p>
+                    ) : null}
+                  </div>
                 </div>
               </div>
             </div>
