@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { unstable_noStore as noStore } from "next/cache";
 import { getSiteUrl } from "@/lib/brand";
 import { getServiceClient } from "@/lib/supabase";
 
@@ -31,6 +32,8 @@ function isExcludedSlug(slug: string): boolean {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  noStore();
+
   const siteUrl = getSiteUrl();
   const now = new Date();
   const seen = new Set<string>();
