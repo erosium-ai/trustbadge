@@ -1,5 +1,6 @@
 /* 🔑 Keywords: Credentials AI V2 public business profile, /b/[slug], AI Business Card (free), AI-Ready Business Page (paid), emerald verified accent, ABN-only verification, glassmorphism */
 
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { LeadCapturePanel } from "@/components/profiles/LeadCapturePanel";
 import { SampleGuard } from "@/components/profiles/SampleGuard";
@@ -13,6 +14,42 @@ export const dynamic = "force-dynamic";
 
 interface ProfilePageProps {
   params: Promise<{ slug: string }>;
+}
+
+function isSampleSlug(slug: string): boolean {
+  const normalized = slug.trim().toLowerCase();
+  return normalized === "sample-plumbing-co" || normalized === "sample-free-card";
+}
+
+export async function generateMetadata({ params }: ProfilePageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const siteUrl = getSiteUrl();
+  const normalizedSlug = slug.trim().toLowerCase();
+
+  if (isSampleSlug(normalizedSlug)) {
+    return {
+      title: `Sample profile demo | ${BRAND_NAME}`,
+      description:
+        "Demo profile preview for Credentials AI. Contains illustrative sample business details and links to a live verification example.",
+      alternates: {
+        canonical: `${siteUrl}/b/${normalizedSlug}`,
+      },
+      robots: {
+        index: false,
+        follow: false,
+        googleBot: {
+          index: false,
+          follow: false,
+        },
+      },
+    };
+  }
+
+  return {
+    alternates: {
+      canonical: `${siteUrl}/b/${normalizedSlug}`,
+    },
+  };
 }
 
 function getSampleProfile() {
@@ -165,7 +202,17 @@ function hasActivePaidEntitlement(profile: { plan?: string | null; subscription_
 // State driven by verification_status. Never a fake verified look.
 // ---------------------------------------------------------------------------
 
-function VerificationShield({ verified, href, tone }: { verified: boolean; href?: string | null; tone: "paid" | "free" }) {
+function VerificationShield({
+  verified,
+  href,
+  tone,
+  labelOverride,
+}: {
+  verified: boolean;
+  href?: string | null;
+  tone: "paid" | "free";
+  labelOverride?: string;
+}) {
   const inner = (
     <div className="flex flex-col items-center gap-2">
       <div
@@ -191,7 +238,7 @@ function VerificationShield({ verified, href, tone }: { verified: boolean; href?
           verified ? (tone === "paid" ? "text-emerald-200" : "text-cyan-200") : "text-slate-400"
         }`}
       >
-        {verified ? "ABN verified" : "Verification pending"}
+        {labelOverride ?? (verified ? "ABN verified" : "Verification pending")}
       </span>
     </div>
   );
@@ -371,19 +418,22 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
               <p className="text-sm font-black text-emerald-100">
                 🎨 Sample page — and yes, you choose the colours.
               </p>
-              <p className="mt-1 text-sm leading-relaxed text-emerald-100/80">
-                Every paid AI-Ready Business Page gets its own colour scheme to
-                match the business branding. This one shows an example
-                palette — yours can look completely different.{" "}
-                <a
-                  href={getPaidProfileUrl("sample_profile_colour_banner")}
+                  <p className="mt-1 text-sm leading-relaxed text-emerald-100/80">
+                    Every paid AI-Ready Business Page gets its own colour scheme to
+                    match the business branding. This one shows an example
+                    palette — yours can look completely different.{" "}
+                    <a
+                      href={getPaidProfileUrl("sample_profile_colour_banner")}
                   className="font-bold text-emerald-200 underline underline-offset-4 hover:text-emerald-100"
                 >
-                  Get yours →
-                </a>
-              </p>
-            </div>
-          ) : null}
+                      Get yours →
+                    </a>
+                  </p>
+                  <p className="mt-2 text-xs font-semibold text-emerald-100/70">
+                    Demo business details are illustrative only.
+                  </p>
+                </div>
+              ) : null}
           <header className="ai-glass-paid overflow-hidden rounded-[2rem]" style={{ borderColor: brandAccentBorder }}>
             <div className="relative p-6 sm:p-10 lg:p-12">
               <div className="absolute inset-x-0 top-0 h-64 bg-gradient-to-br from-emerald-400/22 via-cyan-400/14 to-transparent" />
@@ -426,12 +476,17 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
                       <p className="mt-6 max-w-3xl text-lg leading-relaxed text-slate-300">{profile.description}</p>
                     )}
                     <div className="mt-6 flex flex-wrap gap-2 text-xs font-bold">
-                      {isVerified && (
+                      {isVerified && !samplePaidRequested && (
                         <span
                           className="rounded-full border px-3 py-1.5"
                           style={{ borderColor: brandAccent, backgroundColor: brandAccentSoft, color: brandAccent }}
                         >
                           ABN Verified by {BRAND_NAME}
+                        </span>
+                      )}
+                      {samplePaidRequested && (
+                        <span className="rounded-full border border-orange-300/30 bg-orange-300/10 px-3 py-1.5 text-orange-200">
+                          Verification preview · live example linked on shield
                         </span>
                       )}
                       {profile.abn && (
@@ -445,11 +500,18 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
                     </div>
                   </div>
                   <div className="max-w-[210px] text-center">
-                    <VerificationShield verified={isVerified} href={badgeUrl} tone="paid" />
+                    <VerificationShield
+                      verified={isVerified}
+                      href={badgeUrl}
+                      tone="paid"
+                      labelOverride={samplePaidRequested ? "Verification preview" : undefined}
+                    />
                     {samplePaidRequested ? (
                       <p className="mt-3 text-[11px] font-semibold leading-relaxed text-slate-300">
-                        Tap the ABN Verified shield to see what was checked
-                        <span className="text-orange-300"> (live example)</span>.
+                        Demo page. View live verified example:
+                        <a href={sampleProofBadgeHref} className="text-orange-300 hover:underline">
+                          {" "}Beastly Tech GC Pty Ltd
+                        </a>
                       </p>
                     ) : null}
                   </div>
@@ -536,7 +598,12 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
           )}
 
           <footer className="mt-8 text-center text-sm font-semibold text-slate-400">
-            {isVerified ? (
+            {isSample ? (
+              <>
+                Demo page by <a href={siteUrl} className="text-emerald-200 hover:underline">{BRAND_NAME}</a>
+                <span className="mx-2 text-slate-600">·</span>For live ABN proof, use the linked verification example
+              </>
+            ) : isVerified ? (
               <>
                 ABN Verified by <a href={siteUrl} className="text-emerald-200 hover:underline">{BRAND_NAME}</a>
                 <span className="mx-2 text-slate-600">·</span>Backed by official Australian Business Register data
@@ -575,7 +642,12 @@ export default async function PublicBusinessProfilePage({ params }: ProfilePageP
                 <p className="text-[11px] font-black uppercase tracking-[0.24em] text-cyan-200">
                   AI Business Card{isSample ? " · Sample data" : ""}
                 </p>
-                <VerificationShield verified={isVerified} href={badgeUrl} tone="free" />
+                <VerificationShield
+                  verified={isVerified}
+                  href={badgeUrl}
+                  tone="free"
+                  labelOverride={sampleFreeRequested ? "Verification preview" : undefined}
+                />
               </div>
               <div className="mt-4 flex items-center gap-4">
                 <div className="flex h-14 w-14 flex-none items-center justify-center rounded-2xl border border-white/12 bg-white/10 text-lg font-black text-white">
