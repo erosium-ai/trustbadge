@@ -158,7 +158,7 @@ export async function assertOwnership(
   const { data, error } = await client
     .from("business_profiles")
     .select(
-      "id, slug, business_name, owner_user_id, plan, stripe_customer_id, stripe_subscription_id, subscription_status, founding_number, verification_status, next_payment_at, payment_email, abn, access_grant_type, access_granted_at, access_expires_at, access_grant_redemption_id"
+      "id, slug, business_name, owner_user_id, plan, stripe_customer_id, stripe_subscription_id, subscription_status, founding_number, verification_status, next_payment_at, payment_email, abn, access_grant_type, access_granted_at, access_expires_at, access_grant_redemption_id, metadata"
     )
     .eq("slug", slug.trim().toLowerCase())
     .maybeSingle();

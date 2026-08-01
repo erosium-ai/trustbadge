@@ -146,6 +146,7 @@ export interface FoundingMemberRecord {
   access_granted_at?: string | null;
   access_expires_at?: string | null;
   access_grant_redemption_id?: string | null;
+  metadata?: Record<string, unknown> | null;
 }
 
 /**

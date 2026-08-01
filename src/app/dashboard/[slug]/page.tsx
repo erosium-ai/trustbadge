@@ -21,6 +21,7 @@ import {
 } from "@/lib/dashboard-queries";
 import { CopyLinkButton } from "@/components/CopyLinkButton";
 import { SupportEmailLink } from "@/components/SupportEmailLink";
+import { ProfileColorPicker } from "@/components/dashboard/ProfileColorPicker";
 import { formatAuDate } from "@/lib/date-format";
 
 export const dynamic = "force-dynamic";
@@ -161,6 +162,17 @@ export default async function DashboardOverviewPage({
   }
 
   const record = ownership.record;
+  const metadata =
+    record.metadata && typeof record.metadata === "object"
+      ? (record.metadata as Record<string, unknown>)
+      : {};
+  const rawBrandColor =
+    typeof metadata.brand_color === "string"
+      ? metadata.brand_color.trim().toLowerCase()
+      : "";
+  const selectedBrandColor = /^#[0-9a-f]{6}$/.test(rawBrandColor)
+    ? rawBrandColor
+    : "#10b981";
   const isComplimentaryLifetime =
     record.access_grant_type === "complimentary_lifetime";
   const isPaidPlan =
@@ -488,6 +500,11 @@ export default async function DashboardOverviewPage({
 
           {/* Side column */}
           <aside className="space-y-6">
+            <ProfileColorPicker
+              slug={record.slug}
+              initialColor={selectedBrandColor}
+            />
+
             {/* 5. ABN check card */}
             <Card>
               <div className="flex items-center justify-between">
