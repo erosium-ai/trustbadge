@@ -85,13 +85,6 @@ export default async function BadgePage({ params }: BadgePageProps) {
           reference_number: "DEMO-ABN-CHECK",
           status: "verified" as const,
         },
-        {
-          id: "demo-credential-trade",
-          trustbadge_id: "demo-trustbadge-sample-plumbing-co",
-          type: "trade_license",
-          reference_number: "DEMO-TRADE-CHECK",
-          status: "verified" as const,
-        },
       ]
     : credentials.filter((c: Credential) => c.status === "verified");
 
