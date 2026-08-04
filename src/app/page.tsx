@@ -27,7 +27,7 @@ export default function HomePage() {
         name: BRAND_NAME,
         url: siteUrl,
         description:
-          "Credentials AI builds AI-readable business profiles with best-effort ABN/business-registration check wording, source/date details, and enquiry tracking for Australian local businesses.",
+          "Credentials AI builds AI-searchable business profiles with best-effort ABN/business-registration check wording, source/date details, and enquiry tracking for Australian businesses. Australia's AEO directory.",
         dateModified: "2026-07-29",
         knowsAbout: [
           "AI Business Profiles",
@@ -59,10 +59,12 @@ export default function HomePage() {
       {
         "@type": "Service",
         "@id": `${siteUrl}/#service`,
-        name: "AI-readable business profiles for local businesses",
+        name: "Australia's AEO directory — free AI-search business profiles for every Australian business",
         provider: { "@id": `${siteUrl}/#organization` },
         areaServed: "Australia",
         serviceType: [
+          "AEO directory",
+          "Answer Engine Optimisation",
           "AI-readable business profile",
           "automated ABN verification against Australian Business Register data",
           "source and checked-date displayed on every check",

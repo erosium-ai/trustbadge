@@ -1,4 +1,4 @@
-// 🔑 Keywords: Credentials AI V2 hero, Your Business Seen by AI, AI-readable profiles, checked business details, measured enquiries, readable by ChatGPT Google Claude Siri, Gold Coast Flow Plumbing sample profile
+// 🔑 Keywords: Credentials AI V2 hero, Australia's AI-Search Directory, AEO, Answer Engine Optimisation, AI-readable profiles, ABN-verified, free business profile
 
 import { CtaButton } from "./CtaButton";
 import { AiParticles } from "@/components/AiParticles";
@@ -8,8 +8,8 @@ interface HeroProps {
   sampleProfileUrl: string;
 }
 
-const TRUST_PILLS = ["AI-Optimised", "ABN Check Shown", "Performance Measured"];
-const READABLE_BY = ["ChatGPT", "Google", "Claude", "Siri"];
+const TRUST_PILLS = ["AEO-Optimised", "ABN Verified", "Free Profile"];
+const READABLE_BY = ["ChatGPT", "Gemini", "Claude", "Siri"];
 
 export function Hero({ freeProfileUrl, sampleProfileUrl }: HeroProps) {
   return (
@@ -38,11 +38,14 @@ export function Hero({ freeProfileUrl, sampleProfileUrl }: HeroProps) {
               </span>
             ))}
           </div>
-          <h1 className="mt-6 max-w-3xl text-balance text-4xl font-black tracking-tight text-white sm:text-5xl lg:text-7xl">
-            Your Business, Seen by AI
+          <h1 className="mt-6 max-w-3xl text-balance text-4xl font-black tracking-tight text-white sm:text-5xl lg:text-6xl">
+            Australia&rsquo;s AI-Search Directory
           </h1>
           <p className="mt-5 max-w-2xl text-pretty text-lg leading-relaxed text-slate-300 sm:text-xl">
-            AI-readable profiles with checked business details and measured enquiries.
+            Free ABN-verified business profile. Show up on ChatGPT, Gemini, and AI search.
+          </p>
+          <p className="mt-2 text-sm font-medium tracking-wide text-cyan-300/70">
+            Powered by AEO — Answer Engine Optimisation for Australian business
           </p>
           <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
             <CtaButton

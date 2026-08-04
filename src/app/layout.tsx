@@ -7,12 +7,16 @@ import { BRAND_NAME } from "@/lib/brand";
 export const metadata: Metadata = {
   metadataBase: new URL("https://credentialsai.com.au"),
   title: {
-    default: `${BRAND_NAME} — AI-Readable Business Profiles`,
-    template: `%s — ${BRAND_NAME}`,
+    default: `${BRAND_NAME} | Australia's AEO Directory — Free AI-Search Business Profile`,
+    template: `%s | ${BRAND_NAME}`,
   },
   description:
-    "Credentials AI builds AI-readable business profiles with best-effort ABN/business-registration check wording, source/date details, and enquiry tracking for Australian local businesses.",
+    "Credentials AI is Australia's AEO directory. Free ABN-verified business profiles optimised for ChatGPT, Gemini, and AI search. Any Australian business, 2 minutes.",
   keywords: [
+    "AEO",
+    "Answer Engine Optimisation",
+    "AI-search directory",
+    "Australia AEO directory",
     "AI Business Card",
     "AI-Ready Business Page",
     "AI-readable business profile",
@@ -26,9 +30,9 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: `${BRAND_NAME} — Your Business, Seen by AI`,
+    title: `${BRAND_NAME} — Australia's AI-Search Directory`,
     description:
-      "AI-readable profiles with checked business details and measured enquiries.",
+      "Credentials AI is Australia's AEO directory. Free ABN-verified business profiles optimised for ChatGPT, Gemini, and AI search. Any Australian business, 2 minutes.",
     url: "https://credentialsai.com.au",
     siteName: BRAND_NAME,
     locale: "en_AU",
@@ -44,9 +48,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: `${BRAND_NAME} — AI-Readable Business Profiles`,
+    title: `${BRAND_NAME} — Australia's AI-Search Directory | AEO`,
     description:
-      "AI-readable profiles with checked business details and measured enquiries.",
+      "Free ABN-verified business profiles optimised for ChatGPT, Gemini, and AI search. Any Australian business, 2 minutes.",
     images: ["/og-image.png"],
   },
   // Tells Google & AI crawlers content is fresh — Perplexity heavily weights <3mo content
